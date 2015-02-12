@@ -1,10 +1,11 @@
-package com.example.fei.yhb_20;
+package com.example.fei.yhb_20.ui;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.fei.yhb_20.R;
 
 public class MainActivity extends ActionBarActivity {
 
