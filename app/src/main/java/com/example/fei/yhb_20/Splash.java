@@ -12,22 +12,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobUser;
-
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.fei.yhb_20.ui.FirstActivity;
 import com.example.fei.yhb_20.ui.MainActivity;
 
@@ -43,7 +27,7 @@ public class Splash extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Bmob.initialize(this, "9dae2b27442337d45b498b20ecc2bef0");
+        Bmob.initialize(this, "7f5bdcbed568053f7db01753228cd960");
         splash = (TextView) findViewById(R.id.tv_splash);
         TranslateAnimation animation = new TranslateAnimation(0,0,0,-200);
         animation.setDuration(2000);

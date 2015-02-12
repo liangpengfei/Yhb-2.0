@@ -40,4 +40,6 @@
     <color name="text_secondary">#D9000000</color>
 
     <color name="main_theme_yellow">#FFFED700</color>
+
+    <color name="textColor_blue">#59dbe0</color>
 </resources>

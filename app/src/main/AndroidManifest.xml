@@ -24,6 +24,14 @@
             android:name=".ui.FirstActivity"
             android:label="@string/title_activity_first" >
         </activity>
+        <activity
+            android:name=".ui.RegistActivity"
+            android:label="@string/title_activity_regist" >
+        </activity>
+        <activity
+            android:name=".ui.MerchantRegist"
+            android:label="@string/title_activity_merchant_regist" >
+        </activity>
     </application>
 
 </manifest>

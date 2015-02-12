@@ -8,16 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.utils.GV;
 
 
 public class FirstActivity extends ActionBarActivity implements View.OnClickListener{
@@ -70,21 +63,23 @@ public class FirstActivity extends ActionBarActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-//        switch (v.getId()){
-//            case R.id.bt_first_merchant:
-//                Intent merchantintent = new Intent(this,RegistMerchantActivity.class);
-//                startActivity(merchantintent);
-//                break;
-//            case R.id.bt_first_person:
-//                Intent person = new Intent(this,RegistPersonActivity.class);
-//                startActivity(person);
-//                break;
+        switch (v.getId()){
+            case R.id.bt_first_merchant:
+                Intent merchantintent = new Intent(this,RegistActivity.class);
+                merchantintent.putExtra("role",GV.MERCHANT);
+                startActivity(merchantintent);
+                break;
+            case R.id.bt_first_person:
+                Intent person = new Intent(this,RegistActivity.class);
+                person.putExtra("role", GV.PERSON);
+                startActivity(person);
+                break;
 //            case R.id.tv_first_login:
 //                Intent intent = new Intent(this,LoginActivity.class);
 //                startActivity(intent);
 //                break;
-//            default:
-//                break;
-//        }
+            default:
+                break;
+        }
     }
 }
