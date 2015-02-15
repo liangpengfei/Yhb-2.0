@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.utils.GV;
+import com.example.fei.yhb_20.utils.MyUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -25,6 +26,7 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.et_regist_username)EditText mUsername;
     @InjectView(R.id.tv_regist_protocol)TextView mProtocol;
     @InjectView(R.id.bt_regist_regist)Button mRegist;
+    @InjectView(R.id.textview)TextView textView;
 
     char role ;
 
@@ -34,6 +36,11 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
         setContentView(R.layout.activity_regist);
         ButterKnife.inject(this);
         role = getIntent().getCharExtra("role", (char) 0);
+        if (role==GV.MERCHANT){
+            textView.setVisibility(View.INVISIBLE);
+            mProtocol.setVisibility(View.INVISIBLE);
+            mRegist.setText("下一步");
+        }
         initEvents();
     }
 
@@ -67,30 +74,38 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        String email = mEmail.getText().toString();
-        String password = mPassword.getText().toString();
-        String username = mUsername.getText().toString();
-
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(username)){
-            Toast.makeText(this,"请填写必要的注册信息",Toast.LENGTH_LONG).show();
-        }else {
             switch (v.getId()){
                 case R.id.bt_regist_regist:
-                    Intent intent = null;
-                    switch (role){
-                        case GV.MERCHANT:
-                            intent = new Intent(this,MerchantRegist.class);
-                            intent.putExtra("email",email);
-                            intent.putExtra("password",password);
-                            intent.putExtra("username",username);
-                            break;
-                        case GV.PERSON:
-                            //应该是在这里注册成功了
-                            break;
-                        default:
-                            break;
+                    //注册
+                    String email = mEmail.getText().toString();
+                    String password = mPassword.getText().toString();
+                    String username = mUsername.getText().toString();
+
+                    if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(username)){
+                        Toast.makeText(this,"请填写必要的注册信息",Toast.LENGTH_LONG).show();
+                    }else if (!MyUtils.isEmail(email)){
+                        Toast.makeText(this,"邮箱格式不正确",Toast.LENGTH_LONG).show();
+                        mEmail.setText("");
+                    }else if (!MyUtils.passwordNumberLength(password)){
+                        Toast.makeText(this,"密码须6位以上18位以下",Toast.LENGTH_LONG).show();
+                        mPassword.setText("");
+                    }else {
+                        Intent intent = null;
+                        switch (role) {
+                            case GV.MERCHANT:
+                                intent = new Intent(this, MerchantRegist.class);
+                                intent.putExtra("email", email);
+                                intent.putExtra("password", password);
+                                intent.putExtra("username", username);
+                                break;
+                            case GV.PERSON:
+                                //个人应该是在这里注册成功了
+                                break;
+                            default:
+                                break;
+                        }
+                        startActivity(intent);
                     }
-                    startActivity(intent);
                     break;
                 case R.id.tv_regist_protocol:
 
@@ -100,7 +115,4 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                     break;
             }
         }
-
-
-    }
 }

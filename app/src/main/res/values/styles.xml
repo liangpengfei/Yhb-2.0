@@ -1,14 +1,71 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!-- 自己定义的整体框架的actionbar主题 -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="actionBarItemBackground">@drawable/selectable_background_apptheme</item>
+        <item name="popupMenuStyle">@style/PopupMenu.Apptheme</item>
+        <item name="dropDownListViewStyle">@style/DropDownListView.Apptheme</item>
+        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Apptheme</item>
+        <item name="actionDropDownStyle">@style/DropDownNav.Apptheme</item>
+        <item name="actionBarStyle">@style/ActionBar.Solid.Apptheme</item>
+        <item name="actionModeBackground">@drawable/cab_background_top_apptheme</item>
+        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_apptheme</item>
+        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Apptheme</item>
     </style>
 
+    <style name="ActionBar.Solid.Apptheme" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="background">@drawable/ab_solid_apptheme</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_apptheme</item>
+        <item name="backgroundSplit">@drawable/ab_bottom_solid_apptheme</item>
+        <item name="progressBarStyle">@style/ProgressBar.Apptheme</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Apptheme" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="background">@drawable/ab_transparent_apptheme</item>
+        <item name="progressBarStyle">@style/ProgressBar.Apptheme</item>
+    </style>
+
+    <style name="PopupMenu.Apptheme" parent="@style/Widget.AppCompat.Light.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_apptheme</item>
+    </style>
+
+    <style name="DropDownListView.Apptheme" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_apptheme</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Apptheme" parent="@style/Widget.AppCompat.Light.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_apptheme</item>
+    </style>
+
+    <style name="DropDownNav.Apptheme" parent="@style/Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">@drawable/spinner_background_ab_apptheme</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_apptheme</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_apptheme</item>
+    </style>
+
+    <style name="ProgressBar.Apptheme" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_apptheme</item>
+    </style>
+
+    <style name="ActionButton.CloseMode.Apptheme" parent="@style/Widget.AppCompat.Light.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_apptheme</item>
+    </style>
+
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.Apptheme.Widget" parent="@style/Theme.AppCompat">
+        <item name="popupMenuStyle">@style/PopupMenu.Apptheme</item>
+        <item name="dropDownListViewStyle">@style/DropDownListView.Apptheme</item>
+    </style>
+
+
+
+    <!--以下为其他style-->
     <style name="TextAppearance.YourApp.FloatLabel" parent="android:TextAppearance.Small">
         <item name="android:textColor">@color/blue</item>
         <item name="android:textSize">11sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+
 
 </resources>
