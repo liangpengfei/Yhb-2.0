@@ -11,7 +11,8 @@ public class MyUtils {
         return match("\\w+@(\\w+.)+[a-z]{2,3}",email);
     }
     public static boolean passwordNumberLength(String value){
-        return match("^\\d{6,18}$",value);
+
+        return match("\\w{6,18}",value);
     }
     /**
      * @param regex 正则表达式字符串
