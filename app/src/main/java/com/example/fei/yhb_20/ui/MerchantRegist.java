@@ -231,6 +231,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         if (intent.resolveActivity(this.getPackageManager()) != null){
             startActivityForResult(intent,RESULT_LOAD_IMAGE);
+
         }
     }
 
