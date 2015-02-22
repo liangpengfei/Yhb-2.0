@@ -1,12 +1,149 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:id="@+id/mr_layout"
     tools:context="com.example.fei.yhb_20.ui.MerchantRegist">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <com.marshalchen.common.ui.FloatLabelLayout
+        android:id="@+id/float_email"
+        android:foregroundGravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:floatLabelTextAppearance="@style/TextAppearance.YourApp.FloatLabel">
+        <EditText
+            android:background="@drawable/edittext_border"
+            android:gravity="center"
+            android:hint="注册人姓名"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:id="@+id/et_mr_name"/>
+    </com.marshalchen.common.ui.FloatLabelLayout>
+
+    <com.marshalchen.common.ui.FloatLabelLayout
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/float_email"
+        android:id="@+id/float_password"
+        android:foregroundGravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:floatLabelTextAppearance="@style/TextAppearance.YourApp.FloatLabel">
+
+        <EditText
+            android:background="@drawable/edittext_border"
+            android:gravity="center"
+            android:hint="商户名"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:id="@+id/et_mr_merchantName"/>
+    </com.marshalchen.common.ui.FloatLabelLayout>
+
+    <com.marshalchen.common.ui.FloatLabelLayout
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/float_password"
+        android:id="@+id/float_username"
+        android:foregroundGravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:floatLabelTextAppearance="@style/TextAppearance.YourApp.FloatLabel">
+
+        <EditText
+            android:background="@drawable/edittext_border"
+            android:gravity="center"
+            android:hint="执照号"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/et_mr_license"/>
+
+    </com.marshalchen.common.ui.FloatLabelLayout>
+
+    <TextView
+        android:paddingTop="10dp"
+        android:id="@+id/tv_1"
+        android:layout_below="@+id/float_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="添加执照照片"/>
+
+    <HorizontalScrollView
+        android:layout_below="@id/tv_1"
+        android:paddingTop="7dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView"
+        android:layout_gravity="center_vertical"
+        android:fillViewport="false" >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal"
+                android:id="@+id/ll_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </LinearLayout>
+            
+            <ImageView
+                android:paddingLeft="2dp"
+                android:paddingStart="2dp"
+                android:id="@+id/iv_mr_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/add"/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <TextView
+        android:id="@+id/textview"
+        android:layout_below="@+id/horizontalScrollView"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注册即表示您同意并遵守"/>
+    <TextView
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/textColor_blue"
+        android:layout_toRightOf="@+id/textview"
+        android:layout_toEndOf="@+id/textview"
+        android:layout_below="@+id/horizontalScrollView"
+        android:paddingTop="20dp"
+        android:id="@+id/tv_mr_protocol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户协议"/>
+
+    <com.marshalchen.common.ui.MaterialRippleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mybutton_border"
+        app:rippleOverlay="true"
+        app:rippleColor="#585858"
+        app:rippleAlpha="0.2"
+        app:rippleDelayClick="false"
+        app:rippleHover="true"
+        android:layout_marginTop="70dp"
+        android:layout_below="@+id/horizontalScrollView">
+        <Button
+            android:layout_gravity="center"
+            android:background="@drawable/material_ripple_selector"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="注册"
+            android:id="@+id/bt_mr_regist"
+            />
+    </com.marshalchen.common.ui.MaterialRippleLayout>
 
 </RelativeLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" tools:context="com.example.fei.yhb_20.ui.Test">
+    <item android:id="@+id/menu_cancel" android:title="取消"/>
+    <item android:id="@+id/menu_gallery" android:title="从图库中选取"/>
+    <item android:id="@+id/menu_takephoto" android:title="拍照"/>
+
+
+</menu>

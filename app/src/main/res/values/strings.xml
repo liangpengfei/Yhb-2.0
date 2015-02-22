@@ -8,5 +8,6 @@
     <string name="title_activity_first">FirstActivity</string>
     <string name="title_activity_regist">用户注册</string>
     <string name="title_activity_merchant_regist">商户认证</string>
+    <string name="title_activity_test">Test</string>
 
 </resources>

@@ -32,6 +32,7 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
         ButterKnife.inject(this);
@@ -67,9 +68,20 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if(id == android.R.id.home){
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    public void finish() {
+        super.finish();
+
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
     }
 
     @Override
@@ -105,6 +117,7 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                                 break;
                         }
                         startActivity(intent);
+                        finish();
                     }
                     break;
                 case R.id.tv_regist_protocol:
@@ -115,4 +128,11 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                     break;
             }
         }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        overridePendingTransition(R.anim.push_left_out,R.anim.push_left_in);
+    }
+
 }

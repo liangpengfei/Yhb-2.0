@@ -33,7 +33,6 @@
         app:rippleDelayClick="false"
         app:rippleHover="true">
 
-
         <Button
 
             android:layout_gravity="center"
