@@ -7,5 +7,7 @@ package com.example.fei.yhb_20.utils;
 public class GV {
     public static final char PERSON = 0;
     public static final char MERCHANT = 1;
+    public static final char CLASS_PRESSED = 0;
+    public static final char MAIN_PRESSED = 1;
 
 }
