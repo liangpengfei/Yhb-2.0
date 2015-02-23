@@ -69,12 +69,14 @@ public class FirstActivity extends ActionBarActivity implements View.OnClickList
                 Intent merchantintent = new Intent(this,RegistActivity.class);
                 merchantintent.putExtra("role",GV.MERCHANT);
                 startActivity(merchantintent);
+                finish();
 //                overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
                 break;
             case R.id.bt_first_person:
                 Intent person = new Intent(this,RegistActivity.class);
                 person.putExtra("role", GV.PERSON);
                 startActivity(person);
+                finish();
 //                overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
                 break;
 //            case R.id.tv_first_login:

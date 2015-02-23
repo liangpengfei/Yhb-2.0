@@ -14,11 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.Person;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MyUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.bmob.v3.listener.SaveListener;
 
 public class RegistActivity extends ActionBarActivity implements View.OnClickListener{
 
@@ -113,6 +115,24 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                                 break;
                             case GV.PERSON:
                                 //个人应该是在这里注册成功了
+                                Person person = new Person();
+                                person.setEmail(email);
+                                person.setPassword(password);
+                                person.setUsername(username);
+                                person.setAttribute(GV.PERSON);
+                                person.signUp(RegistActivity.this, new SaveListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Intent intent = new Intent(RegistActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(int i, String s) {
+                                        Toast.makeText(RegistActivity.this, s, Toast.LENGTH_LONG).show();
+                                    }
+                                });
                                 break;
                             default:
                                 break;
