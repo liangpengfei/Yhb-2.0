@@ -6,19 +6,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
 import com.marshalchen.common.uimodule.blurdialogfragment.BlurDialogFragment;
-
-import butterknife.InjectView;
 
 /**
  * 暂且废止不用，以后优化界面的时候使用

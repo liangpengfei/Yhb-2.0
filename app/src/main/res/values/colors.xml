@@ -40,6 +40,7 @@
     <color name="text_secondary">#D9000000</color>
 
     <color name="main_theme_yellow">#FFFED700</color>
+    <color name="textColor_shadow">#ff999999</color>
+    <color name="dividing_line">#ffcccccc</color>
 
-    <color name="textColor_shadow">#ff666666</color>
 </resources>

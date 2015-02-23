@@ -1,9 +1,8 @@
 package com.example.fei.yhb_20.ui;
 
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Person;
 import com.example.fei.yhb_20.utils.GV;
+import com.example.fei.yhb_20.utils.MD5;
 import com.example.fei.yhb_20.utils.MyUtils;
 
 import butterknife.ButterKnife;
@@ -105,19 +105,20 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                         Toast.makeText(this,"密码须6位以上18位以下",Toast.LENGTH_LONG).show();
                         mPassword.setText("");
                     }else {
-                        Intent intent = null;
                         switch (role) {
                             case GV.MERCHANT:
-                                intent = new Intent(this, MerchantRegist.class);
+                                Intent intent = new Intent(this, MerchantRegist.class);
                                 intent.putExtra("email", email);
                                 intent.putExtra("password", password);
                                 intent.putExtra("username", username);
+                                startActivity(intent);
                                 break;
                             case GV.PERSON:
                                 //个人应该是在这里注册成功了
                                 Person person = new Person();
                                 person.setEmail(email);
-                                person.setPassword(password);
+                                MD5 md5 = new MD5();
+                                person.setPassword(md5.getMD5ofStr(password));
                                 person.setUsername(username);
                                 person.setAttribute(GV.PERSON);
                                 person.signUp(RegistActivity.this, new SaveListener() {
@@ -137,7 +138,6 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                             default:
                                 break;
                         }
-                        startActivity(intent);
                         finish();
                     }
                     break;
@@ -149,11 +149,5 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                     break;
             }
         }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        overridePendingTransition(R.anim.push_left_out,R.anim.push_left_in);
-    }
 
 }

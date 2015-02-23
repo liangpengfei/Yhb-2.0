@@ -79,10 +79,11 @@ public class FirstActivity extends ActionBarActivity implements View.OnClickList
                 finish();
 //                overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
                 break;
-//            case R.id.tv_first_login:
-//                Intent intent = new Intent(this,LoginActivity.class);
-//                startActivity(intent);
-//                break;
+            case R.id.tv_first_login:
+                Intent intent = new Intent(this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

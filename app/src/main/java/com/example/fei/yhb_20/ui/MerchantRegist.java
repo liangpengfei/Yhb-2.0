@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.LogRecord;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -62,7 +61,6 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.bt_mr_regist)Button regist;
     @InjectView(R.id.ll_gallery)LinearLayout gallery;
     @InjectView(R.id.numberbar)NumberProgressBar progressBar;
-    @InjectView(R.id.tv_notice)TextView notice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +129,6 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 
     private void updatePhotos() {
         progressBar.setVisibility(View.VISIBLE);
-        notice.setVisibility(View.VISIBLE);
 //        String [] files = stringBuilder.toString().split("|");
         String [] files = (String[]) array.toArray(new String[array.size()]);
         Log.d(TAG, String.valueOf(files.length));
@@ -140,8 +137,6 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
             public void onSuccess(boolean isfinished, String[] strings, String[] strings2) {
                 if (isfinished) {
                     progressBar.setVisibility(View.INVISIBLE);
-                    notice.setVisibility(View.INVISIBLE);
-
                     Toast.makeText(MerchantRegist.this, "成功上传", Toast.LENGTH_LONG).show();
                     StringBuilder stringBuilder = new StringBuilder("");
                     for (int i = 0 ;i<strings.length;i++){

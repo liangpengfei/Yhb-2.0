@@ -70,7 +70,7 @@
         android:id="@+id/numberbar"
         android:layout_width="wrap_content"
         android:padding="30dp"
-        app:progress_num="20"
+        app:progress_num="0"
         app:max="100"
         android:layout_below="@id/float_username"
         style="@style/NumberProgressBar_Default"

@@ -1,0 +1,181 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.fei.yhb_20.ui.LoginActivity">
+
+    <com.marshalchen.common.ui.FloatLabelLayout
+        android:id="@+id/floatLabel1"
+        android:drawablePadding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:floatLabelTextAppearance="@style/TextAppearance.YourApp.FloatLabel">
+
+        <EditText
+            android:gravity="center"
+            android:background="@drawable/edittext_border"
+            android:id="@+id/et_username"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="用户名"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:imeOptions="actionNext"
+            android:nextFocusDown="@+id/edit_password"/>
+
+    </com.marshalchen.common.ui.FloatLabelLayout>
+
+    <com.marshalchen.common.ui.FloatLabelLayout
+        android:layout_below="@+id/floatLabel1"
+        android:id="@+id/floatLabel2"
+        android:drawablePadding="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:floatLabelTextAppearance="@style/TextAppearance.YourApp.FloatLabel">
+
+        <EditText
+            android:gravity="center"
+            android:background="@drawable/edittext_border"
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="密码"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:imeOptions="actionNext"
+            android:nextFocusDown="@+id/edit_password"/>
+
+    </com.marshalchen.common.ui.FloatLabelLayout>
+    <TextView
+        android:id="@+id/tv_login_forget"
+        android:textColor="@color/textColor_shadow"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/floatLabel2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="忘记密码"/>
+
+    <com.marshalchen.common.ui.MaterialRippleLayout
+        android:id="@+id/bt_mrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mybutton_border"
+        app:rippleOverlay="true"
+        app:rippleColor="#585858"
+        app:rippleAlpha="0.2"
+        app:rippleDelayClick="false"
+        app:rippleHover="true"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/floatLabel2">
+        <Button
+            android:layout_gravity="center"
+            android:background="@drawable/material_ripple_selector"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="登录"
+            android:id="@+id/bt_login"
+            />
+    </com.marshalchen.common.ui.MaterialRippleLayout>
+
+
+
+   <FrameLayout
+       android:id="@+id/frameLayout"
+       android:layout_marginTop="10dp"
+       android:layout_below="@+id/bt_mrl"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+       <TextView
+           android:background="@drawable/textview_border"
+           android:textColor="@color/textColor_shadow"
+           android:layout_gravity="center"
+           android:gravity="center"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="or"/>
+
+       <View
+           android:layout_gravity="center"
+           android:id="@+id/view"
+           android:background="@color/dividing_line"
+           android:layout_width="match_parent"
+           android:layout_height="1dp"/>
+       </FrameLayout>
+
+    <LinearLayout
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/frameLayout"
+        android:weightSum="3"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/qq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/qq"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QQ"/>
+            </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/weixin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/weixin"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="微信"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/weibo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/weibo"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="新浪微博"/>
+        </LinearLayout>
+
+        </LinearLayout>
+
+
+</RelativeLayout>
