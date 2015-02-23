@@ -92,6 +92,7 @@
     <orderEntry type="library" exported="" name="BmobSDK_V3.3.2_0127" level="project" />
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="otto-1.3.5" level="project" />
+    <orderEntry type="module" module-name="volley" exported="" />
     <orderEntry type="module" module-name="ultimateandroid" exported="" />
     <orderEntry type="module" module-name="ultimateandroidui" exported="" />
   </component>

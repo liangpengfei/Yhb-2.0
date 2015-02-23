@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/ultimateandroid/ultimateandroid.iml" filepath="$PROJECT_DIR$/ultimateandroid/ultimateandroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/ultimateandroidui/ultimateandroidui.iml" filepath="$PROJECT_DIR$/ultimateandroidui/ultimateandroidui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/volley/volley.iml" filepath="$PROJECT_DIR$/volley/volley.iml" />
     </modules>
   </component>
 </project>

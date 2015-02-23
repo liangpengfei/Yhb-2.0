@@ -2,29 +2,20 @@ package com.example.fei.yhb_20.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +23,8 @@ import com.bmob.BmobProFile;
 import com.bmob.btp.callback.UploadBatchListener;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Merchant;
-import com.example.fei.yhb_20.ui.fragment.Photo;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MD5;
-import com.example.fei.yhb_20.utils.MyUtils;
-import com.marshalchen.common.uimodule.blurdialogfragment.SupportBlurDialogFragment;
-import com.marshalchen.common.uimodule.cardsSwiped.view.CardContainer;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -48,10 +35,7 @@ import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 
 public class MerchantRegist extends ActionBarActivity implements View.OnClickListener{
 
