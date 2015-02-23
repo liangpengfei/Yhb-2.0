@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -25,6 +27,7 @@ import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MD5;
+import com.marshalchen.common.ui.NumberProgressBar;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -32,6 +35,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.LogRecord;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -57,6 +61,8 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.tv_mr_protocol)TextView protocol;
     @InjectView(R.id.bt_mr_regist)Button regist;
     @InjectView(R.id.ll_gallery)LinearLayout gallery;
+    @InjectView(R.id.numberbar)NumberProgressBar progressBar;
+    @InjectView(R.id.tv_notice)TextView notice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +111,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                 //go to the protocol view page
                 break;
             case R.id.bt_mr_regist:
+                regist.setText("上传中，请稍后。。。");
                 setBean();
                 updatePhotos();
                 break;
@@ -123,6 +130,8 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
     }
 
     private void updatePhotos() {
+        progressBar.setVisibility(View.VISIBLE);
+        notice.setVisibility(View.VISIBLE);
 //        String [] files = stringBuilder.toString().split("|");
         String [] files = (String[]) array.toArray(new String[array.size()]);
         Log.d(TAG, String.valueOf(files.length));
@@ -130,6 +139,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
             @Override
             public void onSuccess(boolean isfinished, String[] strings, String[] strings2) {
                 if (isfinished) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    notice.setVisibility(View.INVISIBLE);
+
                     Toast.makeText(MerchantRegist.this, "成功上传", Toast.LENGTH_LONG).show();
                     StringBuilder stringBuilder = new StringBuilder("");
                     for (int i = 0 ;i<strings.length;i++){
@@ -156,7 +168,16 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 
             @Override
             public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
-                Log.d(TAG, String.valueOf(curPercent));
+                String sMsg = "curIndex:"+curIndex+"curPercent:"+curPercent+"total:"+total+"totalParcent:"+totalPercent;
+                Message msg = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putInt("curIndex",curIndex);
+                bundle.putInt("curPercent",curPercent);
+                bundle.putInt("total",total);
+                bundle.putInt("totalPercent",totalPercent);
+                msg.setData(bundle);
+                mHandler.sendMessage(msg);
+                Log.d(TAG, sMsg);
             }
 
             @Override
@@ -165,6 +186,15 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
             }
         });
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            progressBar.setProgress(bundle.getInt("curPercent"));
+        }
+    };
 
     private void setBean() {
         Intent intent = getIntent();

@@ -1,6 +1,7 @@
 package com.example.fei.yhb_20.ui;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;

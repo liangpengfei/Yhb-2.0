@@ -78,11 +78,12 @@
     <TextView
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:textColor="@color/textColor_blue"
+        android:textColor="@color/textColor_shadow"
         android:layout_toRightOf="@+id/textview"
         android:layout_toEndOf="@+id/textview"
         android:layout_below="@+id/float_username"
         android:paddingTop="20dp"
+        android:typeface="sans"
         android:id="@+id/tv_regist_protocol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -56,11 +56,25 @@
             android:background="@drawable/edittext_border"
             android:gravity="center"
             android:hint="执照号"
+            android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:id="@+id/et_mr_license"/>
 
     </com.marshalchen.common.ui.FloatLabelLayout>
+
+    <com.marshalchen.common.ui.NumberProgressBar
+        app:progress_reached_bar_height="20dp"
+        app:progress_unreached_bar_height="20dp"
+        app:progress_text_size="15sp"
+        android:id="@+id/numberbar"
+        android:layout_width="wrap_content"
+        android:padding="30dp"
+        app:progress_num="20"
+        app:max="100"
+        android:layout_below="@id/float_username"
+        style="@style/NumberProgressBar_Default"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:paddingTop="10dp"
@@ -115,7 +129,7 @@
     <TextView
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:textColor="@color/textColor_blue"
+        android:textColor="@color/textColor_shadow"
         android:layout_toRightOf="@+id/textview"
         android:layout_toEndOf="@+id/textview"
         android:layout_below="@+id/horizontalScrollView"

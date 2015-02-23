@@ -41,5 +41,5 @@
 
     <color name="main_theme_yellow">#FFFED700</color>
 
-    <color name="textColor_blue">#59dbe0</color>
+    <color name="textColor_shadow">#ff666666</color>
 </resources>
