@@ -143,6 +143,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 setSelect(GV.MAIN_PRESSED);
                 break;
             case R.id.id_tab_post:
+                Intent intent = new Intent(this,PostActivity.class);
+                startActivity(intent);
                 break;
             case R.id.bt_slide_logout:
                 BmobUser.logOut(this);

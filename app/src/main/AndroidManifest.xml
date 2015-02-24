@@ -56,12 +56,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.Test"
-            android:label="@string/title_activity_test" >
-        </activity>
-        <activity
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name=".ui.PostActivity"
+            android:label="@string/title_activity_post" >
         </activity>
     </application>
 

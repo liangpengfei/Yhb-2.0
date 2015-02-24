@@ -1,3 +1,6 @@
+
+
+
 package com.example.fei.yhb_20.ui;
 
 import android.content.Intent;
@@ -50,7 +53,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
     private Merchant merchant;
     private StringBuilder stringBuilder ;
     private ArrayList array;
-    
+
 
 
     @InjectView(R.id.et_mr_name)EditText name;
@@ -157,7 +160,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                             Toast.makeText(MerchantRegist.this, s, Toast.LENGTH_LONG).show();
                         }
                     });
-                    
+
                 }
             }
 
@@ -290,11 +293,11 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 
             ImageView imageView = new ImageView(this);
 //            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            
+
             stringBuilder.append(picturePath);
             stringBuilder.append("|");
             array.add(picturePath);
-            
+
             Picasso.with(this).load(new File(picturePath)).resize(200, 200).into(imageView);
             Log.d(TAG,picturePath);
             imageView.setPadding(2,2,2,2);

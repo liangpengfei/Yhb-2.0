@@ -10,6 +10,7 @@
     <string name="title_activity_merchant_regist">商户认证</string>
     <string name="title_activity_test">Test</string>
     <string name="hello_blank_fragment">Main</string>
-    <string name="title_activity_login">登录</string>
+    <string name="title_activity_login">惠员登录</string>
+    <string name="title_activity_post">PostActivity</string>
 
 </resources>

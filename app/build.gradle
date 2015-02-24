@@ -27,4 +27,6 @@ dependencies {
     compile files('src/main/java/lib/BmobSDK_V3.3.2_0127.jar')
     compile project(':ultimateandroid')
     compile project(':ultimateandroidui')
+    compile 'com.android.support:cardview-v7:21.0.3'
+    compile 'com.android.support:recyclerview-v7:21.0.3'
 }

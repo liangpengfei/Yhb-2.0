@@ -3,6 +3,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.fei.yhb_20.ui.fragment.MainFragment">
 
+    <android.support.v7.widget.RecyclerView
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:id="@+id/main_recyclerView"
+        android:layout_height="match_parent"/>
 
 
 </FrameLayout>
