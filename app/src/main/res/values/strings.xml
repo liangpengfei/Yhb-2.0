@@ -11,6 +11,15 @@
     <string name="title_activity_test">Test</string>
     <string name="hello_blank_fragment">Main</string>
     <string name="title_activity_login">惠员登录</string>
-    <string name="title_activity_post">PostActivity</string>
+    <string name="title_activity_post">发惠报</string>
+    <string name="spinner_time">请选择</string>
 
+    <string-array name="time_array">
+        <item>仅限今天</item>
+        <item>7天之内</item>
+        <item>14天之内</item>
+        <item>30天之内</item>
+        <item>不确定</item>
+    </string-array>
+    
 </resources>

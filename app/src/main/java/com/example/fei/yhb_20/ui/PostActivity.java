@@ -9,6 +9,8 @@ import com.example.fei.yhb_20.R;
 
 public class PostActivity extends ActionBarActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
