@@ -12,7 +12,7 @@
         android:weightSum="1"
         android:id="@+id/linearLayout">
         <ImageView
-            android:id="@+id/iv_post_cancel"
+            android:id="@+id/iv_post_back"
             android:layout_weight="0.1"
             android:layout_gravity="start"
             android:layout_width="wrap_content"
@@ -106,6 +106,7 @@
                     android:layout_height="wrap_content"
                     android:text="优惠指数"/>
                 <RatingBar
+                    android:id="@+id/ratingbar"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     style="?android:attr/ratingBarStyleSmall"
@@ -123,6 +124,7 @@
                     android:layout_height="wrap_content"
                     android:text="商家名称"/>
                 <EditText
+                    android:id="@+id/et_post_merchantName"
                     android:layout_marginLeft="20dp"
                     android:background="@null"
                     android:hint="实例：徐胖烤猪蹄"
@@ -145,21 +147,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <Spinner
+                        android:spinnerMode="dialog"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/position1" />
                     <Spinner
+                        android:spinnerMode="dialog"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/position2" />
                     <Spinner
+                        android:spinnerMode="dialog"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/position3" />
                     <ImageView
+                        android:id="@+id/iv_post_dingwei"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/dingwei"/>
@@ -178,14 +184,14 @@
                     android:text="活动时间"/>
 
                 <Spinner
-                    android:prompt="@string/hello_blank_fragment"
                     android:spinnerMode="dialog"
                     android:entries="@array/time_array"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinner" />
+                    android:id="@+id/time" />
             </LinearLayout>
             <ImageView
+                android:id="@+id/iv_post_cancel"
                 android:layout_marginTop="50dp"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
