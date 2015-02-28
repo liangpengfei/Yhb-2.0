@@ -11,7 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
@@ -37,12 +39,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @InjectView(R.id.id_tab_post)LinearLayout mTabPost;
     @InjectView(R.id.id_tab_main_img)ImageButton mMainImage;
     @InjectView(R.id.id_tab_class_img)ImageButton mClassImage;
+    @InjectView(R.id.iv_main_message)ImageView message;
+    @InjectView(R.id.tv_main_choose_position)TextView choose_position;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
         NetUtil.checkForUpdate(this);
         initEvents();
         setSelect(GV.MAIN_PRESSED);
@@ -93,6 +99,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mTabPost.setOnClickListener(this);
 
         logout.setOnClickListener(this);
+        choose_position.setOnClickListener(this);
+        message.setOnClickListener(this);
     }
 
     private void hideFragment(FragmentTransaction transaction)
