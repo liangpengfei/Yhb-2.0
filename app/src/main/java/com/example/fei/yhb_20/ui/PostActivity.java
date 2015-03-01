@@ -1,7 +1,17 @@
 package com.example.fei.yhb_20.ui;
 
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,17 +20,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.baidu.location.LocationClient;
+import com.example.fei.yhb_20.LocationApplication;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.adapter.MyAdapter;
 import com.example.fei.yhb_20.bean.MyListItem;
 import com.example.fei.yhb_20.utils.DBManager;
+import com.example.fei.yhb_20.utils.ImageTools;
+import com.example.fei.yhb_20.utils.MapUtil;
+import com.example.fei.yhb_20.utils.NetUtil;
 import com.marshalchen.common.uimodule.ImageFilter.Image;
+import com.marshalchen.common.uimodule.cropimage.util.Log;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -28,6 +50,9 @@ import butterknife.InjectView;
 
 public class PostActivity extends ActionBarActivity implements View.OnClickListener{
 
+    private LocationClient mLocationClient;
+    private static final int SCALE = 5;
+    private static final java.lang.String TAG = "PostActivity";
     @InjectView(R.id.iv_post_back)ImageView back;
     @InjectView(R.id.iv_post_cancel)ImageView cancel;
     @InjectView(R.id.iv_post_ok)ImageView ok;
@@ -39,6 +64,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     @InjectView(R.id.position1)Spinner position1;
     @InjectView(R.id.position2)Spinner position2;
     @InjectView(R.id.position3)Spinner position3;
+    @InjectView(R.id.gallery_1)LinearLayout gallery1;
+    @InjectView(R.id.gallery_2)LinearLayout gallery2;
+    @InjectView(R.id.gallery_3)LinearLayout gallery3;
+
 
 
     private DBManager dbm;
@@ -47,8 +76,18 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     private String city=null;
     private String district=null;
     private String sTime=null;
+    private String filename;
 
+    public String getFilename() {
+        return filename;
+    }
 
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    private static final int TAKE_PICTURE = 0;
+    private static final int CHOOSE_PICTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +98,19 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         position2.setPrompt("市");
         position3.setPrompt("地区");
         time.setPrompt("选择时间");
+        mLocationClient = ((LocationApplication)getApplication()).mLocationClient;
+
+        ((LocationApplication)getApplication()).position1 = position1;
+        ((LocationApplication)getApplication()).position2 = position2;
+        ((LocationApplication)getApplication()).position3 = position3;
         initEvents();
-        initSpinner1();
+        if (NetUtil.isNetConnected(this)){
+            //TODO
+            Log.e(TAG,"1");
+            mLocationClient.start();
+        }else{
+            initSpinner1();
+        }
         initTimeSpinner();
     }
 
@@ -274,10 +324,100 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
                 break;
             case R.id.iv_post_add:
+                showPicturePicker(PostActivity.this);
                 break;
             case R.id.iv_post_dingwei:
+                MapUtil.getLocation(this);
+                break;
+            default:
                 break;
 
+        }
+    }
+
+    private void showPicturePicker(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("图片来源");
+        builder.setNegativeButton("取消", null);
+        builder.setItems(new String[]{"拍照","相册"}, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case TAKE_PICTURE:
+                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String imageFileName = "JPEG_" + timeStamp + "_";
+                        setFilename(imageFileName);
+                        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        Uri imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(),getFilename()));
+                        //指定照片保存路径（SD卡），image.jpg为一个临时文件，每次拍照后这个图片都会被替换
+                        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                        startActivityForResult(openCameraIntent, TAKE_PICTURE);
+                        break;
+
+                    case CHOOSE_PICTURE:
+                        Intent openAlbumIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                        openAlbumIntent.setType("image/*");
+                        startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    //TODO 修复照片的问题，让文节想定位的实现
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case TAKE_PICTURE:
+                    //将保存在本地的图片取出并缩小后显示在界面上
+                    Log.e(TAG,getFilename());
+                    Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() +getFilename());
+                    Bitmap newBitmap = ImageTools.zoomBitmap(bitmap, bitmap.getWidth() / SCALE, bitmap.getHeight() / SCALE);
+                    //由于Bitmap内存占用较大，这里需要回收内存，否则会报out of memory异常
+                    bitmap.recycle();
+
+                    //将处理过的图片显示在界面上，并保存到本地
+                    ImageView imageView = new ImageView(this);
+                    imageView.setImageBitmap(newBitmap);
+                    gallery1.addView(imageView);
+                    ImageTools.savePhotoToSDCard(newBitmap, Environment.getExternalStorageDirectory().getAbsolutePath(), String.valueOf(System.currentTimeMillis()));
+                    break;
+
+                case CHOOSE_PICTURE:
+                    ContentResolver resolver = getContentResolver();
+                    //照片的原始资源地址
+                    Uri originalUri = data.getData();
+                    try {
+                        //使用ContentProvider通过URI获取原始图片
+                        Bitmap photo = MediaStore.Images.Media.getBitmap(resolver, originalUri);
+                        if (photo != null) {
+                            //为防止原始图片过大导致内存溢出，这里先缩小原图显示，然后释放原始Bitmap占用的内存
+                            Bitmap smallBitmap = ImageTools.zoomBitmap(photo, photo.getWidth() / SCALE, photo.getHeight() / SCALE);
+                            //释放原始图片占用的内存，防止out of memory异常发生
+                            photo.recycle();
+
+                            ImageView imageView2 = new ImageView(this);
+                            imageView2.setImageBitmap(smallBitmap);
+                            gallery1.addView(imageView2);
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }

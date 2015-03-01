@@ -72,6 +72,7 @@
         android:padding="30dp"
         app:progress_num="0"
         app:max="100"
+        android:visibility="gone"
         android:layout_below="@id/float_username"
         style="@style/NumberProgressBar_Default"
         android:layout_height="wrap_content"/>
