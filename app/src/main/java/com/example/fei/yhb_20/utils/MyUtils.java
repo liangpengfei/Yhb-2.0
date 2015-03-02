@@ -1,5 +1,6 @@
 package com.example.fei.yhb_20.utils;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 
 import java.io.File;
@@ -12,6 +13,8 @@ import java.util.regex.Pattern;
  * Created by fei on 2/15/15.
  */
 public class MyUtils {
+    private static DBManager dbm;
+    private static SQLiteDatabase db;
     public static boolean isEmail(String email){
         return match("\\w+@(\\w+.)+[a-z]{2,3}",email);
     }
@@ -72,4 +75,47 @@ public class MyUtils {
         }
         return false;
     }
+
+    //TODO 下面是初始化定位的操作，不知道怎么实现了，暂时先这样
+
+//    public static void initSpinner(Context context,String province,String city,String district,Spinner position1 ){
+//        DBManager dbm = new DBManager(context);
+//        dbm.openDatabase();
+//        SQLiteDatabase db = dbm.getDatabase();
+//        List<MyListItem> list = new ArrayList<MyListItem>();
+//        int p = 0;
+//        try {
+//
+//            String sql = "select * from province";
+//            Cursor cursor = db.rawQuery(sql,null);
+//            cursor.moveToFirst();
+//            while (!cursor.isLast()){
+//                String code=cursor.getString(cursor.getColumnIndex("code"));
+//                byte bytes[]=cursor.getBlob(2);
+//                String name=new String(bytes,"gbk");
+//                MyListItem myListItem=new MyListItem();
+//                myListItem.setName(name);
+//                myListItem.setPcode(code);
+//                list.add(myListItem);
+//                cursor.moveToNext();
+//            }
+//            String code=cursor.getString(cursor.getColumnIndex("code"));
+//            byte bytes[]=cursor.getBlob(2);
+//            String name=new String(bytes,"gbk");
+//            MyListItem myListItem=new MyListItem();
+//            myListItem.setName(name);
+//            myListItem.setPcode(code);
+//            list.add(myListItem);
+//
+//        } catch (Exception e) {
+//        }
+//        dbm.closeDatabase();
+//        db.close();
+//
+//        MyAdapter myAdapter = new MyAdapter(context,list);
+//        position1.setAdapter(myAdapter);
+//        position1.setSelection();
+//        position1.setOnItemSelectedListener(new SpinnerOnSelectedListener1());
+//    }
+
 }

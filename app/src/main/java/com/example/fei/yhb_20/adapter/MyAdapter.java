@@ -1,6 +1,5 @@
 package com.example.fei.yhb_20.adapter;
 
-import java.util.List;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.fei.yhb_20.bean.MyListItem;
+
+import java.util.List;
 
 public class MyAdapter extends BaseAdapter {
 	
@@ -37,13 +38,21 @@ public class MyAdapter extends BaseAdapter {
 		return new MyAdapterView(this.context, myListItem ); 
 	}
 
-	class MyAdapterView extends LinearLayout { 
+    /**
+     *继承了LinearLayout的view
+     */
+	class MyAdapterView extends LinearLayout {
 		public static final String LOG_TAG = "MyAdapterView";
-		
+
+        /**
+         * 里面就有一个构造方法
+         * @param context
+         * @param myListItem
+         */
 		public MyAdapterView(Context context, MyListItem myListItem ) { 
 		super(context);
-		this.setOrientation(HORIZONTAL); 
-		
+		this.setOrientation(HORIZONTAL);
+
 		LayoutParams params = new LayoutParams(200, LayoutParams.WRAP_CONTENT);
 		params.setMargins(1, 1, 1, 1); 
 		

@@ -1,8 +1,8 @@
 package com.example.fei.yhb_20.ui;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +18,6 @@ import com.marshalchen.common.uimodule.materialdesign.views.Button;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.SaveListener;
 
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {

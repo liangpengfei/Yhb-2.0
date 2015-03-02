@@ -9,11 +9,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,18 +24,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.example.fei.yhb_20.LocationApplication;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.adapter.MyAdapter;
 import com.example.fei.yhb_20.bean.MyListItem;
 import com.example.fei.yhb_20.utils.DBManager;
 import com.example.fei.yhb_20.utils.ImageTools;
-import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
-import com.marshalchen.common.uimodule.ImageFilter.Image;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
 
 import java.io.File;
@@ -48,7 +49,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class PostActivity extends ActionBarActivity implements View.OnClickListener{
+public class PostActivity extends ActionBarActivity implements View.OnClickListener ,AdapterView.OnItemSelectedListener {
 
     private LocationClient mLocationClient;
     private static final int SCALE = 5;
@@ -103,15 +104,30 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         ((LocationApplication)getApplication()).position1 = position1;
         ((LocationApplication)getApplication()).position2 = position2;
         ((LocationApplication)getApplication()).position3 = position3;
+
         initEvents();
         if (NetUtil.isNetConnected(this)){
-            //TODO
+            position1.setOnItemSelectedListener(this);
+            position2.setOnItemSelectedListener(this);
+            position3.setOnItemSelectedListener(this);
             Log.e(TAG,"1");
+            InitLocation();
             mLocationClient.start();
         }else{
             initSpinner1();
         }
+
         initTimeSpinner();
+    }
+
+    private void InitLocation(){
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);//ÉèÖÃ¶šÎ»Ä£Êœ
+        option.setCoorType("gcj02");//·µ»ØµÄ¶šÎ»œá¹ûÊÇ°Ù¶ÈŸ­Î³¶È£¬Ä¬ÈÏÖµgcj02
+        int span=1000;
+        option.setScanSpan(span);//ÉèÖÃ·¢Æð¶šÎ»ÇëÇóµÄŒäžôÊ±ŒäÎª5000ms
+        option.setIsNeedAddress(true);
+        mLocationClient.setLocOption(option);
     }
 
     private void initTimeSpinner() {
@@ -134,7 +150,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         ok.setOnClickListener(this);
         add.setOnClickListener(this);
         dingwei.setOnClickListener(this);
-
     }
 
     public void initSpinner1(){
@@ -249,6 +264,17 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         position3.setOnItemSelectedListener(new SpinnerOnSelectedListener3());
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        TextView view1 = (TextView) view;
+        view1.setTextColor(Color.BLACK);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     class SpinnerOnSelectedListener1 implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> adapterView, View view, int position,
@@ -327,7 +353,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                 showPicturePicker(PostActivity.this);
                 break;
             case R.id.iv_post_dingwei:
-                MapUtil.getLocation(this);
+                //MapUtil.getLocation(this,c);
                 break;
             default:
                 break;

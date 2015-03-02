@@ -20,6 +20,7 @@ import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.ui.fragment.ClassFragment;
 import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
+import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
 
 import butterknife.ButterKnife;
@@ -49,6 +50,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
+        MapUtil.getLocation(this,choose_position);
         NetUtil.checkForUpdate(this);
         initEvents();
         setSelect(GV.MAIN_PRESSED);

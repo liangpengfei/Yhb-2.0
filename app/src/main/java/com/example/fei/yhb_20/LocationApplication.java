@@ -8,19 +8,18 @@ import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
-import com.baidu.location.GeofenceClient;
 import com.baidu.location.LocationClient;
 
 
 public class LocationApplication extends Application {
     private static final String TAG = "LocationApplication";
     public LocationClient mLocationClient;
-	public GeofenceClient mGeofenceClient;
 	public MyLocationListener mMyLocationListener;
 	
-	public TextView mLocationResult,logMsg;
-	public TextView trigger,exit;
+	public TextView trigger;
     public Spinner position1,position2,position3;
+
+    boolean flag = false;
 
 	@Override
 	public void onCreate() {
@@ -34,6 +33,9 @@ public class LocationApplication extends Application {
 
 		@Override
 		public void onReceiveLocation(BDLocation location) {
+            if (!flag){
+                mLocationClient.stop();
+            }
 			//Receive Location 
 			StringBuffer sb = new StringBuffer(256);
 			sb.append("time : ");
@@ -60,8 +62,9 @@ public class LocationApplication extends Application {
 				sb.append(location.getAddrStr());
 				sb.append("\noperationers : ");
 				sb.append(location.getOperators());
-			}
-			logMsg(location.getProvince(),location.getCity(),location.getDistrict());
+            }
+            logMsg(location.getProvince(),location.getCity(),location.getDistrict());
+            flag = true;
 			Log.i("BaiduLocationApiDem", sb.toString());
 		}
 
@@ -70,22 +73,29 @@ public class LocationApplication extends Application {
 	
 
 	public void logMsg(String province,String city,String district) {
-        Log.e(TAG,"1");
+
+        // 在这里得到城市的信息,然后进行查询
         String [] array1 = new String[1];
         array1 [0] = province;
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,array1);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,array1);
         position1.setAdapter(adapter1);
+        position1.setSelection(0);
+        Log.e(TAG,province);
 
         String [] array2 = new String[1];
-        array1 [0] = city;
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,array2);
+        array2 [0] = city;
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,array2);
         position2.setAdapter(adapter2);
+        position2.setSelection(0);
+        Log.e(TAG,city);
 
         String [] array3 = new String[1];
-        array1 [0] = district;
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,array3);
+        array3 [0] = district;
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,array3);
         position3.setAdapter(adapter3);
-	}
+        position3.setSelection(0);
+        Log.e(TAG,district);
+    }
 
 	
 }
