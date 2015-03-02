@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.utils.GV;
 
-
+/**
+ * 用户首次使用app的时候，进入的注册页面
+ */
 public class FirstActivity extends ActionBarActivity implements View.OnClickListener{
 
     private Button person_regist,merchant_regist;

@@ -20,6 +20,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.listener.SaveListener;
 
+/**
+ * 老用户登录的界面
+ */
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
     @InjectView(R.id.bt_login)Button login;
@@ -73,6 +76,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.bt_login:
+                /**
+                 * 得到当前用户，并登录
+                 */
                 MD5 md5 = new MD5();
                 BaseUser user = new BaseUser();
                 user.setUsername(username.getText().toString());

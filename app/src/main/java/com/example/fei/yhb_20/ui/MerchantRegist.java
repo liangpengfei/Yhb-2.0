@@ -43,12 +43,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.listener.SaveListener;
 
+/**
+ * 商户注册界面，这个是单独为商户抽象出来的，有一些独特的地方
+ */
 public class MerchantRegist extends ActionBarActivity implements View.OnClickListener{
 
     private static final String TAG = "MerchantRegist";
     private static final int REQUEST_IMAGE_CAPTURE = 2000;
     private static final int RESULT_LOAD_IMAGE = 0;
-    private File imageFile;
     private String mCurrentPhotoPath;
     private Merchant merchant;
     private StringBuilder stringBuilder ;
@@ -92,16 +94,10 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -123,6 +119,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 //                args.putFloat(SupportBlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR, 0);
 //                photo.setArguments(args);
 //                photo.show(getFragmentManager(),"add_photo");
+                //感觉还是使用弹出窗最好，风格一致
                 initPopup();
                 break;
             default:
@@ -130,15 +127,17 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * 首先上传相应的图片，上传图片成功之后再进行用户信息的注册
+     */
     private void updatePhotos() {
         progressBar.setVisibility(View.VISIBLE);
-//        String [] files = stringBuilder.toString().split("|");
         String [] files = (String[]) array.toArray(new String[array.size()]);
         Log.d(TAG, String.valueOf(files.length));
         BmobProFile.getInstance(MerchantRegist.this).uploadBatch(files, new UploadBatchListener() {
             @Override
-            public void onSuccess(boolean isfinished, String[] strings, String[] strings2) {
-                if (isfinished) {
+            public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
+                if (isFinished) {
                     progressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(MerchantRegist.this, "成功上传", Toast.LENGTH_LONG).show();
                     StringBuilder stringBuilder = new StringBuilder("");
@@ -150,6 +149,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                     merchant.signUp(MerchantRegist.this, new SaveListener() {
                         @Override
                         public void onSuccess() {
+                            //注册成功，跳转到主页
                             Intent intent = new Intent(MerchantRegist.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -164,6 +164,14 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                 }
             }
 
+            /**
+             * 在这个方法中更新上传进度条，使用的是DemoOfUi中的进度条
+             * 基本思路是使用message和handler来不断的更新progressbar中的进度
+             * @param curIndex
+             * @param curPercent
+             * @param total
+             * @param totalPercent
+             */
             @Override
             public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
                 String sMsg = "curIndex:"+curIndex+"curPercent:"+curPercent+"total:"+total+"totalParcent:"+totalPercent;
@@ -194,6 +202,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         }
     };
 
+    /**
+     * 设置当前获取到的用户输入的注册信息，并封装为一个bean，以供注册的时候使用
+     */
     private void setBean() {
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
@@ -215,6 +226,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
     }
 
 
+    /**
+     * 弹出图片来源选择
+     */
     private void initPopup(){
         PopupMenu popupMenu = new PopupMenu(this,add);
         popupMenu.getMenuInflater().inflate(R.menu.popup_menu,popupMenu.getMenu());
@@ -239,6 +253,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         popupMenu.show();
     }
 
+    /**
+     * 拍照的intent
+     */
     private void dispatchGalleryPictureIntent(){
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         if (intent.resolveActivity(this.getPackageManager()) != null){
@@ -247,6 +264,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * 从图库中选取的intent
+     */
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -267,6 +287,12 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * 选取图片的两种方式得到的图片的显示
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -308,6 +334,11 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
     }
 
 
+    /**
+     * 创建一个唯一的file对象
+     * @return
+     * @throws IOException
+     */
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());

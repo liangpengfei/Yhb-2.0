@@ -18,9 +18,14 @@ import com.example.fei.yhb_20.ui.MainActivity;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
 
-
+/**
+ * 进入程序的闪现界面，可以在这里设置动画
+ */
 public class Splash extends Activity {
 
+    /**
+     * splash 界面的标题
+     */
     private TextView splash;
 
     @Override
@@ -62,7 +67,6 @@ public class Splash extends Activity {
             //进入主页
             Intent intent = new Intent(context, MainActivity.class);
             startActivity(intent);
-            Toast.makeText(this, "you can use the app", Toast.LENGTH_LONG).show();
             finish();
         }else{
             //进入注册界面

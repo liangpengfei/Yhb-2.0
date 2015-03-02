@@ -106,26 +106,16 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         ((LocationApplication)getApplication()).position3 = position3;
 
         initEvents();
-        if (NetUtil.isNetConnected(this)){
-            position1.setOnItemSelectedListener(this);
-            position2.setOnItemSelectedListener(this);
-            position3.setOnItemSelectedListener(this);
-            Log.e(TAG,"1");
-            InitLocation();
-            mLocationClient.start();
-        }else{
-            initSpinner1();
-        }
-
+        initSpinner1();
         initTimeSpinner();
     }
 
     private void InitLocation(){
         LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);//ÉèÖÃ¶šÎ»Ä£Êœ
-        option.setCoorType("gcj02");//·µ»ØµÄ¶šÎ»œá¹ûÊÇ°Ù¶ÈŸ­Î³¶È£¬Ä¬ÈÏÖµgcj02
+        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);
+        option.setCoorType("gcj02");
         int span=1000;
-        option.setScanSpan(span);//ÉèÖÃ·¢Æð¶šÎ»ÇëÇóµÄŒäžôÊ±ŒäÎª5000ms
+        option.setScanSpan(span);
         option.setIsNeedAddress(true);
         mLocationClient.setLocOption(option);
     }
@@ -353,7 +343,12 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                 showPicturePicker(PostActivity.this);
                 break;
             case R.id.iv_post_dingwei:
-                //MapUtil.getLocation(this,c);
+                position1.setOnItemSelectedListener(this);
+                position2.setOnItemSelectedListener(this);
+                position3.setOnItemSelectedListener(this);
+                Log.e(TAG,"1");
+                InitLocation();
+                mLocationClient.start();
                 break;
             default:
                 break;

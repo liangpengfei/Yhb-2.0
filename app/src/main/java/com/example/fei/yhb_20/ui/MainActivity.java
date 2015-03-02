@@ -27,6 +27,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobUser;
 
+/**
+ * 主界面，里面使用了fragment来处理不同的tab，框架已经搭好
+ */
 public class MainActivity extends FragmentActivity implements View.OnClickListener{
 
     private static final String TAG = "MainActivity";

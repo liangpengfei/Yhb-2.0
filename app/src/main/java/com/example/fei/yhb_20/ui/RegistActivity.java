@@ -22,6 +22,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.listener.SaveListener;
 
+/**
+ * 个人和商家共同的注册界面，这个界面是抽象出来的，
+ */
 public class RegistActivity extends ActionBarActivity implements View.OnClickListener{
 
     @InjectView(R.id.et_regist_email)EditText mEmail;
@@ -39,6 +42,8 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
         ButterKnife.inject(this);
+
+        //判断用户注册角色，如果是商家，就更改按钮text
         role = getIntent().getCharExtra("role", (char) 0);
         if (role==GV.MERCHANT){
             textView.setVisibility(View.INVISIBLE);
@@ -77,16 +82,6 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    @Override
-    public void finish() {
-        super.finish();
-
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-
-    }
-
     @Override
     public void onClick(View v) {
             switch (v.getId()){
@@ -96,6 +91,7 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                     String password = mPassword.getText().toString();
                     String username = mUsername.getText().toString();
 
+                    //注册之前的表单验证
                     if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(username)){
                         Toast.makeText(this,"请填写必要的注册信息",Toast.LENGTH_LONG).show();
                     }else if (!MyUtils.isEmail(email)){
@@ -105,6 +101,7 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                         Toast.makeText(this,"密码须6位以上18位以下",Toast.LENGTH_LONG).show();
                         mPassword.setText("");
                     }else {
+                        //判断用户角色，进行相应的跳转
                         switch (role) {
                             case GV.MERCHANT:
                                 Intent intent = new Intent(this, MerchantRegist.class);
