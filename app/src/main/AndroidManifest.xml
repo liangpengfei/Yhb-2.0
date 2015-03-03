@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
@@ -75,25 +74,29 @@
         <activity
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:name=".ui.PostActivity"
-            android:label="@string/title_activity_post"
             android:screenOrientation="portrait" >
         </activity>
-
-        <activity android:name=".ui.AlbumActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="ui.GalleryActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.ImageFile"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.ShowAllPhoto"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.GalleryActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.PostActivity"
+            android:label="@string/title_activity_post"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".ui.AlbumActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ui.GalleryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.ImageFile"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.ShowAllPhoto"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.GalleryActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.baidu.location.f"
@@ -108,6 +111,13 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="80QQqu0G9ShuTz6MGA0521Ub" />
+
+        <activity
+            android:name=".ui.MerchantSucc"
+            android:label="@string/title_activity_merchant_succ"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"  >
+        </activity>
     </application>
 
 </manifest>

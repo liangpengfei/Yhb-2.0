@@ -92,6 +92,7 @@
                 android:text="添加执照照片"/>
 
             <GridView
+                android:layout_centerHorizontal="true"
                 android:layout_below="@id/tv_1"
                 android:id="@+id/noScrollgridview"
                 android:layout_width="290dp"

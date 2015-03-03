@@ -13,7 +13,6 @@
     <string name="title_activity_login">惠员登录</string>
     <string name="title_activity_post">发惠报</string>
     <string name="spinner_time">请选择</string>
-
     <string name="only_choose_num">超出可选图片张数</string>
     <string name="finish">完成</string>
     <string name="invalidSD">sdcard无效或没有插入！</string>
@@ -31,5 +30,7 @@
         <item>30天之内</item>
         <item>不确定</item>
     </string-array>
-    
+
+    <string name="title_activity_merchant_succ">注册成功</string>
+
 </resources>

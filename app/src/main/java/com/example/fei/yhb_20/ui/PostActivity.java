@@ -84,6 +84,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     @InjectView(R.id.position2)Spinner position2;
     @InjectView(R.id.position3)Spinner position3;
     @InjectView(R.id.noScrollgridview)GridView noScrollgridview;
+    @InjectView(R.id.et_post_content)EditText content;
 
 
     private DBManager dbm;
@@ -121,6 +122,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         parentView = getLayoutInflater().inflate(R.layout.activity_post, null);
         setContentView(parentView);
         ButterKnife.inject(this);
+        content.setFocusable(false);
         position1.setPrompt("省");
         position2.setPrompt("市");
         position3.setPrompt("地区");
@@ -232,6 +234,16 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
             }
         });
 
+    }
+
+    public String getPhotoPath(){
+        StringBuilder builder = new StringBuilder("");
+        for (int i =0 ;i<Bimp.tempSelectBitmap.size();i++){
+            builder.append(Bimp.tempSelectBitmap.get(i).getImagePath());
+            builder.append("|");
+
+        }
+        return builder.toString();
     }
 
     public class GridAdapter extends BaseAdapter {

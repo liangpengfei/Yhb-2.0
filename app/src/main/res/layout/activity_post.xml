@@ -51,6 +51,7 @@
             android:layout_height="wrap_content">
 
             <EditText
+                android:id="@+id/et_post_content"
                 android:gravity="start"
                 android:hint="说点什么"
                 android:background="@null"
@@ -58,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <GridView
+                android:layout_gravity="center"
                 android:id="@+id/noScrollgridview"
                 android:layout_width="290dp"
                 android:layout_height="200dp"
@@ -87,7 +89,7 @@
                     android:id="@+id/ratingbar"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
-                    style="?android:attr/ratingBarStyleSmall"
+                    style="?android:attr/ratingBarStyle"
                     android:numStars="5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -170,7 +172,7 @@
             </LinearLayout>
             <ImageView
                 android:id="@+id/iv_post_cancel"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="40dp"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
