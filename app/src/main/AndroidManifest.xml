@@ -84,6 +84,17 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <activity android:name=".ui.AlbumActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="ui.GalleryActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.ImageFile"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.ShowAllPhoto"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.GalleryActivity"
+            android:screenOrientation="portrait"/>
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

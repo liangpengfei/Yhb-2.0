@@ -35,7 +35,6 @@ import com.example.fei.yhb_20.adapter.MyAdapter;
 import com.example.fei.yhb_20.bean.MyListItem;
 import com.example.fei.yhb_20.utils.DBManager;
 import com.example.fei.yhb_20.utils.ImageTools;
-import com.example.fei.yhb_20.utils.NetUtil;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
 
 import java.io.File;
