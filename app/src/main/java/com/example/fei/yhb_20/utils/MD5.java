@@ -1,6 +1,7 @@
 package com.example.fei.yhb_20.utils;
 
 /**
+ * MD5加密文件的工具类
  * Created by fei on 1/31/15.
  */
 

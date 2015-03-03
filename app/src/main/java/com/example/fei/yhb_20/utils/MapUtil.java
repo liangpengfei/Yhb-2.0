@@ -10,6 +10,7 @@ import com.baidu.location.LocationClientOption;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
 
 /**
+ * 地图定位的工具类，以后再仔细完善，现在还是有一些问题
  * Email luckyliangfei@gmail.com
  * Created by fei on 3/1/15.
  */

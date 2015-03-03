@@ -10,7 +10,9 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 
-
+/**
+ * 地图定位的时候使用，以后定位功能集成到MapUtil工具类中去了就不再使用这个全局application
+ */
 public class LocationApplication extends Application {
     private static final String TAG = "LocationApplication";
     public LocationClient mLocationClient;

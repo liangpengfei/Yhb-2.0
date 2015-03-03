@@ -13,6 +13,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 抽象出来的数据库管理类，包括了数据库的open和close
+ * 但是需要指定db文件的位置
+ */
 public class DBManager {
     private final int BUFFER_SIZE = 1024;
     public static final String DB_NAME = "city_cn.s3db";
