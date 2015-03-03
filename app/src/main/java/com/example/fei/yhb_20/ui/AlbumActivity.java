@@ -22,6 +22,7 @@ import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.adapter.AlbumGridViewAdapter;
 import com.example.fei.yhb_20.utils.AlbumHelper;
 import com.example.fei.yhb_20.utils.Bimp;
+import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.ImageBucket;
 import com.example.fei.yhb_20.utils.ImageItem;
 import com.example.fei.yhb_20.utils.PublicWay;
@@ -101,7 +102,7 @@ public class AlbumActivity extends Activity {
 	private class AlbumSendListener implements OnClickListener {
 		public void onClick(View v) {
 			overridePendingTransition(R.anim.activity_translate_in, R.anim.activity_translate_out);
-			intent.setClass(mContext, MerchantRegist.class);
+			intent.setClass(mContext, GV.getMyClass());
 			startActivity(intent);
 			finish();
 		}
@@ -120,7 +121,7 @@ public class AlbumActivity extends Activity {
 	private class CancelListener implements OnClickListener {
 		public void onClick(View v) {
 			Bimp.tempSelectBitmap.clear();
-			intent.setClass(mContext, MerchantRegist.class);
+			intent.setClass(mContext, GV.getMyClass());
 			startActivity(intent);
 		}
 	}

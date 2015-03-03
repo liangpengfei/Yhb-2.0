@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.fei.yhb_20.ui.MerchantRegist;
+import com.example.fei.yhb_20.ui.PostActivity;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -82,7 +83,11 @@ public class BitmapCache extends Activity {
 					
 				}
 				if (thumb == null) {
-					thumb = MerchantRegist.bimap;
+                    if (GV.getMyClass()==MerchantRegist.class){
+                        thumb = MerchantRegist.bimap;
+                    }else if (GV.getMyClass()== PostActivity.class){
+                        thumb = PostActivity.bimap;
+                    }
 				}
 				Log.e(TAG, "-------thumb------"+thumb);
 				put(path, thumb);

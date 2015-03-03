@@ -95,7 +95,7 @@
                 android:layout_below="@id/tv_1"
                 android:id="@+id/noScrollgridview"
                 android:layout_width="290dp"
-                android:layout_height="200dp"
+                android:layout_height="220dp"
                 android:horizontalSpacing="3dp"
                 android:numColumns="3"
                 android:scrollbars="none"

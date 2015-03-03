@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.fei.yhb_20.utils.Bimp;
+import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
 import com.example.fei.yhb_20.utils.zoom.PhotoView;
@@ -151,7 +152,7 @@ public class GalleryActivity extends Activity {
 	private class GallerySendListener implements OnClickListener {
 		public void onClick(View v) {
 			finish();
-			intent.setClass(mContext,MerchantRegist.class);
+			intent.setClass(mContext, GV.getMyClass());
 			startActivity(intent);
 		}
 

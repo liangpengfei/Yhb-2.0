@@ -126,7 +126,6 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 
 
         if (password!=null){
-
             dataApp.setEmail(email);
             dataApp.setUsername(username);
             dataApp.setPassword(password);
@@ -141,6 +140,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 
     public void Init() {
 
+        GV.setMyClass(MerchantRegist.class);
         pop = new PopupWindow(MerchantRegist.this);
 
         View view = getLayoutInflater().inflate(R.layout.item_popupwindows, null);
@@ -396,39 +396,6 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         Log.e(TAG,"3");
     }
 
-    /**
-     * 拍照的intent
-     */
-    private void dispatchGalleryPictureIntent(){
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (intent.resolveActivity(this.getPackageManager()) != null){
-            startActivityForResult(intent,RESULT_LOAD_IMAGE);
-
-        }
-    }
-
-    /**
-     * 从图库中选取的intent
-     */
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
 
     /**
      * 选取图片的两种方式得到的图片的显示
@@ -584,16 +551,6 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                 }
             }).start();
         }
-    }
-
-    public String getString(String s) {
-        String path = null;
-        if (s == null)
-            return "";
-        for (int i = s.length() - 1; i > 0; i++) {
-            s.charAt(i);
-        }
-        return path;
     }
 
     protected void onRestart() {

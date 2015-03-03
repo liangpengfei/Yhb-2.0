@@ -1,5 +1,7 @@
 package com.example.fei.yhb_20.utils;
 
+import android.app.Activity;
+
 /**
  * 在这个里面放置全局变量，以统一风格，以后可能要合并到其他的类中去
  * Email luckyliangfei@gmail.com
@@ -11,4 +13,14 @@ public class GV {
     public static final char CLASS_PRESSED = 0;
     public static final char MAIN_PRESSED = 1;
 
+    public static Class myClass;
+
+
+    public static Class getMyClass() {
+        return myClass;
+    }
+
+    public static void setMyClass(Class myClass) {
+        GV.myClass = myClass;
+    }
 }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.fei.yhb_20.adapter.FolderAdapter;
 import com.example.fei.yhb_20.utils.Bimp;
+import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
 
@@ -50,7 +51,7 @@ public class ImageFile extends Activity {
 			//清空选择的图片
 			Bimp.tempSelectBitmap.clear();
 			Intent intent = new Intent();
-			intent.setClass(mContext, MerchantRegist.class);
+			intent.setClass(mContext, GV.getMyClass());
 			startActivity(intent);
 		}
 	}
@@ -58,7 +59,7 @@ public class ImageFile extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			Intent intent = new Intent();
-			intent.setClass(mContext, MerchantRegist.class);
+			intent.setClass(mContext, GV.getMyClass());
 			startActivity(intent);
 		}
 		

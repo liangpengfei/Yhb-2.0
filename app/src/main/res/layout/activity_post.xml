@@ -57,38 +57,16 @@
                 android:minLines="4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-            <LinearLayout
-                android:id="@+id/gallery"
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:id="@+id/gallery_1"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/gallery_2"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/gallery_3"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                </LinearLayout>
-                <ImageView
-                    android:id="@+id/iv_post_add"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/camera"/>
-                </LinearLayout>
+            <GridView
+                android:id="@+id/noScrollgridview"
+                android:layout_width="290dp"
+                android:layout_height="200dp"
+                android:minHeight="70dp"
+                android:horizontalSpacing="3dp"
+                android:numColumns="3"
+                android:scrollbars="none"
+                android:verticalSpacing="5dp" >
+            </GridView>
             <View
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"

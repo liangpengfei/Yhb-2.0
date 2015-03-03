@@ -10,19 +10,33 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,8 +47,14 @@ import com.example.fei.yhb_20.LocationApplication;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.adapter.MyAdapter;
 import com.example.fei.yhb_20.bean.MyListItem;
+import com.example.fei.yhb_20.utils.Bimp;
 import com.example.fei.yhb_20.utils.DBManager;
+import com.example.fei.yhb_20.utils.FileUtils;
+import com.example.fei.yhb_20.utils.GV;
+import com.example.fei.yhb_20.utils.ImageItem;
 import com.example.fei.yhb_20.utils.ImageTools;
+import com.example.fei.yhb_20.utils.PublicWay;
+import com.example.fei.yhb_20.utils.Res;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
 
 import java.io.File;
@@ -51,12 +71,10 @@ import butterknife.InjectView;
 public class PostActivity extends ActionBarActivity implements View.OnClickListener ,AdapterView.OnItemSelectedListener {
 
     private LocationClient mLocationClient;
-    private static final int SCALE = 5;
     private static final java.lang.String TAG = "PostActivity";
     @InjectView(R.id.iv_post_back)ImageView back;
     @InjectView(R.id.iv_post_cancel)ImageView cancel;
     @InjectView(R.id.iv_post_ok)ImageView ok;
-    @InjectView(R.id.iv_post_add)ImageView add;
     @InjectView(R.id.ratingbar)RatingBar ratingBar;
     @InjectView(R.id.et_post_merchantName)EditText merchantName;
     @InjectView(R.id.time)Spinner time;
@@ -64,10 +82,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     @InjectView(R.id.position1)Spinner position1;
     @InjectView(R.id.position2)Spinner position2;
     @InjectView(R.id.position3)Spinner position3;
-    @InjectView(R.id.gallery_1)LinearLayout gallery1;
-    @InjectView(R.id.gallery_2)LinearLayout gallery2;
-    @InjectView(R.id.gallery_3)LinearLayout gallery3;
-
+    @InjectView(R.id.noScrollgridview)GridView noScrollgridview;
 
 
     private DBManager dbm;
@@ -77,6 +92,11 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     private String district=null;
     private String sTime=null;
     private String filename;
+    public static Bitmap bimap ;
+    private View parentView;
+    private PopupWindow pop = null;
+    private LinearLayout ll_popup;
+    private GridAdapter adapter;
 
     public String getFilename() {
         return filename;
@@ -92,7 +112,13 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
+        Res.init(this);
+        bimap = BitmapFactory.decodeResource(
+                getResources(),
+                R.drawable.icon_addpic_unfocused);
+        PublicWay.activityList.add(this);
+        parentView = getLayoutInflater().inflate(R.layout.activity_post, null);
+        setContentView(parentView);
         ButterKnife.inject(this);
         position1.setPrompt("省");
         position2.setPrompt("市");
@@ -107,6 +133,215 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         initEvents();
         initSpinner1();
         initTimeSpinner();
+        Init();
+    }
+
+    public void Init() {
+
+        GV.setMyClass(PostActivity.class);
+        pop = new PopupWindow(PostActivity.this);
+
+        View view = getLayoutInflater().inflate(R.layout.item_popupwindows, null);
+
+        ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
+
+        pop.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        pop.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        pop.setBackgroundDrawable(new BitmapDrawable());
+        pop.setFocusable(true);
+        pop.setOutsideTouchable(true);
+        pop.setContentView(view);
+
+        RelativeLayout parent = (RelativeLayout) view.findViewById(R.id.parent);
+        Button bt1 = (Button) view
+                .findViewById(R.id.item_popupwindows_camera);
+        Button bt2 = (Button) view
+                .findViewById(R.id.item_popupwindows_Photo);
+        Button bt3 = (Button) view
+                .findViewById(R.id.item_popupwindows_cancel);
+        /**
+         * 设置点击空白部分后消失
+         */
+        parent.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                pop.dismiss();
+                ll_popup.clearAnimation();
+            }
+        });
+        /**
+         * 点击拍照按钮
+         */
+        bt1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                photo();
+                pop.dismiss();
+                ll_popup.clearAnimation();
+            }
+        });
+        /**
+         * 点击图库
+         */
+        bt2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(PostActivity.this,
+                        AlbumActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.activity_translate_in, R.anim.activity_translate_out);
+                pop.dismiss();
+                ll_popup.clearAnimation();
+            }
+        });
+        /**
+         * 点击取消
+         */
+        bt3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                pop.dismiss();
+                ll_popup.clearAnimation();
+            }
+        });
+
+        /**
+         *  得到显示图片的网格布局
+         */
+        noScrollgridview = (GridView) findViewById(R.id.noScrollgridview);
+        noScrollgridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
+        adapter = new GridAdapter(this);
+        adapter.update();
+        noScrollgridview.setAdapter(adapter);
+        noScrollgridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+                /**
+                 * 如果是没有满到9张，就是添加图标
+                 */
+                if (arg2 == Bimp.tempSelectBitmap.size()) {
+                    ll_popup.startAnimation(AnimationUtils.loadAnimation(PostActivity.this, R.anim.activity_translate_in));
+                    pop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
+                } else {
+                    Intent intent = new Intent(PostActivity.this,
+                            GalleryActivity.class);
+                    intent.putExtra("position", "1");
+                    intent.putExtra("ID", arg2);
+                    startActivity(intent);
+                }
+            }
+        });
+
+    }
+
+    public class GridAdapter extends BaseAdapter {
+        private LayoutInflater inflater;
+        private int selectedPosition = -1;
+        private boolean shape;
+
+        public boolean isShape() {
+            return shape;
+        }
+
+        public void setShape(boolean shape) {
+            this.shape = shape;
+        }
+
+        public GridAdapter(Context context) {
+            inflater = LayoutInflater.from(context);
+        }
+
+        public void update() {
+            loading();
+        }
+
+        public int getCount() {
+            if(Bimp.tempSelectBitmap.size() == 9){
+                return 9;
+            }
+            return (Bimp.tempSelectBitmap.size() + 1);
+        }
+
+        public Object getItem(int arg0) {
+            return null;
+        }
+
+        public long getItemId(int arg0) {
+            return 0;
+        }
+
+        public void setSelectedPosition(int position) {
+            selectedPosition = position;
+        }
+
+        public int getSelectedPosition() {
+            return selectedPosition;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.item_published_grida,
+                        parent, false);
+                holder = new ViewHolder();
+                holder.image = (ImageView) convertView
+                        .findViewById(R.id.item_grida_image);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            if (position ==Bimp.tempSelectBitmap.size()) {
+                holder.image.setImageBitmap(BitmapFactory.decodeResource(
+                        getResources(), R.drawable.icon_addpic_unfocused));
+                if (position == 9) {
+                    holder.image.setVisibility(View.GONE);
+                }
+            } else {
+                holder.image.setImageBitmap(Bimp.tempSelectBitmap.get(position).getBitmap());
+            }
+
+            return convertView;
+        }
+
+        public class ViewHolder {
+            public ImageView image;
+        }
+
+        Handler handler = new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+                super.handleMessage(msg);
+            }
+        };
+
+        public void loading() {
+            new Thread(new Runnable() {
+                public void run() {
+                    while (true) {
+                        if (Bimp.max == Bimp.tempSelectBitmap.size()) {
+                            Message message = new Message();
+                            message.what = 1;
+                            handler.sendMessage(message);
+                            break;
+                        } else {
+                            Bimp.max += 1;
+                            Message message = new Message();
+                            message.what = 1;
+                            handler.sendMessage(message);
+                        }
+                    }
+                }
+            }).start();
+        }
+    }
+
+    public void photo() {
+        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(openCameraIntent, TAKE_PICTURE);
     }
 
     private void InitLocation(){
@@ -137,7 +372,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         back.setOnClickListener(this);
         cancel.setOnClickListener(this);
         ok.setOnClickListener(this);
-        add.setOnClickListener(this);
         dingwei.setOnClickListener(this);
     }
 
@@ -338,9 +572,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.iv_post_ok:
 
                 break;
-            case R.id.iv_post_add:
-                showPicturePicker(PostActivity.this);
-                break;
             case R.id.iv_post_dingwei:
                 position1.setOnItemSelectedListener(this);
                 position2.setOnItemSelectedListener(this);
@@ -389,55 +620,44 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         builder.create().show();
     }
 
-    //TODO 修复照片的问题，让文节想定位的实现
 
-    @Override
+    /**
+     * 选取图片的两种方式得到的图片的显示
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case TAKE_PICTURE:
-                    //将保存在本地的图片取出并缩小后显示在界面上
-                    Log.e(TAG,getFilename());
-                    Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() +getFilename());
-                    Bitmap newBitmap = ImageTools.zoomBitmap(bitmap, bitmap.getWidth() / SCALE, bitmap.getHeight() / SCALE);
-                    //由于Bitmap内存占用较大，这里需要回收内存，否则会报out of memory异常
-                    bitmap.recycle();
+        switch (requestCode) {
+            case TAKE_PICTURE:
+                if (Bimp.tempSelectBitmap.size() < 9 && resultCode == RESULT_OK) {
 
-                    //将处理过的图片显示在界面上，并保存到本地
-                    ImageView imageView = new ImageView(this);
-                    imageView.setImageBitmap(newBitmap);
-                    gallery1.addView(imageView);
-                    ImageTools.savePhotoToSDCard(newBitmap, Environment.getExternalStorageDirectory().getAbsolutePath(), String.valueOf(System.currentTimeMillis()));
-                    break;
+                    String fileName = String.valueOf(System.currentTimeMillis());
+                    Bitmap bm = (Bitmap) data.getExtras().get("data");
+                    FileUtils.saveBitmap(bm, fileName);
 
-                case CHOOSE_PICTURE:
-                    ContentResolver resolver = getContentResolver();
-                    //照片的原始资源地址
-                    Uri originalUri = data.getData();
-                    try {
-                        //使用ContentProvider通过URI获取原始图片
-                        Bitmap photo = MediaStore.Images.Media.getBitmap(resolver, originalUri);
-                        if (photo != null) {
-                            //为防止原始图片过大导致内存溢出，这里先缩小原图显示，然后释放原始Bitmap占用的内存
-                            Bitmap smallBitmap = ImageTools.zoomBitmap(photo, photo.getWidth() / SCALE, photo.getHeight() / SCALE);
-                            //释放原始图片占用的内存，防止out of memory异常发生
-                            photo.recycle();
-
-                            ImageView imageView2 = new ImageView(this);
-                            imageView2.setImageBitmap(smallBitmap);
-                            gallery1.addView(imageView2);
-                        }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+                    ImageItem takePhoto = new ImageItem();
+                    takePhoto.setBitmap(bm);
+                    Bimp.tempSelectBitmap.add(takePhoto);
+                }
+                break;
         }
+    }
+
+    protected void onRestart() {
+        adapter.update();
+        super.onRestart();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            for(int i=0;i<PublicWay.activityList.size();i++){
+                if (null != PublicWay.activityList.get(i)) {
+                    PublicWay.activityList.get(i).finish();
+                }
+            }
+            System.exit(0);
+        }
+        return true;
     }
 }

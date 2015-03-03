@@ -19,6 +19,7 @@ import android.widget.ToggleButton;
 
 import com.example.fei.yhb_20.adapter.AlbumGridViewAdapter;
 import com.example.fei.yhb_20.utils.Bimp;
+import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.ImageItem;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
@@ -113,7 +114,7 @@ public class ShowAllPhoto extends Activity {
 		public void onClick(View v) {
 			//清空选择的图片
 			Bimp.tempSelectBitmap.clear();
-			intent.setClass(mContext, MerchantRegist.class);
+			intent.setClass(mContext, GV.getMyClass());
 			startActivity(intent);
 		}
 	}
@@ -170,7 +171,7 @@ public class ShowAllPhoto extends Activity {
 //					PublicWay.photoService.onActivityResult(0, -2,
 //							intent);
 //				}
-				intent.setClass(mContext, MerchantRegist.class);
+				intent.setClass(mContext, GV.getMyClass());
 				startActivity(intent);
 				// Intent intent = new Intent();
 				// Bundle bundle = new Bundle();
