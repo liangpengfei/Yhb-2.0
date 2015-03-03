@@ -53,6 +53,7 @@ import com.example.fei.yhb_20.utils.FileUtils;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.ImageItem;
 import com.example.fei.yhb_20.utils.ImageTools;
+import com.example.fei.yhb_20.utils.NetUtil;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
@@ -573,12 +574,15 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
                 break;
             case R.id.iv_post_dingwei:
-                position1.setOnItemSelectedListener(this);
-                position2.setOnItemSelectedListener(this);
-                position3.setOnItemSelectedListener(this);
-                Log.e(TAG,"1");
-                InitLocation();
-                mLocationClient.start();
+                if (NetUtil.isNetConnected(this)){
+                    position1.setOnItemSelectedListener(this);
+                    position2.setOnItemSelectedListener(this);
+                    position3.setOnItemSelectedListener(this);
+                    InitLocation();
+                    mLocationClient.start();
+                }else{
+                    Toast.makeText(this,"无网络连接，请检测您的网络设置！",Toast.LENGTH_LONG).show();
+                }
                 break;
             default:
                 break;

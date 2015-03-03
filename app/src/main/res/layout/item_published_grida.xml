@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/item_grida_image"
-        android:layout_width="68dp"
-        android:layout_height="68dp"
+        android:layout_width="74dp"
+        android:layout_height="74dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_launcher" >
     </ImageView>

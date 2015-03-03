@@ -52,8 +52,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-
-        MapUtil.getLocation(this,choose_position);
+        if (NetUtil.isNetConnected(this)){
+            MapUtil.getLocation(this,choose_position);
+        }else{
+            Toast.makeText(this,"无网络连接，请检测您的网络设置！",Toast.LENGTH_LONG).show();
+        }
         NetUtil.checkForUpdate(this);
         initEvents();
         setSelect(GV.MAIN_PRESSED);
