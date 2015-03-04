@@ -1,6 +1,7 @@
 package com.example.fei.yhb_20.bean;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobRelation;
 
 /**
  * Email luckyliangfei@gmail.com
@@ -9,6 +10,15 @@ import cn.bmob.v3.BmobUser;
 public class BaseUser extends BmobUser {
     private String phone,motto,avatarPaht;
     private int attribute;
+    private BmobRelation post;
+
+    public BmobRelation getPost() {
+        return post;
+    }
+
+    public void setPost(BmobRelation post) {
+        this.post = post;
+    }
 
     public String getPhone() {
         return phone;

@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,10 +44,14 @@ import android.widget.Toast;
 
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.bmob.BmobProFile;
+import com.bmob.btp.callback.UploadBatchListener;
 import com.example.fei.yhb_20.LocationApplication;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.adapter.MyAdapter;
+import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.MyListItem;
+import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.Bimp;
 import com.example.fei.yhb_20.utils.DBManager;
 import com.example.fei.yhb_20.utils.FileUtils;
@@ -68,6 +73,10 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobRelation;
+import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 public class PostActivity extends ActionBarActivity implements View.OnClickListener ,AdapterView.OnItemSelectedListener {
 
@@ -128,6 +137,9 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         time.setPrompt("选择时间");
         mLocationClient = ((LocationApplication)getApplication()).mLocationClient;
 
+        /**
+         * 初始化地理位置控件
+         */
         ((LocationApplication)getApplication()).position1 = position1;
         ((LocationApplication)getApplication()).position2 = position2;
         ((LocationApplication)getApplication()).position3 = position3;
@@ -136,6 +148,76 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         initSpinner1();
         initTimeSpinner();
         Init();
+    }
+    
+    private void updateIcons(){
+        String [] files = getPhotoPath().split("\\|");
+        BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
+            @Override
+            public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
+                if (isFinished) {
+                    Toast.makeText(PostActivity.this, "成功上传", Toast.LENGTH_LONG).show();
+                    //得到图片路径的字符串
+                    StringBuilder stringBuilder = new StringBuilder("");
+                    for (int i = 0 ;i<strings.length;i++){
+                        stringBuilder.append(BmobProFile.getInstance(PostActivity.this).signURL(strings[i], strings2[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
+                        stringBuilder.append("|");
+                    }
+                    Log.e(TAG,stringBuilder.toString());
+                    //post与user关联
+                    final Post post = new Post();
+                    post.setContent(content.getText().toString());
+                    post.setMerchantName(merchantName.getText().toString());
+                    post.setActivityTiem(time.getSelectedItem().toString());
+                    post.setProvince(province);
+                    post.setCity(city);
+                    post.setDistrict(district);
+                    post.setRating(ratingBar.getRating());
+                    post.setPaths(stringBuilder.toString());
+                    final BaseUser user = BmobUser.getCurrentUser(PostActivity.this,BaseUser.class);
+                    post.setUser(user);
+                    post.save(PostActivity.this,new SaveListener() {
+                        @Override
+                        public void onSuccess() {
+                            //到这里只能是说post发送成功了，还没有更新user表中的数据
+                            if (TextUtils.isEmpty(post.getObjectId()) || TextUtils.isEmpty(post.getObjectId())){
+                                Toast.makeText(PostActivity.this,"当前post对象为空",Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            BmobRelation posts = new BmobRelation();
+                            posts.add(post);
+                            user.setPost(posts);
+                            user.update(PostActivity.this,new UpdateListener() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.e(TAG,"成功添加到用户的posts中");
+                                    PostActivity.this.finish();
+                                }
+
+                                @Override
+                                public void onFailure(int i, String s) {
+                                    Log.e(TAG,"没有添加成功"+s);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(int i, String s) {
+                               Log.e(TAG,"发布失败"+s);
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
+                
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.e(TAG,"上传图片失败"+s);
+            }
+        });
     }
 
     public void Init() {
@@ -582,7 +664,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.iv_post_ok:
-
+                updateIcons();
                 break;
             case R.id.iv_post_dingwei:
                 if (NetUtil.isNetConnected(this)){
