@@ -112,6 +112,8 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                                 break;
                             case GV.PERSON:
                                 //个人应该是在这里注册成功了
+                                mRegist.setText("注册中，请稍后。。");
+                                mRegist.setEnabled(false);
                                 Person person = new Person();
                                 person.setEmail(email);
                                 MD5 md5 = new MD5();

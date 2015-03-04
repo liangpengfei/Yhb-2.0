@@ -122,7 +122,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         parentView = getLayoutInflater().inflate(R.layout.activity_post, null);
         setContentView(parentView);
         ButterKnife.inject(this);
-        content.setFocusable(false);
         position1.setPrompt("省");
         position2.setPrompt("市");
         position3.setPrompt("地区");

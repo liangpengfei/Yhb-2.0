@@ -276,6 +276,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                 break;
             case R.id.bt_mr_regist:
                 regist.setText("上传中，请稍后。。。");
+                regist.setEnabled(false);
                 setBean();
                 updatePhotos();
                 break;
