@@ -1,10 +1,14 @@
 package com.example.fei.yhb_20.utils;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +18,7 @@ import java.util.regex.Pattern;
  * Created by fei on 2/15/15.
  */
 public class MyUtils {
+    private static final String TAG = "MyUtils";
     private static DBManager dbm;
     private static SQLiteDatabase db;
     public static boolean isEmail(String email){
@@ -75,6 +80,37 @@ public class MyUtils {
             return true;
         }
         return false;
+    }
+
+    public static String timeLogic(Date past, final Context context){
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.get(Calendar.DAY_OF_MONTH);
+        long now = calendar.getTimeInMillis();
+        calendar.setTime(past);
+        long lDate = calendar.getTimeInMillis();
+        long time = (now - lDate)/1000;
+
+        Log.e(TAG, String.valueOf(time) + "b");
+        Log.e(TAG,String.valueOf(now)+"c");
+        Log.e(TAG,String.valueOf(lDate)+"d");
+
+        StringBuilder sb = new StringBuilder();
+        if (time > 0 && time < 60) { // 1小时内
+            return sb.append(time).append("秒前").toString();
+        } else if (time > 60 && time < 3600) {
+            return sb.append(time / 60).append("分钟前").toString();
+        } else if (time >= 3600 && time < 3600 * 24) {
+            return sb.append(time / 3600).append("小时前").toString();
+        }else if (time >= 3600 * 24 && time < 3600 * 48) {
+            return sb.append("昨天").toString();
+        }else if (time >= 3600 * 48 && time < 3600 * 72) {
+            return sb.append("前天").toString();
+        }else if (time >= 3600 * 72) {
+            return sb.append("3天前").toString();
+        }else{
+            return sb.append("多天之前").toString();
+        }
     }
 
 

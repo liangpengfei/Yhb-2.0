@@ -1,8 +1,10 @@
 package com.example.fei.yhb_20.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +16,14 @@ import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
+import com.example.fei.yhb_20.utils.MyUtils;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
+import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -25,25 +32,10 @@ import cn.bmob.v3.listener.FindListener;
 
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
-    public static final List<String> data;
 
     private RecyclerView recyclerView;
+    private static Picasso picasso;
 
-    static {
-        data = new ArrayList<String>();
-        data.add("浮夸 - 陈奕迅");
-        data.add("好久不见 - 陈奕迅");
-        data.add("时间都去哪儿了 - 王铮亮");
-        data.add("董小姐 - 宋冬野");
-        data.add("爱如潮水 - 张信哲");
-        data.add("给我一首歌的时间 - 周杰伦");
-        data.add("天黑黑 - 孙燕姿");
-        data.add("可惜不是你 - 梁静茹");
-        data.add("太委屈 - 陶晶莹");
-        data.add("用心良苦 - 张宇");
-        data.add("说谎 - 林宥嘉");
-        data.add("独家记忆 - 陈小春");
-    }
 
     LinearLayoutManager layoutManager;
 
@@ -56,6 +48,8 @@ public class MainFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        picasso = Picasso.with(getActivity());
 
         //TODO 不要在这里联网查询
 //        recyclerView.setAdapter(new MyAdapter(data));
@@ -73,7 +67,7 @@ public class MainFragment extends Fragment {
         query.findObjects(getActivity(),new FindListener<Post>() {
             @Override
             public void onSuccess(List<Post> posts) {
-                recyclerView.setAdapter(new MyAdapter(posts));
+                recyclerView.setAdapter(new MyAdapter(posts,getActivity()));
             }
 
             @Override
@@ -90,9 +84,11 @@ public class MainFragment extends Fragment {
 
     private static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         private List<Post> data;
+        private Context context;
 
-        public MyAdapter(List<Post> data) {
+        public MyAdapter(List<Post> data,Context context) {
             this.data = data;
+            this.context = context;
         }
 
         @Override
@@ -114,8 +110,30 @@ public class MainFragment extends Fragment {
             viewHolder.tvShared.setText("享受过"+post.getShared());
             viewHolder.content.setText(post.getContent());
 //            viewHolder.time.setText(post.getTime());
-//            viewHolder.userName.setText(post.getTime); 联级查询查找username
+            viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
             viewHolder.merchantName.setText(post.getMerchantName());
+
+            //格式化时间
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = null;
+            try {
+                date = simpleDateFormat.parse(post.getCreatedAt());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            viewHolder.time.setText(MyUtils.timeLogic(date,context));
+
+            //获取图片，使用Picasso可以缓存
+            String paths [] = post.getPaths().split("\\|");
+            Log.e(TAG,String.valueOf(paths.length));
+            ImageView imageView ;
+            for (String path : paths) {
+                imageView = new ImageView(context);
+                picasso.load(path).resize(200,200).into(imageView);
+                imageView.setPadding(2,2,2,2);
+                viewHolder.gallery.addView(imageView);
+            }
+
         }
 
 
@@ -127,7 +145,7 @@ public class MainFragment extends Fragment {
         static class ViewHolder extends RecyclerView.ViewHolder {
             TextView merchantName,userName,content,time,tvShared,tvLike,tvDislike,tvConment;
             ImageView icon,share,list;
-            LinearLayout shared,like,dislike,conment;
+            LinearLayout shared,like,dislike,conment,gallery;
 
 
             public ViewHolder(View itemView) {
@@ -148,6 +166,7 @@ public class MainFragment extends Fragment {
                 tvConment = (TextView) itemView.findViewById(R.id.tv_main_comment);
                 share = (ImageView) itemView.findViewById(R.id.iv_main_share);
                 list = (ImageView) itemView.findViewById(R.id.iv_main_list);
+                gallery = (LinearLayout) itemView.findViewById(R.id.ll_gallery);
             }
         }
     }
