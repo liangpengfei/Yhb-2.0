@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -285,9 +286,11 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         bt2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                //先保存数据
                 GV.setContent(content.getText().toString());
                 GV.setRating(ratingBar.getRating());
                 GV.setMerchantName(merchantName.getText().toString());
+
                 Intent intent = new Intent(PostActivity.this,
                         AlbumActivity.class);
                 startActivity(intent);
@@ -322,6 +325,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                  * 如果是没有满到9张，就是添加图标
                  */
                 if (arg2 == Bimp.tempSelectBitmap.size()) {
+                    ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(PostActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    content.setFocusable(false);
                     ll_popup.startAnimation(AnimationUtils.loadAnimation(PostActivity.this, R.anim.activity_translate_in));
                     pop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
                 } else {

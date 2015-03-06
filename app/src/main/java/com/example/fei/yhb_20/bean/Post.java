@@ -17,6 +17,8 @@ public class Post extends BmobObject implements Serializable {
     private long time;
     private boolean isCall;
 
+
+
     public String getActivityTiem() {
         return activityTiem;
     }

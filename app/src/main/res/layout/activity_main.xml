@@ -24,8 +24,8 @@
                 android:id="@+id/tv_main_choose_position"
                 android:gravity="center"
                 android:layout_weight="0.1"
-                android:drawableEnd="@drawable/dropdown_gray"
-                android:drawableRight="@drawable/dropdown_gray"
+                android:drawableEnd="@drawable/dropdown_black"
+                android:drawableRight="@drawable/dropdown_black"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="#ff6845ff"
+            android:background="#ffffff"
             android:orientation="horizontal" >
 
             <LinearLayout
