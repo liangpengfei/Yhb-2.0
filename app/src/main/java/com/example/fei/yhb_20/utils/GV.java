@@ -14,7 +14,34 @@ public class GV {
     public static final char MAIN_PRESSED = 1;
 
     public static Class myClass;
+    public static String content,merchantName;
+    public static float rating;
 
+
+
+    public static String getMerchantName() {
+        return merchantName;
+    }
+
+    public static void setMerchantName(String merchantName) {
+        GV.merchantName = merchantName;
+    }
+
+    public static float getRating() {
+        return rating;
+    }
+
+    public static void setRating(float rating) {
+        GV.rating = rating;
+    }
+
+    public static String getContent() {
+        return content;
+    }
+
+    public static void setContent(String content) {
+        GV.content = content;
+    }
 
     public static Class getMyClass() {
         return myClass;

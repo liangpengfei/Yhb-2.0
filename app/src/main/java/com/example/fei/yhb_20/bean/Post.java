@@ -12,6 +12,7 @@ public class Post extends BmobObject implements Serializable {
 
     private static final long serialVersionUID = -2594277656564773968L;
     private String merchantName,content,paths,postName,activityTiem,province,city,district;
+    private int comment,shared,like,dislike;
     private float rating;
     private long time;
     private boolean isCall;
@@ -116,5 +117,37 @@ public class Post extends BmobObject implements Serializable {
 
     public void setDistrict(String district) {
         this.district = district;
+    }
+
+    public int getComment() {
+        return comment;
+    }
+
+    public void setComment(int comment) {
+        this.comment = comment;
+    }
+
+    public int getShared() {
+        return shared;
+    }
+
+    public void setShared(int shared) {
+        this.shared = shared;
+    }
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
+
+    public int getDislike() {
+        return dislike;
+    }
+
+    public void setDislike(int dislike) {
+        this.dislike = dislike;
     }
 }

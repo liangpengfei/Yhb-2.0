@@ -1,6 +1,7 @@
 package com.example.fei.yhb_20.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -52,9 +53,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+        SharedPreferences settings = getSharedPreferences("settings",0);
         if (NetUtil.isNetConnected(this)){
+            if (settings.getBoolean("ever",false)){
+                choose_position.setText(settings.getString("city","选择城市"));
+            }
             MapUtil.getLocation(this,choose_position);
         }else{
+            choose_position.setText(settings.getString("city","选择城市"));
             Toast.makeText(this,"无网络连接，请检测您的网络设置！",Toast.LENGTH_LONG).show();
         }
         NetUtil.checkForUpdate(this);

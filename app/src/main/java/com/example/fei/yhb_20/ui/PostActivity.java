@@ -131,6 +131,17 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         parentView = getLayoutInflater().inflate(R.layout.activity_post, null);
         setContentView(parentView);
         ButterKnife.inject(this);
+
+        if (GV.getContent()!=null){
+            content.setText(GV.getContent());
+        }
+        if (GV.getMerchantName()!=null){
+            merchantName.setText(GV.getMerchantName());
+        }
+        if (GV.getRating()!=0){
+            ratingBar.setRating(GV.getRating());
+        }
+
         position1.setPrompt("省");
         position2.setPrompt("市");
         position3.setPrompt("地区");
@@ -190,6 +201,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                             user.update(PostActivity.this,new UpdateListener() {
                                 @Override
                                 public void onSuccess() {
+                                    //更新user表中的数据成功，最终成功
                                     Log.e(TAG,"成功添加到用户的posts中");
                                     PostActivity.this.finish();
                                 }
@@ -220,6 +232,9 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         });
     }
 
+    /**
+     * 初始化照相popupwindwo
+     */
     public void Init() {
 
         GV.setMyClass(PostActivity.class);
@@ -259,7 +274,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
          */
         bt1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                photo();
+                takePhoto();
                 pop.dismiss();
                 ll_popup.clearAnimation();
             }
@@ -269,6 +284,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
          */
         bt2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                GV.setContent(content.getText().toString());
+                GV.setRating(ratingBar.getRating());
+                GV.setMerchantName(merchantName.getText().toString());
                 Intent intent = new Intent(PostActivity.this,
                         AlbumActivity.class);
                 startActivity(intent);
@@ -317,6 +336,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
+    /**
+     * 得到上传照片的文件路径
+     * @return
+     */
     public String getPhotoPath(){
         StringBuilder builder = new StringBuilder("");
         for (int i =0 ;i<Bimp.tempSelectBitmap.size();i++){
@@ -433,7 +456,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    public void photo() {
+    /**
+     * 拍照
+     */
+    public void takePhoto() {
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(openCameraIntent, TAKE_PICTURE);
     }
@@ -448,6 +474,9 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         mLocationClient.setLocOption(option);
     }
 
+    /**
+     * 初始化时间控件
+     */
     private void initTimeSpinner() {
         time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -469,6 +498,9 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         dingwei.setOnClickListener(this);
     }
 
+    /**
+     * 以下是一连串的动作
+     */
     public void initSpinner1(){
         dbm = new DBManager(this);
         dbm.openDatabase();
