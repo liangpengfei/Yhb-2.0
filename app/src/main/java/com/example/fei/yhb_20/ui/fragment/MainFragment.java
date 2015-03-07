@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
+import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.MyUtils;
 import com.marshalchen.common.uimodule.cardsSwiped.view.CardContainer;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
@@ -43,6 +44,7 @@ public class MainFragment extends Fragment {
     private RecyclerView recyclerView;
     private static Picasso picasso;
     private DrawerLayout drawerLayout;
+    private ACache aCache;
 
 
 
@@ -81,12 +83,31 @@ public class MainFragment extends Fragment {
         query.findObjects(getActivity(),new FindListener<Post>() {
             @Override
             public void onSuccess(List<Post> posts) {
+                //在这里写入缓存
+                for (int i = 0 ;i<posts.size();i++){
+                    aCache.put(String.valueOf(i),posts.get(i));
+                    Log.e(TAG,"write success "+i);
+                }
+                aCache.put("cacheSize",String.valueOf(posts.size()));
                 recyclerView.setAdapter(new MyAdapter(posts,getActivity(),drawerLayout));
+
             }
 
             @Override
-            public void onError(int i, String s) {
+            public void onError(int code, String s) {
                 Log.e(TAG,s);
+                List<Post> objects = new ArrayList<Post>();
+
+                int size = Integer.parseInt(aCache.getAsString("cacheSize"));
+                Post post;
+                for (int i = 0;i<size;i++){
+                    post= (Post) aCache.getAsObject(String.valueOf(i));
+                    if (post==null){
+                        android.util.Log.e(TAG, "post is null");
+                    }
+                    objects.add(post);
+                }
+                recyclerView.setAdapter(new MyAdapter(objects,getActivity(),drawerLayout));
             }
         });
     }
@@ -94,6 +115,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        aCache = ACache.get(getActivity());
     }
 
     private static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -104,13 +126,11 @@ public class MainFragment extends Fragment {
         private Context context;
         private PopupWindow meun;
         private View view;
-        private SharedPreferences settings;
 
         public MyAdapter(List<Post> data,Context context,View view) {
             this.data = data;
             this.context = context;
             this.view = view;
-            settings =context.getSharedPreferences("settings", 0);
         }
 
         @Override
@@ -129,17 +149,13 @@ public class MainFragment extends Fragment {
                 final String objectId = post.getObjectId();
                 final ArrayList<Integer> numberFooter = post.getNumberFooter();
                 final ArrayList booleanFooter = post.getBooleanArray();
-//                final Footer footer = post.getFooter();
-//                viewHolder.tvConment.setText("评论" + footer.getiComment());
-//                viewHolder.tvDislike.setText("没有帮助"+footer.getiDislike());
-//                viewHolder.tvLike.setText("喜欢"+footer.getiLike());
-//                viewHolder.tvShared.setText("享受过"+footer.getiShare());
                 viewHolder.content.setText(post.getContent());
-//            viewHolder.time.setText(post.getTime());
                 viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
                 viewHolder.merchantName.setText(post.getMerchantName());
 
-
+                viewHolder.tvShared.setText("享受过" + (numberFooter.get(SHARE)));
+                viewHolder.tvLike.setText("喜欢"+(numberFooter.get(LIKE)));
+                viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
 
                 /**
                  * 定义事件
@@ -154,15 +170,11 @@ public class MainFragment extends Fragment {
                     }
                 });
 
+
                 viewHolder.shared.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (booleanFooter.get(SHARE)==0){
-                            //执行取消的代码,并且要写入SharedPreferences
-//                            SharedPreferences.Editor editor = settings.edit();
-//                            editor.putBoolean("shared",false);
-//                            editor.commit();
-
                             viewHolder.ivShare.setImageResource(R.drawable.thumbs_up);
                             //更新数据
                             booleanFooter.set(SHARE,1);
@@ -184,12 +196,6 @@ public class MainFragment extends Fragment {
                                 }
                             });
                         }else{
-                            //执行添加的代码，写入SharedPreferences
-//                            SharedPreferences.Editor editor = settings.edit();
-//                            editor.putBoolean("shared",true);
-//                            editor.apply();
-
-
                             viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
 
                             booleanFooter.set(SHARE,0);
@@ -218,11 +224,6 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (booleanFooter.get(LIKE)==0){
-                            //执行取消的代码,并且要写入SharedPreferences
-//                            SharedPreferences.Editor editor = settings.edit();
-//                            editor.putBoolean("like",false);
-//                            editor.commit();
-
                             viewHolder.ivLike.setImageResource(R.drawable.icon_heart);
 
                             booleanFooter.set(LIKE,1);
@@ -243,12 +244,6 @@ public class MainFragment extends Fragment {
                                 }
                             });
                         }else{
-                            //执行添加的代码，写入SharedPreferences
-//                            SharedPreferences.Editor editor = settings.edit();
-//                            editor.putBoolean("like",true);
-//                            editor.commit();
-
-
                             viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
 
                             booleanFooter.set(LIKE,0);
@@ -278,11 +273,6 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (booleanFooter.get(DISLIKE)==0){
-                            //执行取消的代码,并且要写入SharedPreferences
-//                            SharedPreferences.Editor editor = settings.edit();
-//                            editor.putBoolean("dislike",false);
-//                            editor.commit();
-
                             viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike);
 
                             booleanFooter.set(DISLIKE,1);
@@ -303,11 +293,6 @@ public class MainFragment extends Fragment {
                                 }
                             });
                         }else{
-                            //执行添加的代码，写入SharedPreferences
-//                            SharedPreferences.Editor editor = settings.edit();
-//                            editor.putBoolean("dislike",true);
-//                            editor.commit();
-
                             viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
 
                             booleanFooter.set(DISLIKE,0);
@@ -368,8 +353,6 @@ public class MainFragment extends Fragment {
 
 
         }
-
-
         @Override
         public int getItemCount() {
             return data.size();
@@ -379,8 +362,6 @@ public class MainFragment extends Fragment {
             TextView merchantName,userName,content,time,tvShared,tvLike,tvDislike,tvConment;
             ImageView icon,share,list,ivShare,ivLike,ivDislike,ivComment;
             LinearLayout shared,like,dislike,conment,gallery;
-
-
 
             public ViewHolder(View itemView) {
                 // super这个参数一定要注意,必须为Item的根节点.否则会出现莫名的FC.
