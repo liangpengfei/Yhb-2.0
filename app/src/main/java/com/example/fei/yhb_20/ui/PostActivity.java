@@ -20,6 +20,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -62,7 +63,6 @@ import com.example.fei.yhb_20.utils.ImageTools;
 import com.example.fei.yhb_20.utils.NetUtil;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
-import com.marshalchen.common.uimodule.cropimage.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -168,8 +168,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
                 if (isFinished) {
+                    Log.e(TAG,"88");
                     Toast.makeText(PostActivity.this, "成功上传", Toast.LENGTH_LONG).show();
                     //得到图片路径的字符串
+                    Log.e(TAG,"99");
                     StringBuilder stringBuilder = new StringBuilder("");
                     for (int i = 0 ;i<strings.length;i++){
                         stringBuilder.append(BmobProFile.getInstance(PostActivity.this).signURL(strings[i], strings2[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
@@ -178,6 +180,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                     Log.e(TAG,stringBuilder.toString());
                     //post与user关联
                     final Post post = new Post();
+
                     post.setContent(content.getText().toString());
                     post.setMerchantName(merchantName.getText().toString());
                     post.setActivityTiem(time.getSelectedItem().toString());
@@ -187,7 +190,16 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                     post.setRating(ratingBar.getRating());
                     post.setPaths(stringBuilder.toString());
                     final BaseUser user = BmobUser.getCurrentUser(PostActivity.this,BaseUser.class);
+
+                    ArrayList numberFooter = new ArrayList();
+                    numberFooter.add(0,0);
+                    numberFooter.add(1,0);
+                    numberFooter.add(2,0);
+                    numberFooter.add(3,0);
+
+                    post.setNumberFooter(numberFooter);
                     post.setUser(user);
+                    Log.e(TAG,"8");
                     post.save(PostActivity.this,new SaveListener() {
                         @Override
                         public void onSuccess() {
@@ -203,6 +215,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                                 @Override
                                 public void onSuccess() {
                                     //更新user表中的数据成功，最终成功
+                                    Toast.makeText(PostActivity.this,"成功添加到用户的posts中",Toast.LENGTH_LONG).show();
                                     Log.e(TAG,"成功添加到用户的posts中");
                                     PostActivity.this.finish();
                                 }
@@ -223,12 +236,13 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
             }
             @Override
             public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
-                
+                Log.e(TAG, String.valueOf(curPercent));
             }
 
             @Override
             public void onError(int i, String s) {
                 Log.e(TAG,"上传图片失败"+s);
+                Toast.makeText(PostActivity.this,s,Toast.LENGTH_LONG).show();
             }
         });
     }
