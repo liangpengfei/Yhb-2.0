@@ -10,6 +10,8 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 
+import cn.bmob.v3.Bmob;
+
 /**
  * 地图定位的时候使用，以后定位功能集成到MapUtil工具类中去了就不再使用这个全局application
  */
@@ -29,6 +31,7 @@ public class LocationApplication extends Application {
 		mLocationClient = new LocationClient(this.getApplicationContext());
 		mMyLocationListener = new MyLocationListener();
 		mLocationClient.registerLocationListener(mMyLocationListener);
+
 	}
 
 	public class MyLocationListener implements BDLocationListener {

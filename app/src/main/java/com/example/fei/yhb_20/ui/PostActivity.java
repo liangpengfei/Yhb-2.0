@@ -65,6 +65,9 @@ import com.example.fei.yhb_20.utils.Res;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -185,6 +188,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                     post.setDistrict(district);
                     post.setRating(ratingBar.getRating());
                     post.setPaths(stringBuilder.toString());
+                    ArrayList<String> arrayList = new ArrayList<String>();
+                    Collections.addAll(arrayList,strings);
+                    post.setThumnailsName(arrayList);
+
                     final BaseUser user = BmobUser.getCurrentUser(PostActivity.this,BaseUser.class);
 
                     ArrayList numberFooter = new ArrayList();

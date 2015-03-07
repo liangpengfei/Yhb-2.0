@@ -1,6 +1,7 @@
 package com.example.fei.yhb_20.bean;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import cn.bmob.v3.BmobObject;
@@ -15,6 +16,15 @@ public class Post extends BmobObject implements Serializable {
     private String merchantName,content,paths,postName,activityTiem,province,city,district;
     private float rating;
     private ArrayList<Integer> numberFooter,booleanArray;
+    private ArrayList<String> thumnailsName;
+
+    public ArrayList<String> getThumnailsName() {
+        return thumnailsName;
+    }
+
+    public void setThumnailsName(ArrayList<String> thumnailsName) {
+        this.thumnailsName = thumnailsName;
+    }
 
     public ArrayList getBooleanArray() {
         return booleanArray;

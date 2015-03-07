@@ -1,7 +1,9 @@
 package com.example.fei.yhb_20.ui.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +23,15 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bmob.BmobProFile;
+import com.bmob.btp.callback.ThumbnailListener;
+import com.bmob.utils.BmobLog;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.MyUtils;
 import com.marshalchen.common.uimodule.cardsSwiped.view.CardContainer;
-import com.marshalchen.common.uimodule.cropimage.util.Log;
+import android.app.ActionBar.LayoutParams;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -33,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
@@ -45,9 +53,6 @@ public class MainFragment extends Fragment {
     private static Picasso picasso;
     private DrawerLayout drawerLayout;
     private ACache aCache;
-
-
-
     LinearLayoutManager layoutManager;
 
     @Override
@@ -64,9 +69,6 @@ public class MainFragment extends Fragment {
         drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
 
         picasso = Picasso.with(getActivity());
-
-
-
         //TODO 不要在这里联网查询
 //        recyclerView.setAdapter(new MyAdapter(data));
         return view;
@@ -86,7 +88,7 @@ public class MainFragment extends Fragment {
                 //在这里写入缓存
                 for (int i = 0 ;i<posts.size();i++){
                     aCache.put(String.valueOf(i),posts.get(i));
-                    Log.e(TAG,"write success "+i);
+                    Log.e(TAG, "write success " + i);
                 }
                 aCache.put("cacheSize",String.valueOf(posts.size()));
                 recyclerView.setAdapter(new MyAdapter(posts,getActivity(),drawerLayout));
@@ -124,13 +126,10 @@ public class MainFragment extends Fragment {
         private static final int DISLIKE = 2;
         private List<Post> data;
         private Context context;
-        private PopupWindow meun;
-        private View view;
 
         public MyAdapter(List<Post> data,Context context,View view) {
             this.data = data;
             this.context = context;
-            this.view = view;
         }
 
         @Override
@@ -163,14 +162,50 @@ public class MainFragment extends Fragment {
                 viewHolder.list.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View contentView = inflater.inflate(R.layout.popupwindow,null);
-                        meun = new PopupWindow(contentView, CardContainer.LayoutParams.WRAP_CONTENT, CardContainer.LayoutParams.WRAP_CONTENT);
-                        meun.showAtLocation(view, Gravity.CENTER,0,0);
+                        View menuView = View.inflate(context,R.layout.popupwindow,null);
+                        AlertDialog menuDialog = new AlertDialog.Builder(context).create();
+                        menuDialog.setView(menuView);
+                        LinearLayout collect,unfollow,block,report;
+                        collect = (LinearLayout) menuView.findViewById(R.id.collect);
+                        unfollow = (LinearLayout) menuView.findViewById(R.id.unfollow);
+                        block = (LinearLayout) menuView.findViewById(R.id.block);
+                        report = (LinearLayout) menuView.findViewById(R.id.report);
+
+                        /**
+                         * 为弹出菜单写定义事件
+                         */
+                        collect.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //收藏
+                            }
+                        });
+                        unfollow.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //取消关注
+                            }
+                        });
+                        block.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //屏蔽
+                            }
+                        });
+                        report.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //举报
+                            }
+                        });
+                        menuDialog.show();
                     }
                 });
 
 
+                /**
+                 * 处理footer中的点击事件
+                 */
                 viewHolder.shared.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -317,6 +352,9 @@ public class MainFragment extends Fragment {
                     }
                 });
 
+                /**
+                 * 设置展示的时候的图标颜色值
+                 */
                 if (booleanFooter.get(DISLIKE)==0){
                     viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
                 }
@@ -342,13 +380,44 @@ public class MainFragment extends Fragment {
                 String paths [] = post.getPaths().split("\\|");
                 int t = paths.length;
                 Log.e(TAG, String.valueOf(t));
-                ImageView imageView ;
+
+
+                ArrayList<String> arrayList = post.getThumnailsName();
+
                 for (int i1 = 0 ;i1 <paths.length; i1++) {
+
+                    ImageView imageView;
                     imageView = new ImageView(context);
                     picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
                     imageView.setPadding(2,2,2,2);
                     viewHolder.gallery.addView(imageView);
                 }
+
+                /**
+                 * 想获取缩略图，但是没有成功，总是显示appkey is null
+                 */
+//                //TODO
+//                for (int i1 = 0 ;i1 <arrayList.size(); i1++) {
+//                    Log.e(TAG,"kldsjf");
+//                    BmobProFile.getInstance(context).submitThumnailTask(arrayList.get(i1), 1, new ThumbnailListener() {
+//
+//                        @Override
+//                        public void onSuccess(String thumbnailName, String thumbnailUrl) {
+//                            Log.e(TAG,thumbnailUrl+"djlksfjlksdjflksjdlkfjsd");
+//                            ImageView imageView =new ImageView(context);
+//                            picasso.load(thumbnailUrl).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
+//                            imageView.setPadding(2,2,2,2);
+//                            viewHolder.gallery.addView(imageView);
+//                        }
+//
+//                        @Override
+//                        public void onError(int statuscode, String errormsg) {
+//                            Log.e(TAG, String.valueOf(statuscode));
+//                            Log.e(TAG,errormsg+"kldsjfklsjdklfjsdkjfkjsdljfklsdjfjklsdjkfjsdklajfkljsadkfjkl");
+//                        }
+//                    });
+//
+//                }
             }
 
 

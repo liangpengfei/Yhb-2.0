@@ -26,6 +26,7 @@ import com.example.fei.yhb_20.utils.NetUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
 
 /**
