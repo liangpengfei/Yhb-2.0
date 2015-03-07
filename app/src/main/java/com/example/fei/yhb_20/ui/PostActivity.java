@@ -1,7 +1,6 @@
 package com.example.fei.yhb_20.ui;
 
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -59,14 +58,11 @@ import com.example.fei.yhb_20.utils.DBManager;
 import com.example.fei.yhb_20.utils.FileUtils;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.ImageItem;
-import com.example.fei.yhb_20.utils.ImageTools;
 import com.example.fei.yhb_20.utils.NetUtil;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -163,7 +159,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     }
     
     private void updateIcons(){
-        String [] files = getPhotoPath().split("\\|");
+        final String [] files = getPhotoPath().split("\\|");
         BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
             @Override
             public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
@@ -197,7 +193,14 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                     numberFooter.add(2,0);
                     numberFooter.add(3,0);
 
+                    ArrayList booleanArray = new ArrayList();
+                    booleanArray.add(0,1);
+                    booleanArray.add(1,1);
+                    booleanArray.add(2,1);
+                    booleanArray.add(3,1);
+
                     post.setNumberFooter(numberFooter);
+                    post.setBooleanArray(booleanArray);
                     post.setUser(user);
                     Log.e(TAG,"8");
                     post.save(PostActivity.this,new SaveListener() {
@@ -216,8 +219,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                                 public void onSuccess() {
                                     //更新user表中的数据成功，最终成功
                                     Toast.makeText(PostActivity.this,"成功添加到用户的posts中",Toast.LENGTH_LONG).show();
-                                    Log.e(TAG,"成功添加到用户的posts中");
+                                    Log.e(TAG, "成功添加到用户的posts中");
                                     PostActivity.this.finish();
+                                    PostActivity.this.finish();
+
                                 }
 
                                 @Override

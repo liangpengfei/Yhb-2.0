@@ -3,18 +3,13 @@
 
 package com.example.fei.yhb_20.ui;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -39,7 +34,6 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,7 +41,6 @@ import android.widget.Toast;
 
 import com.bmob.BmobProFile;
 import com.bmob.btp.callback.UploadBatchListener;
-import com.example.fei.yhb_20.DataApp;
 import com.example.fei.yhb_20.LocationApplication;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Merchant;
@@ -59,7 +52,6 @@ import com.example.fei.yhb_20.utils.MD5;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
 import com.marshalchen.common.ui.NumberProgressBar;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;

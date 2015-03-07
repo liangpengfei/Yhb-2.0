@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.MyUtils;
-import com.marshalchen.common.ui.DrawableView;
 import com.marshalchen.common.uimodule.cardsSwiped.view.CardContainer;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
 import com.squareup.picasso.Picasso;
@@ -98,6 +97,9 @@ public class MainFragment extends Fragment {
     }
 
     private static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+        private static final int SHARE = 0;
+        private static final int LIKE = 1;
+        private static final int DISLIKE = 2;
         private List<Post> data;
         private Context context;
         private PopupWindow meun;
@@ -125,6 +127,8 @@ public class MainFragment extends Fragment {
             final Post post = data.get(i);
             if (post!=null){
                 final String objectId = post.getObjectId();
+                final ArrayList<Integer> numberFooter = post.getNumberFooter();
+                final ArrayList booleanFooter = post.getBooleanArray();
 //                final Footer footer = post.getFooter();
 //                viewHolder.tvConment.setText("评论" + footer.getiComment());
 //                viewHolder.tvDislike.setText("没有帮助"+footer.getiDislike());
@@ -150,187 +154,193 @@ public class MainFragment extends Fragment {
                     }
                 });
 
-//                viewHolder.shared.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if (footer.isbShare()){
-//                            //执行取消的代码,并且要写入SharedPreferences
-////                            SharedPreferences.Editor editor = settings.edit();
-////                            editor.putBoolean("shared",false);
-////                            editor.commit();
-//
-//                            viewHolder.ivShare.setImageResource(R.drawable.thumbs_up);
-//                            //更新数据
-//                            footer.setbShare(false);
-//                            footer.setiShare(footer.getiShare());
-//                            post.setFooter(footer);
-//
-//                            post.update(context, objectId, new UpdateListener() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    Log.e(TAG, "成功dis shared");
-//                                    Toast.makeText(context,"成功dis shared",Toast.LENGTH_LONG).show();
-//                                    viewHolder.tvShared.setText("享受过"+(footer.getiShare()));
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int code, String msg) {
-//                                    Log.e(TAG,"失败shared");
-//                                }
-//                            });
-//                        }else{
-//                            //执行添加的代码，写入SharedPreferences
-////                            SharedPreferences.Editor editor = settings.edit();
-////                            editor.putBoolean("shared",true);
-////                            editor.apply();
-//
-//
-//                            viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
-//
-//                            footer.setbShare(true);
-//                            footer.setiShare(footer.getiShare()+1);
-//                            post.setFooter(footer);
-//                            post.update(context, objectId, new UpdateListener() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    Log.e(TAG, "成功shared");
-//                                    Toast.makeText(context,"成功shared",Toast.LENGTH_LONG).show();
-//                                    viewHolder.tvShared.setText("享受过"+(footer.getiShare()));
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int code, String msg) {
-//                                    Log.e(TAG,"失败shared");
-//                                }
-//                            });
-//                        }
-//
-//                    }
-//                });
-//
-//                viewHolder.like.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if (footer.isbLike()){
-//                            //执行取消的代码,并且要写入SharedPreferences
-////                            SharedPreferences.Editor editor = settings.edit();
-////                            editor.putBoolean("like",false);
-////                            editor.commit();
-//
-//                            viewHolder.ivLike.setImageResource(R.drawable.icon_heart);
-//
-//                            footer.setbLike(false);
-//                            footer.setiLike(footer.getiLike());
-//                            post.setFooter(footer);
-//                            post.update(context, objectId, new UpdateListener() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    Log.e(TAG,"成功dis like");
-//                                    Toast.makeText(context,"成功dis like",Toast.LENGTH_LONG).show();
-//                                    viewHolder.tvLike.setText("喜欢"+(footer.getiLike()));
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int code, String msg) {
-//                                    Log.e(TAG,"失败dis like");
-//                                }
-//                            });
-//                        }else{
-//                            //执行添加的代码，写入SharedPreferences
-////                            SharedPreferences.Editor editor = settings.edit();
-////                            editor.putBoolean("like",true);
-////                            editor.commit();
-//
-//
-//                            viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
-//
-//                            footer.setbLike(true);
-//                            footer.setiLike(footer.getiLike()+1);
-//                            post.setFooter(footer);
-//                            post.update(context, objectId, new UpdateListener() {
-//
-//                                @Override
-//                                public void onSuccess() {
-//                                    Log.e(TAG,"成功like");
-//                                    Toast.makeText(context,"成功like",Toast.LENGTH_LONG).show();
-//                                    viewHolder.tvLike.setText("喜欢"+(footer.getiLike()));
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int code, String msg) {
-//                                    Log.e(TAG,"失败like");
-//                                }
-//                            });
-//                        }
-//
-//                    }
-//                });
-//
-//                viewHolder.dislike.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if (footer.isbDislike()){
-//                            //执行取消的代码,并且要写入SharedPreferences
-////                            SharedPreferences.Editor editor = settings.edit();
-////                            editor.putBoolean("dislike",false);
-////                            editor.commit();
-//
-//                            viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike);
-//
-//                            footer.setbDislike(false);
-//                            footer.setiDislike(footer.getiDislike());
-//                            post.setFooter(footer);
-//                            post.update(context, objectId, new UpdateListener() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    Log.e(TAG,"成功dis dislike");
-//                                    Toast.makeText(context,"成功dis dislike",Toast.LENGTH_LONG).show();
-//                                    viewHolder.tvDislike.setText("没有帮助" + (footer.getiDislike()));
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int code, String msg) {
-//                                    Log.e(TAG,"失败dislike");
-//                                }
-//                            });
-//                        }else{
-//                            //执行添加的代码，写入SharedPreferences
-////                            SharedPreferences.Editor editor = settings.edit();
-////                            editor.putBoolean("dislike",true);
-////                            editor.commit();
-//
-//                            viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
-//
-//                            footer.setbDislike(true);
-//                            footer.setiDislike(footer.getiDislike() + 1);
-//                            post.setFooter(footer);
-//                            post.update(context, objectId, new UpdateListener() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    Log.e(TAG,"成功dislike");
-//                                    Toast.makeText(context,"成功dislike",Toast.LENGTH_LONG).show();
-//                                    viewHolder.tvDislike.setText("没有帮助" + (footer.getiDislike()));
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int code, String msg) {
-//                                    Log.e(TAG,"失败dislike");
-//                                }
-//                            });
-//                        }
-//
-//                    }
-//                });
-//
-//                if (footer.isbDislike()){
-//                    viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
-//                }
-//                if (footer.isbLike()){
-//                    viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
-//                }
-//                if (footer.isbShare()){
-//                    viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
-//                }
+                viewHolder.shared.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (booleanFooter.get(SHARE)==0){
+                            //执行取消的代码,并且要写入SharedPreferences
+//                            SharedPreferences.Editor editor = settings.edit();
+//                            editor.putBoolean("shared",false);
+//                            editor.commit();
+
+                            viewHolder.ivShare.setImageResource(R.drawable.thumbs_up);
+                            //更新数据
+                            booleanFooter.set(SHARE,1);
+                            numberFooter.set(SHARE,numberFooter.get(SHARE)-1);
+                            post.setNumberFooter(numberFooter);
+                            post.setBooleanArray(booleanFooter);
+
+                            post.update(context, objectId, new UpdateListener() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.e(TAG, "成功dis shared");
+                                    Toast.makeText(context, "成功dis shared", Toast.LENGTH_LONG).show();
+                                    viewHolder.tvShared.setText("享受过" + (numberFooter.get(SHARE)));
+                                }
+
+                                @Override
+                                public void onFailure(int code, String msg) {
+                                    Log.e(TAG, "失败shared");
+                                }
+                            });
+                        }else{
+                            //执行添加的代码，写入SharedPreferences
+//                            SharedPreferences.Editor editor = settings.edit();
+//                            editor.putBoolean("shared",true);
+//                            editor.apply();
+
+
+                            viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
+
+                            booleanFooter.set(SHARE,0);
+                            numberFooter.set(SHARE, (numberFooter.get(SHARE) + 1));
+                            post.setNumberFooter(numberFooter);
+                            post.setBooleanArray(booleanFooter);
+                            post.update(context, objectId, new UpdateListener() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.e(TAG, "成功shared");
+                                    Toast.makeText(context,"成功shared",Toast.LENGTH_LONG).show();
+                                    viewHolder.tvShared.setText("享受过"+(numberFooter.get(SHARE)));
+                                }
+
+                                @Override
+                                public void onFailure(int code, String msg) {
+                                    Log.e(TAG,"失败shared");
+                                }
+                            });
+                        }
+
+                    }
+                });
+
+                viewHolder.like.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (booleanFooter.get(LIKE)==0){
+                            //执行取消的代码,并且要写入SharedPreferences
+//                            SharedPreferences.Editor editor = settings.edit();
+//                            editor.putBoolean("like",false);
+//                            editor.commit();
+
+                            viewHolder.ivLike.setImageResource(R.drawable.icon_heart);
+
+                            booleanFooter.set(LIKE,1);
+                            numberFooter.set(LIKE,numberFooter.get(LIKE)-1);
+                            post.setBooleanArray(booleanFooter);
+                            post.setNumberFooter(numberFooter);
+                            post.update(context, objectId, new UpdateListener() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.e(TAG,"成功dis like");
+                                    Toast.makeText(context,"成功dis like",Toast.LENGTH_LONG).show();
+                                    viewHolder.tvLike.setText("喜欢"+(numberFooter.get(LIKE)));
+                                }
+
+                                @Override
+                                public void onFailure(int code, String msg) {
+                                    Log.e(TAG,"失败dis like");
+                                }
+                            });
+                        }else{
+                            //执行添加的代码，写入SharedPreferences
+//                            SharedPreferences.Editor editor = settings.edit();
+//                            editor.putBoolean("like",true);
+//                            editor.commit();
+
+
+                            viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
+
+                            booleanFooter.set(LIKE,0);
+                            numberFooter.set(LIKE,numberFooter.get(LIKE)+1);
+                            post.setNumberFooter(numberFooter);
+                            post.setBooleanArray(booleanFooter);
+                            post.update(context, objectId, new UpdateListener() {
+
+                                @Override
+                                public void onSuccess() {
+                                    Log.e(TAG,"成功like");
+                                    Toast.makeText(context,"成功like",Toast.LENGTH_LONG).show();
+                                    viewHolder.tvLike.setText("喜欢"+(numberFooter.get(LIKE)));
+                                }
+
+                                @Override
+                                public void onFailure(int code, String msg) {
+                                    Log.e(TAG,"失败like");
+                                }
+                            });
+                        }
+
+                    }
+                });
+
+                viewHolder.dislike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (booleanFooter.get(DISLIKE)==0){
+                            //执行取消的代码,并且要写入SharedPreferences
+//                            SharedPreferences.Editor editor = settings.edit();
+//                            editor.putBoolean("dislike",false);
+//                            editor.commit();
+
+                            viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike);
+
+                            booleanFooter.set(DISLIKE,1);
+                            numberFooter.set(DISLIKE, numberFooter.get(DISLIKE) - 1);
+                            post.setNumberFooter(numberFooter);
+                            post.setBooleanArray(booleanFooter);
+                            post.update(context, objectId, new UpdateListener() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.e(TAG,"成功dis dislike");
+                                    Toast.makeText(context,"成功dis dislike",Toast.LENGTH_LONG).show();
+                                    viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
+                                }
+
+                                @Override
+                                public void onFailure(int code, String msg) {
+                                    Log.e(TAG,"失败dislike");
+                                }
+                            });
+                        }else{
+                            //执行添加的代码，写入SharedPreferences
+//                            SharedPreferences.Editor editor = settings.edit();
+//                            editor.putBoolean("dislike",true);
+//                            editor.commit();
+
+                            viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
+
+                            booleanFooter.set(DISLIKE,0);
+                            numberFooter.set(DISLIKE, numberFooter.get(DISLIKE) + 1);
+                            post.setNumberFooter(numberFooter);
+                            post.setBooleanArray(booleanFooter);
+                            post.update(context, objectId, new UpdateListener() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.e(TAG,"成功dislike");
+                                    Toast.makeText(context,"成功dislike",Toast.LENGTH_LONG).show();
+                                    viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
+                                }
+
+                                @Override
+                                public void onFailure(int code, String msg) {
+                                    Log.e(TAG,"失败dislike");
+                                }
+                            });
+                        }
+
+                    }
+                });
+
+                if (booleanFooter.get(DISLIKE)==0){
+                    viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
+                }
+                if (booleanFooter.get(LIKE)==0){
+                    viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
+                }
+                if (booleanFooter.get(SHARE)==0){
+                    viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
+                }
 
 
                 //格式化时间
@@ -350,7 +360,7 @@ public class MainFragment extends Fragment {
                 ImageView imageView ;
                 for (int i1 = 0 ;i1 <paths.length; i1++) {
                     imageView = new ImageView(context);
-                    picasso.load(paths[i1]).resize(200,200).into(imageView);
+                    picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
                     imageView.setPadding(2,2,2,2);
                     viewHolder.gallery.addView(imageView);
                 }

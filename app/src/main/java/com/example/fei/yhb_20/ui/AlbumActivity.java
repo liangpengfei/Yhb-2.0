@@ -27,7 +27,6 @@ import com.example.fei.yhb_20.utils.ImageBucket;
 import com.example.fei.yhb_20.utils.ImageItem;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
-import com.marshalchen.common.uimodule.cropimage.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.datatype.BmobRelation;
 
 /**
  * Email luckyliangfei@gmail.com
@@ -15,8 +14,7 @@ public class Post extends BmobObject implements Serializable {
     private static final long serialVersionUID = -2594277656564773968L;
     private String merchantName,content,paths,postName,activityTiem,province,city,district;
     private float rating;
-    private long time;
-    private ArrayList numberFooter,booleanArray;
+    private ArrayList<Integer> numberFooter,booleanArray;
 
     public ArrayList getBooleanArray() {
         return booleanArray;
@@ -95,15 +93,6 @@ public class Post extends BmobObject implements Serializable {
     public void setRating(float rating) {
         this.rating = rating;
     }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
-
 
     public String getProvince() {
         return province;
