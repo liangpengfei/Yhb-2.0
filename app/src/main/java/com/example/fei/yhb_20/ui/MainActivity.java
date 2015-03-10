@@ -23,10 +23,10 @@ import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
+import com.example.fei.yhb_20.utils.views.Comment_view;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
 
 /**
@@ -64,6 +64,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             choose_position.setText(settings.getString("city","选择城市"));
             Toast.makeText(this,"无网络连接，请检测您的网络设置！",Toast.LENGTH_LONG).show();
         }
+
         NetUtil.checkForUpdate(this);
         initEvents();
         setSelect(GV.MAIN_PRESSED);

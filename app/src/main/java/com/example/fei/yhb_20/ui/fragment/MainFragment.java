@@ -1,9 +1,12 @@
 package com.example.fei.yhb_20.ui.fragment;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,39 +14,46 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bmob.BmobProFile;
-import com.bmob.btp.callback.ThumbnailListener;
-import com.bmob.utils.BmobLog;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.ACache;
+import com.example.fei.yhb_20.utils.ExpressionUtil;
 import com.example.fei.yhb_20.utils.MyUtils;
-import com.marshalchen.common.uimodule.cardsSwiped.view.CardContainer;
-import android.app.ActionBar.LayoutParams;
+import com.example.fei.yhb_20.utils.views.Comment_view;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;import android.view.ViewGroup.LayoutParams;
 
 
 public class MainFragment extends Fragment {
@@ -51,9 +61,10 @@ public class MainFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private static Picasso picasso;
-    private DrawerLayout drawerLayout;
+    private static DrawerLayout drawerLayout;
     private ACache aCache;
     LinearLayoutManager layoutManager;
+    private static int[] imageIds = new int[107];
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -156,8 +167,9 @@ public class MainFragment extends Fragment {
                 viewHolder.tvLike.setText("喜欢"+(numberFooter.get(LIKE)));
                 viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
 
+
                 /**
-                 * 定义事件
+                 *定义菜单时间
                  */
                 viewHolder.list.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -204,7 +216,7 @@ public class MainFragment extends Fragment {
 
 
                 /**
-                 * 处理footer中的点击事件
+                 * 享受过
                  */
                 viewHolder.shared.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -255,6 +267,9 @@ public class MainFragment extends Fragment {
                     }
                 });
 
+                /**
+                 * 喜欢
+                 */
                 viewHolder.like.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -304,6 +319,9 @@ public class MainFragment extends Fragment {
                     }
                 });
 
+                /**
+                 * 没有帮助
+                 */
                 viewHolder.dislike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -349,6 +367,158 @@ public class MainFragment extends Fragment {
                             });
                         }
 
+                    }
+                });
+
+                /**
+                 * 评论
+                 */
+                viewHolder.comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        View menuView = View.inflate(context,R.layout.edittext_comment,null);
+                        final AlertDialog menuDialog = new AlertDialog.Builder(context).create();
+                        menuDialog.setView(menuView);
+                        ImageView face = (ImageView) menuView.findViewById(R.id.team_singlechat_id_expression);
+                        Button send = (Button) menuView.findViewById(R.id.team_singlechat_id_send);
+                        final EditText comment = (EditText) menuView.findViewById(R.id.team_singlechat_id_edit);
+                        /**
+                         * 选择表情按钮
+                         */
+                        face.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //显示表情选择
+                                final Dialog builder = new Dialog(context);
+
+                                /**
+                                 * 生成一个表情对话框中的gridview
+                                 * @return
+                                 */
+                                    final GridView view = new GridView(context);
+                                    List<Map<String,Object>> listItems = new ArrayList<Map<String,Object>>();
+                                    //生成107个表情的id，封装
+                                    for(int i = 0; i < 107; i++){
+                                        try {
+                                            if(i<10){
+                                                Field field = R.drawable.class.getDeclaredField("f00" + i);
+                                                int resourceId = Integer.parseInt(field.get(null).toString());
+                                                imageIds[i] = resourceId;
+                                            }else if(i<100){
+                                                Field field = R.drawable.class.getDeclaredField("f0" + i);
+                                                int resourceId = Integer.parseInt(field.get(null).toString());
+                                                imageIds[i] = resourceId;
+                                            }else{
+                                                Field field = R.drawable.class.getDeclaredField("f" + i);
+                                                int resourceId = Integer.parseInt(field.get(null).toString());
+                                                imageIds[i] = resourceId;
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            e.printStackTrace();
+                                        } catch (SecurityException e) {
+                                            e.printStackTrace();
+                                        } catch (IllegalArgumentException e) {
+                                            e.printStackTrace();
+                                        } catch (NoSuchFieldException e) {
+                                            e.printStackTrace();
+                                        } catch (IllegalAccessException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Map<String,Object> listItem = new HashMap<String,Object>();
+                                        listItem.put("image", imageIds[i]);
+                                        listItems.add(listItem);
+                                    }
+
+                                    SimpleAdapter simpleAdapter = new SimpleAdapter(context, listItems, R.layout.team_layout_single_expression_cell, new String[]{"image"}, new int[]{R.id.image});
+                                    view.setAdapter(simpleAdapter);
+                                    view.setNumColumns(6);
+                                    view.setBackgroundColor(Color.rgb(214, 211, 214));
+                                    view.setHorizontalSpacing(1);
+                                    view.setVerticalSpacing(1);
+                                    view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
+                                    view.setGravity(Gravity.CENTER);
+                                GridView gridView = view;
+                                builder.setContentView(gridView);
+                                builder.setTitle("默认表情");
+                                builder.show();
+                                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                                    @Override
+                                    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                                            long arg3) {
+                                        Bitmap bitmap = null;
+                                        bitmap = BitmapFactory.decodeResource(context.getResources(), imageIds[arg2 % imageIds.length]);
+                                        ImageSpan imageSpan = new ImageSpan(context, bitmap);
+                                        String str = null;
+                                        if(arg2<10){
+                                            str = "f00"+arg2;
+                                        }else if(arg2<100){
+                                            str = "f0"+arg2;
+                                        }else{
+                                            str = "f"+arg2;
+                                        }
+                                        SpannableString spannableString = new SpannableString(str);
+                                        spannableString.setSpan(imageSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                        //添加成一个字符串
+                                        comment.append(spannableString);
+                                        builder.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                        /**
+                         * 评论发布按钮
+                         */
+                        send.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //其实是定义了一个协议的，表情传送协议,在接受端也要进行处理
+                                String zhengze = "f0[0-9]{2}|f10[0-7]";
+                                SpannableString spannableString = ExpressionUtil.getExpressionString(context, comment.getText().toString(), zhengze);
+                                post.add("comments",comment.getText().toString());
+                                post.update(context,new UpdateListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.e(TAG,"成功评论");
+                                        post.add("comments",BmobUser.getCurrentUser(context).getObjectId());
+                                        post.update(context,new UpdateListener() {
+                                            @Override
+                                            public void onSuccess() {
+                                                Log.e(TAG,"成功添加评论人信息");
+                                                Toast.makeText(context,"评论成功",Toast.LENGTH_LONG).show();
+                                                menuDialog.dismiss();
+                                            }
+
+                                            @Override
+                                            public void onFailure(int i, String s) {
+                                                Log.e(TAG,"失败添加评论人信息"+s+i);
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onFailure(int i, String s) {
+                                        Log.e(TAG,"失败评论"+s+i);
+                                    }
+                                } );
+                            }
+                        });
+
+                        menuDialog.show();
+                    }
+                });
+
+                /**
+                 * 分享事件
+                 */
+                viewHolder.share.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "我有好东西与您分享"+post.getContent());
+                        sendIntent.setType("text/plain");
+                        context.startActivity(sendIntent);
                     }
                 });
 
@@ -430,7 +600,7 @@ public class MainFragment extends Fragment {
         static class ViewHolder extends RecyclerView.ViewHolder {
             TextView merchantName,userName,content,time,tvShared,tvLike,tvDislike,tvConment;
             ImageView icon,share,list,ivShare,ivLike,ivDislike,ivComment;
-            LinearLayout shared,like,dislike,conment,gallery;
+            LinearLayout shared,like,dislike,comment,gallery;
 
             public ViewHolder(View itemView) {
                 // super这个参数一定要注意,必须为Item的根节点.否则会出现莫名的FC.
@@ -443,7 +613,7 @@ public class MainFragment extends Fragment {
                 shared = (LinearLayout) itemView.findViewById(R.id.ll_main_shared);
                 like = (LinearLayout) itemView.findViewById(R.id.ll_main_like);
                 dislike = (LinearLayout) itemView.findViewById(R.id.ll_main_dislike);
-                conment = (LinearLayout) itemView.findViewById(R.id.ll_main_conment);
+                comment = (LinearLayout) itemView.findViewById(R.id.ll_main_conment);
                 tvShared = (TextView) itemView.findViewById(R.id.tv_main_shared);
                 tvLike = (TextView) itemView.findViewById(R.id.tv_main_like);
                 tvDislike = (TextView) itemView.findViewById(R.id.tv_main_dislike);
@@ -458,5 +628,7 @@ public class MainFragment extends Fragment {
             }
         }
     }
+
+
 
 }
