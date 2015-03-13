@@ -33,4 +33,14 @@
 
     <string name="title_activity_merchant_succ">注册成功</string>
 
+    <string-array name="hot_city">
+        <item>上海市</item>
+        <item>广州市</item>
+        <item>北京市</item>
+        <item>成都市</item>
+        <item>南京市</item>
+    </string-array>
+
+    <string name="title_activity_dialog">DialogActivity</string>
+
 </resources>

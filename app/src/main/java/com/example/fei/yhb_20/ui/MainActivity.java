@@ -7,13 +7,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +29,6 @@ import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
-import com.example.fei.yhb_20.utils.views.Comment_view;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -55,14 +60,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         SharedPreferences settings = getSharedPreferences("settings",0);
-        if (NetUtil.isNetConnected(this)){
-            if (settings.getBoolean("ever",false)){
-                choose_position.setText(settings.getString("city","选择城市"));
-            }
-            MapUtil.getLocation(this,choose_position);
-        }else{
+
+        if(settings.getBoolean("ever", false)){
             choose_position.setText(settings.getString("city","选择城市"));
-            Toast.makeText(this,"无网络连接，请检测您的网络设置！",Toast.LENGTH_LONG).show();
+        }else{
+            if (NetUtil.isNetConnected(this)){
+                //已经写入了
+                MapUtil.getLocation(this,choose_position);
+            }else {
+                choose_position.setText(settings.getString("city","选择城市"));
+
+            }
         }
 
         NetUtil.checkForUpdate(this);
@@ -135,19 +143,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -177,6 +179,35 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Intent intent2 = new Intent(this,FirstActivity.class);
                 startActivity(intent2);
                 finish();
+                break;
+            case R.id.tv_main_choose_position:
+                View popupWindow = LayoutInflater.from(this).inflate(R.layout.popupwindow_pos,null);
+                ListView list = (ListView) popupWindow.findViewById(R.id.listview_pos);
+                TextView currentLocation = (TextView) popupWindow.findViewById(R.id.currentLocation);
+                final SharedPreferences sharedPreferences = getSharedPreferences("settings",0);
+
+
+
+                currentLocation.setText("当前城市："+sharedPreferences.getString("city",""));
+
+                final String  []pos_data = this.getResources().getStringArray(R.array.hot_city);
+                final PopupWindow popup_pos = new PopupWindow(popupWindow, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
+                list.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_expandable_list_item_1,pos_data));
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        choose_position.setText(pos_data[position]);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("city",pos_data[position]);
+                        editor.apply();
+                        popup_pos.dismiss();
+                    }
+                });
+                popup_pos.setTouchable(true);
+                //为了修复popupwindow的bug，
+                popup_pos.setBackgroundDrawable(getResources().getDrawable(
+                        R.drawable.popup_pos_selector));
+                popup_pos.showAsDropDown(choose_position);
                 break;
             default:
                 break;

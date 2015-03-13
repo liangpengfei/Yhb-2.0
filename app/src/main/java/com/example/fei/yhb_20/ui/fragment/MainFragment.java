@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -22,6 +23,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,16 +36,17 @@ import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
+import com.example.fei.yhb_20.ui.DialogActivity;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
 import com.example.fei.yhb_20.utils.MyUtils;
-import com.example.fei.yhb_20.utils.views.Comment_view;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,8 +55,7 @@ import java.util.Map;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;import android.view.ViewGroup.LayoutParams;
+import cn.bmob.v3.listener.UpdateListener;
 
 
 public class MainFragment extends Fragment {
@@ -62,9 +64,10 @@ public class MainFragment extends Fragment {
     private RecyclerView recyclerView;
     private static Picasso picasso;
     private static DrawerLayout drawerLayout;
-    private ACache aCache;
+    private static ACache aCache;
     LinearLayoutManager layoutManager;
     private static int[] imageIds = new int[107];
+    private SharedPreferences sharedPreferences ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,6 +93,7 @@ public class MainFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //TODO 在这里联网
+        sharedPreferences = getActivity().getSharedPreferences("settings",0);
         BmobQuery<Post> query = new BmobQuery<Post>();
         query.include("user");
         query.order("-createdAt");
@@ -99,28 +103,37 @@ public class MainFragment extends Fragment {
                 //在这里写入缓存
                 for (int i = 0 ;i<posts.size();i++){
                     aCache.put(String.valueOf(i),posts.get(i));
+                    if (aCache.getAsBinary(posts.get(i).getObjectId()+"footerBoolean")==null){
+                        byte[] footerBoolean = {1,1,1,1};
+                        aCache.put(posts.get(i).getObjectId()+"footerBoolean",footerBoolean);
+                    }
+                    //根据ObjectId来
                     Log.e(TAG, "write success " + i);
                 }
                 aCache.put("cacheSize",String.valueOf(posts.size()));
                 recyclerView.setAdapter(new MyAdapter(posts,getActivity(),drawerLayout));
-
             }
 
             @Override
             public void onError(int code, String s) {
                 Log.e(TAG,s);
-                List<Post> objects = new ArrayList<Post>();
+                if (sharedPreferences.getBoolean("ever",false)){
+                    List<Post> objects = new ArrayList<Post>();
 
-                int size = Integer.parseInt(aCache.getAsString("cacheSize"));
-                Post post;
-                for (int i = 0;i<size;i++){
-                    post= (Post) aCache.getAsObject(String.valueOf(i));
-                    if (post==null){
-                        android.util.Log.e(TAG, "post is null");
+                    int size = Integer.parseInt(aCache.getAsString("cacheSize"));
+                    Post post;
+                    for (int i = 0;i<size;i++){
+                        post= (Post) aCache.getAsObject(String.valueOf(i));
+                        if (post==null){
+                            android.util.Log.e(TAG, "post is null");
+                        }
+                        objects.add(post);
                     }
-                    objects.add(post);
+                    recyclerView.setAdapter(new MyAdapter(objects,getActivity(),drawerLayout));
+                }else{
+                    Toast.makeText(getActivity(),"您没有登录过，没有缓存文件！",Toast.LENGTH_LONG).show();
                 }
-                recyclerView.setAdapter(new MyAdapter(objects,getActivity(),drawerLayout));
+
             }
         });
     }
@@ -135,6 +148,8 @@ public class MainFragment extends Fragment {
         private static final int SHARE = 0;
         private static final int LIKE = 1;
         private static final int DISLIKE = 2;
+        private static final int COMMENT = 3;
+
         private List<Post> data;
         private Context context;
 
@@ -157,8 +172,9 @@ public class MainFragment extends Fragment {
             final Post post = data.get(i);
             if (post!=null){
                 final String objectId = post.getObjectId();
+                final String cacheBooleanKey = objectId + "footerBoolean";
                 final ArrayList<Integer> numberFooter = post.getNumberFooter();
-                final ArrayList booleanFooter = post.getBooleanArray();
+                final byte[] footerBoolean = aCache.getAsBinary(cacheBooleanKey);
                 viewHolder.content.setText(post.getContent());
                 viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
                 viewHolder.merchantName.setText(post.getMerchantName());
@@ -166,6 +182,7 @@ public class MainFragment extends Fragment {
                 viewHolder.tvShared.setText("享受过" + (numberFooter.get(SHARE)));
                 viewHolder.tvLike.setText("喜欢"+(numberFooter.get(LIKE)));
                 viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
+                viewHolder.tvConment.setText("评论"+ numberFooter.get(COMMENT));
 
 
                 /**
@@ -221,13 +238,16 @@ public class MainFragment extends Fragment {
                 viewHolder.shared.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (booleanFooter.get(SHARE)==0){
+                        if (footerBoolean[SHARE]==0){
                             viewHolder.ivShare.setImageResource(R.drawable.thumbs_up);
-                            //更新数据
-                            booleanFooter.set(SHARE,1);
+                            //更新数据,和下面的有一些区别
+                            footerBoolean[SHARE]=1;
+                            if (aCache.remove(cacheBooleanKey)){
+                                aCache.put(cacheBooleanKey, footerBoolean);
+                                Log.e(TAG,"remove success");
+                            }
                             numberFooter.set(SHARE,numberFooter.get(SHARE)-1);
                             post.setNumberFooter(numberFooter);
-                            post.setBooleanArray(booleanFooter);
 
                             post.update(context, objectId, new UpdateListener() {
                                 @Override
@@ -245,10 +265,13 @@ public class MainFragment extends Fragment {
                         }else{
                             viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
 
-                            booleanFooter.set(SHARE,0);
+                            footerBoolean[SHARE]=0;
                             numberFooter.set(SHARE, (numberFooter.get(SHARE) + 1));
                             post.setNumberFooter(numberFooter);
-                            post.setBooleanArray(booleanFooter);
+                            if (aCache.remove(cacheBooleanKey)){
+                                aCache.put(cacheBooleanKey,footerBoolean);
+                                Log.e(TAG,"remove success");
+                            }
                             post.update(context, objectId, new UpdateListener() {
                                 @Override
                                 public void onSuccess() {
@@ -273,12 +296,12 @@ public class MainFragment extends Fragment {
                 viewHolder.like.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (booleanFooter.get(LIKE)==0){
+                        if (footerBoolean[LIKE]==0){
                             viewHolder.ivLike.setImageResource(R.drawable.icon_heart);
 
-                            booleanFooter.set(LIKE,1);
+                            footerBoolean[LIKE]=1;
                             numberFooter.set(LIKE,numberFooter.get(LIKE)-1);
-                            post.setBooleanArray(booleanFooter);
+                            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
                             post.setNumberFooter(numberFooter);
                             post.update(context, objectId, new UpdateListener() {
                                 @Override
@@ -296,10 +319,10 @@ public class MainFragment extends Fragment {
                         }else{
                             viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
 
-                            booleanFooter.set(LIKE,0);
+                            footerBoolean[LIKE]=0;
                             numberFooter.set(LIKE,numberFooter.get(LIKE)+1);
                             post.setNumberFooter(numberFooter);
-                            post.setBooleanArray(booleanFooter);
+                            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
                             post.update(context, objectId, new UpdateListener() {
 
                                 @Override
@@ -325,13 +348,13 @@ public class MainFragment extends Fragment {
                 viewHolder.dislike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (booleanFooter.get(DISLIKE)==0){
+                        if (footerBoolean[DISLIKE]==0){
                             viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike);
 
-                            booleanFooter.set(DISLIKE,1);
+                            footerBoolean[DISLIKE]=1;
                             numberFooter.set(DISLIKE, numberFooter.get(DISLIKE) - 1);
                             post.setNumberFooter(numberFooter);
-                            post.setBooleanArray(booleanFooter);
+                            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
                             post.update(context, objectId, new UpdateListener() {
                                 @Override
                                 public void onSuccess() {
@@ -348,10 +371,10 @@ public class MainFragment extends Fragment {
                         }else{
                             viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
 
-                            booleanFooter.set(DISLIKE,0);
+                            footerBoolean[DISLIKE]=0;
                             numberFooter.set(DISLIKE, numberFooter.get(DISLIKE) + 1);
                             post.setNumberFooter(numberFooter);
-                            post.setBooleanArray(booleanFooter);
+                            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
                             post.update(context, objectId, new UpdateListener() {
                                 @Override
                                 public void onSuccess() {
@@ -475,32 +498,50 @@ public class MainFragment extends Fragment {
                                 //其实是定义了一个协议的，表情传送协议,在接受端也要进行处理
                                 String zhengze = "f0[0-9]{2}|f10[0-7]";
                                 SpannableString spannableString = ExpressionUtil.getExpressionString(context, comment.getText().toString(), zhengze);
-                                post.add("comments",comment.getText().toString());
-                                post.update(context,new UpdateListener() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.e(TAG,"成功评论");
-                                        post.add("comments",BmobUser.getCurrentUser(context).getObjectId());
-                                        post.update(context,new UpdateListener() {
-                                            @Override
-                                            public void onSuccess() {
-                                                Log.e(TAG,"成功添加评论人信息");
-                                                Toast.makeText(context,"评论成功",Toast.LENGTH_LONG).show();
-                                                menuDialog.dismiss();
-                                            }
+                                if (post!=null){
+                                    post.add("comments",comment.getText().toString());
+                                    post.update(context,new UpdateListener() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.e(TAG,"成功评论");
+                                            post.add("comments",BmobUser.getCurrentUser(context).getObjectId());
+                                            post.update(context,new UpdateListener() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    Log.e(TAG,"成功添加评论人信息");
+                                                    numberFooter.set(COMMENT, numberFooter.get(COMMENT) + 1);
+                                                    post.setNumberFooter(numberFooter);
+                                                    post.update(context,new UpdateListener() {
+                                                        @Override
+                                                        public void onSuccess() {
+                                                            Log.e(TAG,"评论成功，加一");
+                                                            Toast.makeText(context,"评论成功",Toast.LENGTH_LONG).show();
+                                                        }
 
-                                            @Override
-                                            public void onFailure(int i, String s) {
-                                                Log.e(TAG,"失败添加评论人信息"+s+i);
-                                            }
-                                        });
-                                    }
+                                                        @Override
+                                                        public void onFailure(int i, String s) {
+                                                            Log.e(TAG,"评论失败"+s);
+                                                        }
+                                                    });
+                                                    menuDialog.dismiss();
+                                                }
 
-                                    @Override
-                                    public void onFailure(int i, String s) {
-                                        Log.e(TAG,"失败评论"+s+i);
-                                    }
-                                } );
+                                                @Override
+                                                public void onFailure(int i, String s) {
+                                                    Log.e(TAG,"失败添加评论人信息"+s+i);
+                                                }
+                                            });
+                                        }
+
+                                        @Override
+                                        public void onFailure(int i, String s) {
+                                            Log.e(TAG,"失败评论"+s+i);
+                                        }
+                                    } );
+                                }else {
+                                    Toast.makeText(context,"没有网络链接，请检查网络",Toast.LENGTH_LONG).show();
+                                }
+
                             }
                         });
 
@@ -523,17 +564,21 @@ public class MainFragment extends Fragment {
                 });
 
                 /**
-                 * 设置展示的时候的图标颜色值
+                 * 设置展示的时候的图标颜色值，要正确的显示
                  */
-                if (booleanFooter.get(DISLIKE)==0){
-                    viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
+            Log.e(TAG, Arrays.toString(footerBoolean));
+                if (footerBoolean!=null){
+                    if (footerBoolean[DISLIKE]==0){
+                        viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
+                    }
+                    if (footerBoolean[LIKE]==0){
+                        viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
+                    }
+                    if (footerBoolean[SHARE]==0){
+                        viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
+                    }
                 }
-                if (booleanFooter.get(LIKE)==0){
-                    viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
-                }
-                if (booleanFooter.get(SHARE)==0){
-                    viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
-                }
+
 
 
                 //格式化时间

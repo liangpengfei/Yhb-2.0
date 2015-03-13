@@ -44,10 +44,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:windowSoftInputMode="adjustResize"
             android:name=".ui.MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".ui.FirstActivity"
@@ -78,11 +78,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:windowSoftInputMode="stateHidden"
             android:name=".ui.PostActivity"
             android:label="@string/title_activity_post"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name=".ui.AlbumActivity"
@@ -118,7 +118,12 @@
             android:name=".ui.MerchantSucc"
             android:label="@string/title_activity_merchant_succ"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"  >
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        </activity>
+        <activity
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:name=".ui.DialogActivity"
+            android:label="@string/title_activity_dialog" >
         </activity>
     </application>
 

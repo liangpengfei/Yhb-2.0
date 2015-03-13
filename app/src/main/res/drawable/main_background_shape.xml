@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#ffffff" />
+<!-- shape如果不声明形状则默认为正方形 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <stroke android:width="1dp" android:color="#797979" />
+    <corners android:radius="20.0dp" />
+    <!-- 圆角，你也可以对不同的角设置不同的数值 -->
 
-    <corners android:radius="20dp" />
+    <solid android:color="#FFFFFF" />
+    <!-- 形状的填充色 -->
 
-    <!-- <padding android:left="5dp" android:top="5dp"   
-        android:right="5dp" android:bottom="5dp" /> -->
-</shape>  
+    <stroke
+        android:width="1dp"
+        android:color="#CCCCCC" />
+    <!-- 边框宽度和颜色 -->
+
+</shape>

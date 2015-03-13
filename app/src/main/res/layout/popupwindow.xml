@@ -1,56 +1,71 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
     android:background="@drawable/main_background_shape"
-    android:orientation="vertical"
     android:layout_width="match_parent">
 
-    <LinearLayout
-        android:background="@drawable/layout_color_selector"
-        android:gravity="center_vertical"
-        android:id="@+id/collect"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-        <TextView
-            android:textSize="25sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="收藏"/>
+    <RelativeLayout
+        android:background="@drawable/main_background_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center_vertical"
+                android:id="@+id/collect"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:textSize="25sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="收藏"/>
+            </LinearLayout>
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center_vertical"
+                android:id="@+id/unfollow"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:textSize="25sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="取消关注"/>
+            </LinearLayout>
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center_vertical"
+                android:id="@+id/block"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:textSize="25sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="屏蔽"/>
+            </LinearLayout>
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center_vertical"
+                android:id="@+id/report"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:textSize="25sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="举报"/>
+            </LinearLayout>
         </LinearLayout>
-    <LinearLayout
-        android:background="@drawable/layout_color_selector"
-        android:gravity="center_vertical"
-        android:id="@+id/unfollow"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-        <TextView
-            android:textSize="25sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="取消关注"/>
-    </LinearLayout>
-    <LinearLayout
-        android:background="@drawable/layout_color_selector"
-        android:gravity="center_vertical"
-        android:id="@+id/block"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-        <TextView
-            android:textSize="25sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="屏蔽"/>
-    </LinearLayout>
-    <LinearLayout
-        android:background="@drawable/layout_color_selector"
-        android:gravity="center_vertical"
-        android:id="@+id/report"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-        <TextView
-            android:textSize="25sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="举报"/>
-    </LinearLayout>
+        </RelativeLayout>
 
-</LinearLayout>
+
+
+
+
+</RelativeLayout>
