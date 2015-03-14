@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.ui.DialogActivity;
+import com.example.fei.yhb_20.ui.PersonalActivity;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
 import com.example.fei.yhb_20.utils.MyUtils;
@@ -406,6 +407,7 @@ public class MainFragment extends Fragment {
                         ImageView face = (ImageView) menuView.findViewById(R.id.team_singlechat_id_expression);
                         Button send = (Button) menuView.findViewById(R.id.team_singlechat_id_send);
                         final EditText comment = (EditText) menuView.findViewById(R.id.team_singlechat_id_edit);
+                        comment.setFocusable(true);
                         /**
                          * 选择表情按钮
                          */
@@ -564,10 +566,22 @@ public class MainFragment extends Fragment {
                     }
                 });
 
+                //点击头像进入个人主页
                 viewHolder.avata.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        Intent intent = new Intent(context, PersonalActivity.class);
+                        intent.putExtra("user",post.getUser());
+                        context.startActivity(intent);
+                    }
+                });
+                //点击姓名进入个人主页
+                viewHolder.userName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, PersonalActivity.class);
+                        intent.putExtra("user",post.getUser());
+                        context.startActivity(intent);
                     }
                 });
 

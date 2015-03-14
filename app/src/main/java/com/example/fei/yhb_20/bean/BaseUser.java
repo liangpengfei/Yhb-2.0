@@ -13,7 +13,15 @@ public class BaseUser extends BmobUser {
     private String phone,motto,avatarPaht;
     private int attribute;
     private BmobRelation post;
-    private ArrayList<String> followerId;
+    private ArrayList<String> followerId,folloingId;
+
+    public ArrayList<String> getFolloingId() {
+        return folloingId;
+    }
+
+    public void setFolloingId(ArrayList<String> folloingId) {
+        this.folloingId = folloingId;
+    }
 
     public ArrayList<String> getFollowerId() {
         return followerId;

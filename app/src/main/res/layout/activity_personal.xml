@@ -42,9 +42,6 @@
                     android:layout_height="85dp"
                     android:layout_marginTop="27dp"
                     android:background="@drawable/pull_scroll_view_card_avatar_bar">
-
-
-
                     <LinearLayout
                         android:drawablePadding="3dp"
                         android:paddingTop="5dp"
@@ -96,7 +93,7 @@
 
 
                     <TextView
-                        android:id="@+id/user_follow"
+                        android:id="@+id/user_following"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="103dp"
@@ -108,11 +105,11 @@
                         android:textColor="#A1A1A1" />
 
                     <TextView
-                        android:id="@+id/user_book"
+                        android:id="@+id/user_follow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="103dp"
-                        android:layout_below="@id/user_follow"
+                        android:layout_below="@id/user_following"
                         android:layout_marginTop="4dp"
                         android:singleLine="true"
                         android:ellipsize="end"
@@ -181,7 +178,7 @@
                     android:layout_marginTop="15dp"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:text="您还没有添加描述哦"
+                    android:text="这个人很懒，什么都没有留下。。。"
                     android:textSize="12sp"
                     android:textColor="#B1B1B1" />
 
