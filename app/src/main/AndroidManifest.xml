@@ -121,9 +121,13 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
         <activity
-            android:theme="@style/Theme.AppCompat.Dialog"
             android:name=".ui.DialogActivity"
-            android:label="@string/title_activity_dialog" >
+            android:label="@string/title_activity_dialog"
+            android:theme="@style/Theme.AppCompat.Dialog" >
+        </activity>
+        <activity
+            android:name=".ui.PersonalActivity"
+            android:label="@string/title_activity_personal" >
         </activity>
     </application>
 

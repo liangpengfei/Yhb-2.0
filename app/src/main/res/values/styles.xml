@@ -72,5 +72,14 @@
         <item name="android:windowExitAnimation">@anim/menu_bottombar_out</item>
     </style>
 
+    <!--dialog的样式-->
+    <style name="popupDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/filled_box</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+
 
 </resources>

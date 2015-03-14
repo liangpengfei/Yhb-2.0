@@ -58,6 +58,7 @@ import com.example.fei.yhb_20.utils.DBManager;
 import com.example.fei.yhb_20.utils.FileUtils;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.ImageItem;
+import com.example.fei.yhb_20.utils.MyUtils;
 import com.example.fei.yhb_20.utils.NetUtil;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
@@ -160,7 +161,9 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     }
     
     private void updateIcons(){
+        MyUtils.showDialog(this,"正在发布");
         final String [] files = getPhotoPath().split("\\|");
+        Log.e(TAG,"test");
         BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
             @Override
             public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
@@ -198,14 +201,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                     numberFooter.add(2,0);
                     numberFooter.add(3,0);
 
-                    ArrayList booleanArray = new ArrayList();
-                    booleanArray.add(0,1);
-                    booleanArray.add(1,1);
-                    booleanArray.add(2,1);
-                    booleanArray.add(3,1);
 
                     post.setNumberFooter(numberFooter);
-                    post.setBooleanArray(booleanArray);
                     post.setUser(user);
                     Log.e(TAG,"8");
                     post.save(PostActivity.this,new SaveListener() {
@@ -227,7 +224,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                                     Log.e(TAG, "成功添加到用户的posts中");
                                     PostActivity.this.finish();
                                     PostActivity.this.finish();
-
                                 }
 
                                 @Override
@@ -251,7 +247,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
             @Override
             public void onError(int i, String s) {
-                Log.e(TAG,"上传图片失败"+s);
+                Log.e(TAG,"上传图片失败"+s+i);
                 Toast.makeText(PostActivity.this,s,Toast.LENGTH_LONG).show();
             }
         });

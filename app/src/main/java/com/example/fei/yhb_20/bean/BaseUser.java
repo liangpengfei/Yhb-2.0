@@ -1,5 +1,7 @@
 package com.example.fei.yhb_20.bean;
 
+import java.util.ArrayList;
+
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;
 
@@ -11,6 +13,15 @@ public class BaseUser extends BmobUser {
     private String phone,motto,avatarPaht;
     private int attribute;
     private BmobRelation post;
+    private ArrayList<String> followerId;
+
+    public ArrayList<String> getFollowerId() {
+        return followerId;
+    }
+
+    public void setFollowerId(ArrayList<String> followerId) {
+        this.followerId = followerId;
+    }
 
     public BmobRelation getPost() {
         return post;

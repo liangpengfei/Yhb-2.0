@@ -1,12 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+    android:layout_height="200dp"
     android:layout_gravity="center"
     android:gravity="center"
-    android:background="@drawable/main_background_shape"
-    android:layout_width="match_parent">
+    android:layout_width="240dp">
 
     <RelativeLayout
-        android:background="@drawable/main_background_shape"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -20,6 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <TextView
+                    android:textColor="@color/white"
                     android:textSize="25sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -32,6 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <TextView
+                    android:textColor="@color/white"
                     android:textSize="25sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -44,6 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <TextView
+                    android:textColor="@color/white"
                     android:textSize="25sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -56,6 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <TextView
+                    android:textColor="@color/white"
                     android:textSize="25sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -63,9 +65,5 @@
             </LinearLayout>
         </LinearLayout>
         </RelativeLayout>
-
-
-
-
 
 </RelativeLayout>

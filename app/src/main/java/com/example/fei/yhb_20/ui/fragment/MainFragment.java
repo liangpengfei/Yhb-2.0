@@ -192,8 +192,9 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         View menuView = View.inflate(context,R.layout.popupwindow,null);
-                        AlertDialog menuDialog = new AlertDialog.Builder(context).create();
-                        menuDialog.setView(menuView);
+                        Dialog menuDialog = new Dialog(context,R.style.popupDialog);
+                        menuDialog.setContentView(menuView);
+
                         LinearLayout collect,unfollow,block,report;
                         collect = (LinearLayout) menuView.findViewById(R.id.collect);
                         unfollow = (LinearLayout) menuView.findViewById(R.id.unfollow);
@@ -563,6 +564,13 @@ public class MainFragment extends Fragment {
                     }
                 });
 
+                viewHolder.avata.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
                 /**
                  * 设置展示的时候的图标颜色值，要正确的显示
                  */
@@ -644,7 +652,7 @@ public class MainFragment extends Fragment {
 
         static class ViewHolder extends RecyclerView.ViewHolder {
             TextView merchantName,userName,content,time,tvShared,tvLike,tvDislike,tvConment;
-            ImageView icon,share,list,ivShare,ivLike,ivDislike,ivComment;
+            ImageView avata,share,list,ivShare,ivLike,ivDislike,ivComment;
             LinearLayout shared,like,dislike,comment,gallery;
 
             public ViewHolder(View itemView) {
@@ -654,7 +662,7 @@ public class MainFragment extends Fragment {
                 userName = (TextView) itemView.findViewById(R.id.tv_main_postName);
                 content = (TextView) itemView.findViewById(R.id.tv_main_content);
                 time = (TextView) itemView.findViewById(R.id.tv_main_time);
-                icon = (ImageView) itemView.findViewById(R.id.iv_main_logo);
+                avata = (ImageView) itemView.findViewById(R.id.iv_main_logo);
                 shared = (LinearLayout) itemView.findViewById(R.id.ll_main_shared);
                 like = (LinearLayout) itemView.findViewById(R.id.ll_main_like);
                 dislike = (LinearLayout) itemView.findViewById(R.id.ll_main_dislike);

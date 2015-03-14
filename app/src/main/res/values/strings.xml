@@ -42,5 +42,6 @@
     </string-array>
 
     <string name="title_activity_dialog">DialogActivity</string>
+    <string name="title_activity_personal">PersonalActivity</string>
 
 </resources>

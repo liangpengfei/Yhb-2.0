@@ -1,9 +1,16 @@
 package com.example.fei.yhb_20.utils;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
+import com.example.fei.yhb_20.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,5 +120,19 @@ public class MyUtils {
         }
     }
 
+    /**
+     * 上传dialog
+     * @param context
+     * @param text
+     */
+    public static void showDialog(Context context,String text){
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog, null);
+        TextView tv_text = (TextView) view.findViewById(R.id.tv_custom_dialog);
+        tv_text.setText(text);
+        final Dialog dialog = new Dialog(context, R.style.popupDialog);
+        dialog.setContentView(view);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
 
 }

@@ -14,7 +14,7 @@ public class Post extends BmobObject implements Serializable {
     private static final long serialVersionUID = -2594277656564773968L;
     private String merchantName,content,paths,postName,activityTiem,province,city,district;
     private float rating;
-    private ArrayList<Integer> numberFooter,booleanArray;
+    private ArrayList<Integer> numberFooter;
     private ArrayList<String> thumnailsName;
     private String [] comments;
 
@@ -32,14 +32,6 @@ public class Post extends BmobObject implements Serializable {
 
     public void setThumnailsName(ArrayList<String> thumnailsName) {
         this.thumnailsName = thumnailsName;
-    }
-
-    public ArrayList getBooleanArray() {
-        return booleanArray;
-    }
-
-    public void setBooleanArray(ArrayList booleanArray) {
-        this.booleanArray = booleanArray;
     }
 
     public ArrayList getNumberFooter() {
