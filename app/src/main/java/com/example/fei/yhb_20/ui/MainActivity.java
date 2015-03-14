@@ -44,7 +44,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private Fragment fMain;
     private Fragment fClass;
 
-    @InjectView(R.id.bt_slide_logout)Button logout;
+//    @InjectView(R.id.bt_slide_logout)Button logout;
     @InjectView(R.id.id_tab_class)LinearLayout mTabClass;
     @InjectView(R.id.id_tab_main)LinearLayout mTabMain;
     @InjectView(R.id.id_tab_post)LinearLayout mTabPost;
@@ -52,6 +52,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @InjectView(R.id.id_tab_class_img)ImageButton mClassImage;
     @InjectView(R.id.iv_main_message)ImageView message;
     @InjectView(R.id.tv_main_choose_position)TextView choose_position;
+    @InjectView(R.id.logout)TextView logout;
 
 
     @Override
@@ -172,7 +173,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Intent intent = new Intent(this,PostActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.bt_slide_logout:
+            case R.id.logout:
                 BmobUser.logOut(this);
                 BmobUser currentUser = BmobUser.getCurrentUser(this);
                 Toast.makeText(this, "您已经成功退出", Toast.LENGTH_LONG).show();

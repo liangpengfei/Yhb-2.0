@@ -143,18 +143,26 @@
 
     <!-- The navigation drawer -->
 
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="@drawable/stars">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bt_slide_logout"
-            android:text="退出当前帐号"/>
-    </LinearLayout>
+    <include layout="@layout/slide_drawer"/>
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="212dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:choiceMode="singleChoice"-->
+        <!--android:divider="@android:color/transparent"-->
+        <!--android:dividerHeight="0dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:background="@drawable/stars">-->
+        <!--<ImageView-->
+            <!--android:layout_width="212dp"-->
+            <!--android:layout_height="177dp"-->
+            <!--android:src="@drawable/bamboo"/>-->
+
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/bt_slide_logout"-->
+            <!--android:text="退出当前帐号"/>-->
+    <!--</LinearLayout>-->
 </android.support.v4.widget.DrawerLayout>
