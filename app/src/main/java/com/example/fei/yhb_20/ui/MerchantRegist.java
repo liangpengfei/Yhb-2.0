@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -49,6 +50,7 @@ import com.example.fei.yhb_20.utils.FileUtils;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.ImageItem;
 import com.example.fei.yhb_20.utils.MD5;
+import com.example.fei.yhb_20.utils.MyUtils;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
 import com.marshalchen.common.ui.NumberProgressBar;
@@ -214,6 +216,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                  * 如果是没有满到9张，就是添加图标
                  */
                 if (arg2 == Bimp.tempSelectBitmap.size()) {
+                    ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(MerchantRegist.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     ll_popup.startAnimation(AnimationUtils.loadAnimation(MerchantRegist.this, R.anim.activity_translate_in));
                     pop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
                 } else {
@@ -267,10 +270,26 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                 //go to the protocol view page
                 break;
             case R.id.bt_mr_regist:
-                regist.setText("上传中，请稍后。。。");
-                regist.setEnabled(false);
-                setBean();
-                updatePhotos();
+//                if (getPhotoPath()!=null){
+//                    MyUtils.showDialog(this,"注册中，请稍后。。。");
+//                    regist.setEnabled(false);
+//                    setBean();
+//                    updatePhotos();
+//                }else {
+//                    Toast.makeText(this,"请添加执照照片",Toast.LENGTH_LONG).show();
+//                }
+
+                /**
+                 * 应该是这样的，但是为了测试方便，决定photopath为空的时候也能上传
+                 */
+                if (getPhotoPath()!=null){
+                    MyUtils.showDialog(this,"注册中，请稍后。。。");
+                    regist.setEnabled(false);
+                    setBean();
+                    updatePhotos();
+                }else {
+                    Toast.makeText(this,"请添加执照照片",Toast.LENGTH_LONG).show();
+                }
                 break;
             default:
                 break;

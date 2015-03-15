@@ -1,5 +1,6 @@
 package com.example.fei.yhb_20.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.ui.fragment.ClassFragment;
 import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
@@ -53,15 +57,31 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @InjectView(R.id.iv_main_message)ImageView message;
     @InjectView(R.id.tv_main_choose_position)TextView choose_position;
     @InjectView(R.id.logout)TextView logout;
-
+    @InjectView(R.id.user_photo)ImageView avatar;
+    @InjectView(R.id.user_name)TextView name;
+    @InjectView(R.id.user_motto)TextView motto;
+    @InjectView(R.id.user_integral)TextView integral;
+    @InjectView(R.id.user_postNumber)TextView postNumber;
+    @InjectView(R.id.user_follower)TextView follower;
+    @InjectView(R.id.user_following)TextView following;
+    @InjectView(R.id.user_albums)TextView albums;
+    @InjectView(R.id.user_list)ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        SharedPreferences settings = getSharedPreferences("settings",0);
 
+        initViews();
+
+        NetUtil.checkForUpdate(this);
+        initEvents();
+        setSelect(GV.MAIN_PRESSED);
+    }
+
+    private void initViews() {
+        SharedPreferences settings = getSharedPreferences("settings",0);
         if(settings.getBoolean("ever", false)){
             choose_position.setText(settings.getString("city","选择城市"));
         }else{
@@ -73,10 +93,57 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             }
         }
+        BaseUser user = BmobUser.getCurrentUser(this, BaseUser.class);
+        avatar.setImageResource(R.drawable.pull_scroll_view_avatar_default);
+        name.setText(user.getUsername());
+//        postNumber.setText(user.get);
+        if (user.getFolloingId()!=null){
+            follower.setText("粉丝 "+user.getFollowerId().size());
+        }
+        if (user.getFolloingId()!=null){
+            following.setText("关注 "+user.getFolloingId().size());
+        }
+        String [] data = {"我享受过的","我喜欢的","我的足迹","我的收藏","我的消息","草稿箱"};
+        list.setAdapter(new SlideAdapter(data,this) );
+    }
 
-        NetUtil.checkForUpdate(this);
-        initEvents();
-        setSelect(GV.MAIN_PRESSED);
+    private class SlideAdapter extends BaseAdapter {
+
+        private Context context;
+        String [] data;
+
+        public SlideAdapter (String [] data,Context context){
+            this.data = data;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return data.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return data[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            //不必使用viewholer，因为数据量小
+            convertView = LayoutInflater.from(context).inflate(R.layout.slide_item,null);
+            if (convertView==null){
+                Log.e(TAG, "convertView is null");
+            }else{
+                TextView slide_content = (TextView) convertView.findViewById(R.id.slide_item_text);
+                slide_content.setText(data[position]);
+            }
+            return convertView;
+        }
     }
 
     private void setSelect(int i) {

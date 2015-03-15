@@ -82,7 +82,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     private LocationClient mLocationClient;
     private static final java.lang.String TAG = "PostActivity";
     @InjectView(R.id.iv_post_back)ImageView back;
-    @InjectView(R.id.iv_post_cancel)ImageView cancel;
     @InjectView(R.id.iv_post_ok)ImageView ok;
     @InjectView(R.id.ratingbar)RatingBar ratingBar;
     @InjectView(R.id.et_post_merchantName)EditText merchantName;
@@ -518,7 +517,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
     private void initEvents() {
         back.setOnClickListener(this);
-        cancel.setOnClickListener(this);
         ok.setOnClickListener(this);
         dingwei.setOnClickListener(this);
     }
@@ -715,9 +713,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_post_back:
-                finish();
-                break;
-            case R.id.iv_post_cancel:
                 finish();
                 break;
             case R.id.iv_post_ok:

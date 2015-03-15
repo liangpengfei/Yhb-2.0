@@ -34,9 +34,10 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bmob.BmobProFile;
+import com.bmob.btp.callback.ThumbnailListener;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
-import com.example.fei.yhb_20.ui.DialogActivity;
 import com.example.fei.yhb_20.ui.PersonalActivity;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
@@ -620,41 +621,53 @@ public class MainFragment extends Fragment {
 
 
                 ArrayList<String> arrayList = post.getThumnailsName();
+                Log.e(TAG,arrayList.toString());
 
-                for (int i1 = 0 ;i1 <paths.length; i1++) {
-
-                    ImageView imageView;
-                    imageView = new ImageView(context);
-                    picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
-                    imageView.setPadding(2,2,2,2);
-                    viewHolder.gallery.addView(imageView);
-                }
+//                for (int i1 = 0 ;i1 <paths.length; i1++) {
+//
+//                    final ImageView imageView;
+//                    imageView = new ImageView(context);
+//                    picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
+//                    imageView.setPadding(2, 2, 2, 2);
+//                    imageView.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Dialog dialog = new Dialog(context);
+//                            View photoView = LayoutInflater.from(context).inflate(R.layout.photo_view,null);
+//                            ImageView photo = (ImageView) photoView.findViewById(R.id.photo);
+//                            photo.setImageDrawable(imageView.getDrawable());
+//                            dialog.setContentView(photoView);
+//                            dialog.show();
+//                        }
+//                    });
+//                    viewHolder.gallery.addView(imageView);
+//                }
 
                 /**
                  * 想获取缩略图，但是没有成功，总是显示appkey is null
                  */
-//                //TODO
-//                for (int i1 = 0 ;i1 <arrayList.size(); i1++) {
-//                    Log.e(TAG,"kldsjf");
-//                    BmobProFile.getInstance(context).submitThumnailTask(arrayList.get(i1), 1, new ThumbnailListener() {
-//
-//                        @Override
-//                        public void onSuccess(String thumbnailName, String thumbnailUrl) {
-//                            Log.e(TAG,thumbnailUrl+"djlksfjlksdjflksjdlkfjsd");
-//                            ImageView imageView =new ImageView(context);
-//                            picasso.load(thumbnailUrl).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
-//                            imageView.setPadding(2,2,2,2);
-//                            viewHolder.gallery.addView(imageView);
-//                        }
-//
-//                        @Override
-//                        public void onError(int statuscode, String errormsg) {
-//                            Log.e(TAG, String.valueOf(statuscode));
-//                            Log.e(TAG,errormsg+"kldsjfklsjdklfjsdkjfkjsdljfklsdjfjklsdjkfjsdklajfkljsadkfjkl");
-//                        }
-//                    });
-//
-//                }
+                //TODO
+                for (int i1 = 0 ;i1 <arrayList.size(); i1++) {
+                    Log.e(TAG,"kldsjf");
+                    BmobProFile.getInstance(context).submitThumnailTask(arrayList.get(i1), 1, new ThumbnailListener() {
+
+                        @Override
+                        public void onSuccess(String thumbnailName, String thumbnailUrl) {
+                            Log.e(TAG,thumbnailUrl+"djlksfjlksdjflksjdlkfjsd");
+                            ImageView imageView =new ImageView(context);
+                            picasso.load(thumbnailUrl).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
+                            imageView.setPadding(2,2,2,2);
+                            viewHolder.gallery.addView(imageView);
+                        }
+
+                        @Override
+                        public void onError(int statuscode, String errormsg) {
+                            Log.e(TAG, String.valueOf(statuscode));
+                            Log.e(TAG,errormsg+"kldsjfklsjdklfjsdkjfkjsdljfklsdjfjklsdjkfjsdklajfkljsadkfjkl");
+                        }
+                    });
+
+                }
             }
 
 

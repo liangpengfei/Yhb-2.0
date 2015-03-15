@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:layout_weight="0.2"
-                    android:src="@drawable/ic_launcher"
+                    android:src="@drawable/pull_scroll_view_avatar_default"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/iv_main_logo"/>
@@ -123,6 +123,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="我享受过"/>
+
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/ll_main_like"
