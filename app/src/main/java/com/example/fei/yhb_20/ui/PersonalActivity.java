@@ -42,6 +42,11 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
         setContentView(R.layout.activity_personal);
         ButterKnife.inject(this);
 
+        initViews();
+        initEvent();
+    }
+
+    private void initViews() {
         Intent intent = getIntent();
         user= (BaseUser) intent.getSerializableExtra("user");
         if (user!=null){
@@ -60,7 +65,10 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
                 des.setText(user.getMotto());
             }
         }
-        initEvent();
+
+        //在这里设置照片,这里是所有的照片
+//        String photoPath = user.get
+
     }
 
     private void initEvent() {

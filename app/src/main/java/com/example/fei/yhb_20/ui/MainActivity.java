@@ -103,7 +103,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         if (user.getFolloingId()!=null){
             following.setText("关注 "+user.getFolloingId().size());
         }
-        String [] data = {"我享受过的","我喜欢的","我的足迹","我的收藏","我的消息","草稿箱"};
+
+        //TODO 为什么会有这个错
+        String [] data ;
+        if (user.getAttribute()==GV.MERCHANT){
+            data = new String[]{"商户信息", "待完善的相关惠报", "我享受过的", "我喜欢的", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
+        }else{
+            data = new String[]{"我享受过的", "我喜欢的", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
+
+        }
         list.setAdapter(new SlideAdapter(data,this) );
     }
 

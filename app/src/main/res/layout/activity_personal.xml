@@ -184,6 +184,45 @@
 
             </RelativeLayout>
 
+            <LinearLayout
+                android:paddingTop="10dp"
+                android:weightSum="1"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/personal_goto_albums"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_weight="0.9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="他的相册 （0）"/>
+
+                    <ImageView
+                        android:layout_weight="0.1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/arraw_right"/>
+
+                    </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_gray_light"/>
+                <LinearLayout
+                    android:id="@+id/personal_gallery"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+<!--这个里面有测试图片-->
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
         </LinearLayout>
     </com.marshalchen.common.uimodule.huitanScrollView.PullScrollView>
