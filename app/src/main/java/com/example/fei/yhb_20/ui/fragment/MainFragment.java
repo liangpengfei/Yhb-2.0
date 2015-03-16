@@ -41,6 +41,7 @@ import com.bmob.BmobProFile;
 import com.bmob.btp.callback.ThumbnailListener;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
+import com.example.fei.yhb_20.ui.GalleryUrlActivity;
 import com.example.fei.yhb_20.ui.PersonalActivity;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
@@ -59,6 +60,7 @@ import java.util.Map;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -619,12 +621,12 @@ public class MainFragment extends Fragment {
                 viewHolder.time.setText(MyUtils.timeLogic(date,context));
 
                 //获取图片，使用Picasso可以缓存
-                String paths [] = post.getPaths().split("\\|");
+                final String paths [] = post.getPaths().split("\\|");
                 int t = paths.length;
                 Log.e(TAG, String.valueOf(t));
 
 
-                ArrayList<String> arrayList = post.getThumnailsName();
+                final ArrayList<String> arrayList = post.getThumnailsName();
                 Log.e(TAG,arrayList.toString());
 
 //                for (int i1 = 0 ;i1 <paths.length; i1++) {
@@ -648,26 +650,32 @@ public class MainFragment extends Fragment {
 //                }
 
                 /**
-                 * 想获取缩略图，但是没有成功，总是显示appkey is null
+                 * 想获取缩略图，但是没有成功
+                 * 问题解决了，是因为没有进行sign认证，所以没有有400错误
                  */
                 //TODO
                 for (int i1 = 0 ;i1 <arrayList.size(); i1++) {
-                    Log.e(TAG,"kldsjf");
+                    final int finalI = i1;
                     BmobProFile.getInstance(context).submitThumnailTask(arrayList.get(i1), 1, new ThumbnailListener() {
-
                         @Override
                         public void onSuccess(String thumbnailName, String thumbnailUrl) {
-                            Log.e(TAG,thumbnailUrl+"djlksfjlksdjflksjdlkfjsd");
                             ImageView imageView =new ImageView(context);
-                            picasso.load(thumbnailUrl).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
+                            picasso.load(BmobProFile.getInstance(context).signURL(thumbnailName, thumbnailUrl, "54f197dc6dce11fc7c078c07420a080e", 0, null)).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
                             imageView.setPadding(2,2,2,2);
                             viewHolder.gallery.addView(imageView);
+                            imageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(context, GalleryUrlActivity.class);
+                                    intent.putExtra("photoUrls",paths);
+                                    intent.putExtra("currentItem", finalI);
+                                    context.startActivity(intent);
+                                }
+                            });
                         }
-
                         @Override
                         public void onError(int statuscode, String errormsg) {
-                            Log.e(TAG, String.valueOf(statuscode));
-                            Log.e(TAG,errormsg+"kldsjfklsjdklfjsdkjfkjsdljfklsdjfjklsdjkfjsdklajfkljsadkfjkl");
+                            Log.e(TAG, errormsg);
                         }
                     });
 

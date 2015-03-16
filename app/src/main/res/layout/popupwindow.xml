@@ -13,11 +13,12 @@
             android:layout_height="wrap_content">
             <LinearLayout
                 android:background="@drawable/layout_color_selector"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:id="@+id/collect"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <TextView
+                    android:gravity="center_horizontal"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:layout_width="wrap_content"
@@ -26,7 +27,7 @@
             </LinearLayout>
             <LinearLayout
                 android:background="@drawable/layout_color_selector"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:id="@+id/unfollow"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
@@ -39,7 +40,7 @@
             </LinearLayout>
             <LinearLayout
                 android:background="@drawable/layout_color_selector"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:id="@+id/block"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
@@ -52,7 +53,7 @@
             </LinearLayout>
             <LinearLayout
                 android:background="@drawable/layout_color_selector"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:id="@+id/report"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">

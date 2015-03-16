@@ -165,15 +165,16 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         Log.e(TAG,"test");
         BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
             @Override
-            public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
+            public void onSuccess(boolean isFinished, String[] fileNames, String[] urls) {
                 if (isFinished) {
                     Log.e(TAG,"88");
                     Toast.makeText(PostActivity.this, "成功上传", Toast.LENGTH_LONG).show();
                     //得到图片路径的字符串
                     Log.e(TAG,"99");
                     StringBuilder stringBuilder = new StringBuilder("");
-                    for (int i = 0 ;i<strings.length;i++){
-                        stringBuilder.append(BmobProFile.getInstance(PostActivity.this).signURL(strings[i], strings2[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
+                    for (int i = 0 ;i<fileNames.length;i++){
+                        Log.e(TAG,fileNames[i]);
+                        stringBuilder.append(BmobProFile.getInstance(PostActivity.this).signURL(fileNames[i], urls[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
                         stringBuilder.append("|");
                     }
                     Log.e(TAG,stringBuilder.toString());
@@ -189,7 +190,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                     post.setRating(ratingBar.getRating());
                     post.setPaths(stringBuilder.toString());
                     ArrayList<String> arrayList = new ArrayList<String>();
-                    Collections.addAll(arrayList,strings);
+                    Collections.addAll(arrayList,fileNames);
                     post.setThumnailsName(arrayList);
 
                     final BaseUser user = BmobUser.getCurrentUser(PostActivity.this,BaseUser.class);

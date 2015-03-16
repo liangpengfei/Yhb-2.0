@@ -31,4 +31,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile files('src/main/java/lib/BaiduLBS_Android.jar')
     compile files('src/main/java/lib/armeabi.jar')
+    compile project(':Gallery')
 }

@@ -1,1 +1,2 @@
 include ':app',":volley",':ultimateandroid', ':ultimateandroidui'
+include ':Gallery'
