@@ -262,8 +262,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 TextView currentLocation = (TextView) popupWindow.findViewById(R.id.currentLocation);
                 final SharedPreferences sharedPreferences = getSharedPreferences("settings",0);
 
-
-
                 currentLocation.setText("当前城市："+sharedPreferences.getString("city",""));
 
                 final String  []pos_data = this.getResources().getStringArray(R.array.hot_city);

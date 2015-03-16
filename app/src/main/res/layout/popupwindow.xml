@@ -5,7 +5,7 @@
     android:layout_width="240dp">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="240dp"
         android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="vertical"
@@ -19,7 +19,7 @@
                 android:layout_height="60dp">
                 <TextView
                     android:textColor="@color/white"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="收藏"/>
@@ -32,7 +32,7 @@
                 android:layout_height="60dp">
                 <TextView
                     android:textColor="@color/white"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="取消关注"/>
@@ -45,7 +45,7 @@
                 android:layout_height="60dp">
                 <TextView
                     android:textColor="@color/white"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="屏蔽"/>
@@ -58,7 +58,7 @@
                 android:layout_height="60dp">
                 <TextView
                     android:textColor="@color/white"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="举报"/>

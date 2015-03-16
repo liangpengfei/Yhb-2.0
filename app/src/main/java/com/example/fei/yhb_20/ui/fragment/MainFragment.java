@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +79,7 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.main_recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -151,7 +155,7 @@ public class MainFragment extends Fragment {
         private static final int LIKE = 1;
         private static final int DISLIKE = 2;
         private static final int COMMENT = 3;
-
+        private int lastPosition = -1;
         private List<Post> data;
         private Context context;
 
@@ -670,7 +674,19 @@ public class MainFragment extends Fragment {
                 }
             }
 
+            setAnimation(viewHolder.container,i);
 
+        }
+
+        private void setAnimation(View viewToAnimate, int position)
+        {
+            // If the bound view wasn't previously displayed on screen, it's animated
+            if (position > lastPosition)
+            {
+                Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+                viewToAnimate.startAnimation(animation);
+                lastPosition = position;
+            }
         }
         @Override
         public int getItemCount() {
@@ -681,6 +697,7 @@ public class MainFragment extends Fragment {
             TextView merchantName,userName,content,time,tvShared,tvLike,tvDislike,tvConment;
             ImageView avata,share,list,ivShare,ivLike,ivDislike,ivComment;
             LinearLayout shared,like,dislike,comment,gallery;
+            CardView container;
 
             public ViewHolder(View itemView) {
                 // super这个参数一定要注意,必须为Item的根节点.否则会出现莫名的FC.
@@ -705,6 +722,8 @@ public class MainFragment extends Fragment {
                 ivDislike = (ImageView) itemView.findViewById(R.id.iv_main_dislike);
                 ivLike = (ImageView) itemView.findViewById(R.id.iv_main_like);
                 ivShare = (ImageView) itemView.findViewById(R.id.iv_main_shared);
+
+                container = (CardView) itemView.findViewById(R.id.container);
             }
         }
     }

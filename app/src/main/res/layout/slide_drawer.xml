@@ -83,8 +83,6 @@
                         />
                 </LinearLayout>
 
-
-
                 <LinearLayout
                     android:weightSum="4"
                     android:id="@+id/gradient"
@@ -150,6 +148,7 @@
             </RelativeLayout>
 
     <LinearLayout
+        android:paddingBottom="10dp"
         android:weightSum="2"
         android:id="@+id/bottom_sections"
         android:layout_width="wrap_content"
@@ -161,6 +160,10 @@
         android:layout_alignParentEnd="true"
         android:orientation="horizontal" >
     <TextView
+        android:textSize="16sp"
+        android:paddingLeft="70dp"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/setting"
         android:gravity="center"
         android:text="设置"
         android:layout_weight="1"
@@ -168,6 +171,9 @@
         android:layout_height="wrap_content"
         />
     <TextView
+        android:textSize="16sp"
+        android:paddingLeft="70dp"
+        android:drawableLeft="@drawable/shutdown"
         android:id="@+id/logout"
         android:text="退出"
         android:gravity="center"
