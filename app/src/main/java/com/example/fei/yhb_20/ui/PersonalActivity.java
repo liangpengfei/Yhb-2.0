@@ -1,5 +1,7 @@
 package com.example.fei.yhb_20.ui;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
+import com.example.fei.yhb_20.ui.fragment.PersonalLikeFragment;
 import com.marshalchen.common.uimodule.huitanScrollView.PullScrollView;
 
 import java.util.ArrayList;
@@ -35,6 +38,8 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
     @InjectView(R.id.background_img)ImageView background_img;
     @InjectView(R.id.scroll_view)PullScrollView mScrollView;
     private  BaseUser user;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +73,13 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
 
         //在这里设置照片,这里是所有的照片
 //        String photoPath = user.get
+
+
+        fragmentManager = getFragmentManager();
+        transaction = fragmentManager.beginTransaction();
+        PersonalLikeFragment personalLikeFragment = new PersonalLikeFragment();
+        transaction.add(R.id.container,personalLikeFragment,"LikeFragment");
+        transaction.commit();
 
     }
 

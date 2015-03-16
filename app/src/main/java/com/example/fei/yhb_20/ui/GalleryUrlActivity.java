@@ -5,10 +5,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.marshalchen.common.uimodule.cropimage.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +22,7 @@ import ru.truba.touchgallery.GalleryWidget.GalleryViewPager;
 import ru.truba.touchgallery.GalleryWidget.UrlPagerAdapter;
 
 public class GalleryUrlActivity extends ActionBarActivity {
+    private static final String TAG = "GalleryUrlActivity";
     private GalleryViewPager mViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,23 @@ public class GalleryUrlActivity extends ActionBarActivity {
             mViewPager.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.e(TAG,"mViewPager is clicked");
+                    GalleryUrlActivity.this.finish();
+                }
+            });
+            LinearLayout viewer_ll = (LinearLayout) findViewById(R.id.viewer_ll);
+            viewer_ll.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Log.e(TAG,"viewerContainer is touched");
+                    GalleryUrlActivity.this.finish();
+                    return true;
+                }
+            });
+            viewer_ll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e(TAG,"viewerContainer is clicked");
                     GalleryUrlActivity.this.finish();
                 }
             });
