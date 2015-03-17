@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
 import com.example.fei.yhb_20.utils.MyUtils;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,6 +62,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.iv_main_like)ImageView ivLike;
     @InjectView(R.id.iv_main_dislike)ImageView ivDislike;
     @InjectView(R.id.iv_main_comment)ImageView ivComment;
+    @InjectView(R.id.ll_gallery)LinearLayout gallery;
 
     private static final int SHARE = 0;
     private static final int LIKE = 1;
@@ -70,6 +73,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     private String objectId;
     private ArrayList numberFooter;
     private byte[] footerBoolean;
+    private Picasso picasso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         setContentView(R.layout.activity_deatil);
         ButterKnife.inject(this);
         aCache =  ACache.get(this);
+        picasso = Picasso.with(this);
         initViews();
         initEvents();
 
@@ -87,6 +92,8 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         if (intent!=null){
             post = (Post) intent.getSerializableExtra("post");
 
+            final String paths [] = post.getPaths().split("\\|");
+            int t = paths.length;
             objectId = post.getObjectId();
 
             footerBoolean= aCache.getAsBinary(post.getObjectId()+"footerBoolean");
@@ -123,7 +130,23 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                     ivShared.setImageResource(R.drawable.thumbs_up_pressed);
                 }
             }
+            for (int i1 = 0 ;i1 <paths.length; i1++) {
+                final ImageView imageView;
+                imageView = new ImageView(this);
+                picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).into(imageView);
+                imageView.setPadding(2, 2, 2, 2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(DeatilActivity.this, GalleryUrlActivity.class);
+                        intent.putExtra("photoUrls",paths);
+                        DeatilActivity.this.startActivity(intent);
+                    }
+                });
+                gallery.addView(imageView);
+            }
         }
+
 
     }
 
