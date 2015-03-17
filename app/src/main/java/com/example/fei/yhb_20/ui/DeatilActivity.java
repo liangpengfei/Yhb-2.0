@@ -10,16 +10,21 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.BaseUser;
+import com.example.fei.yhb_20.bean.Comment;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
@@ -29,10 +34,14 @@ import com.squareup.picasso.Picasso;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 public class DeatilActivity extends ActionBarActivity implements View.OnClickListener{
@@ -63,6 +72,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.iv_main_dislike)ImageView ivDislike;
     @InjectView(R.id.iv_main_comment)ImageView ivComment;
     @InjectView(R.id.ll_gallery)LinearLayout gallery;
+    @InjectView(R.id.comment_list)ListView listview;
 
     private static final int SHARE = 0;
     private static final int LIKE = 1;
@@ -145,9 +155,81 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 });
                 gallery.addView(imageView);
             }
+            String [] allComments = post.getComments();
+            final String [] comments = new String[allComments.length/2+1];
+            String [] userIds = new String[allComments.length/2+1];
+            //
+            for (int i = 0 ;i<allComments.length;i++){
+                if (i%2==0){
+                    comments[i/2] = allComments[i];
+                }else{
+                    userIds[i/2] = allComments[i];
+                }
+            }
+            BmobQuery<BaseUser> query = new BmobQuery<BaseUser>();
+            query.addWhereContainedIn("objectId", Arrays.asList(userIds));
+            query.findObjects(this, new FindListener<BaseUser>() {
+                @Override
+                public void onSuccess(List<BaseUser> baseUsers) {
+//                    List<Comment> objComments = null;
+                    ArrayList objComments = new ArrayList();
+                    for (int i = 0;i<baseUsers.size();i++){
+                        Comment objComment = new Comment();
+                        objComment.setBaseUser(baseUsers.get(i));
+                        objComment.setComment(comments[i]);
+                        objComments.add(objComment);
+                    }
+                    listview.setAdapter(new commentAdapter(DeatilActivity.this,objComments));
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    Log.e(TAG,"错误"+s+i);
+                }
+            });
+
         }
 
 
+    }
+
+    class commentAdapter extends BaseAdapter{
+
+        private Context context;
+        private ArrayList<Comment> comments;
+
+        public commentAdapter(Context context,ArrayList<Comment> objComents){
+            this.context = context;
+            this.comments = objComents;
+
+        }
+
+        @Override
+        public int getCount() {
+            return comments.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return comments.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.comment_item,null);
+            ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
+            TextView comment = (TextView) convertView.findViewById(R.id.comment);
+            TextView name = (TextView) convertView.findViewById(R.id.comment_username);
+            //在这里设置
+            comment.setText(comments.get(position).getComment());
+            name.setText(comments.get(position).getBaseUser().getUsername());
+            return convertView;
+        }
     }
 
     private void initEvents() {
