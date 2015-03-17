@@ -1,14 +1,18 @@
 package com.example.fei.yhb_20.ui.fragment;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.Post;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +33,9 @@ public class PersonalLikeFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    @InjectView(R.id.personal_like_listview)
+    ListView listView;
 
     /**
      * Use this factory method to create a new instance of
@@ -51,7 +58,6 @@ public class PersonalLikeFragment extends Fragment {
     public PersonalLikeFragment() {
         // Required empty public constructor
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +71,13 @@ public class PersonalLikeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_personal_like, container, false);
+        ButterKnife.inject(getActivity());
+        View view = inflater.inflate(R.layout.fragment_personal_like, container, false);
+        Bundle bundle = getArguments();
+        Post post = (Post) bundle.getSerializable("post");
+
+//        listView.setAdapter(new PersonalItemAdapter(post));
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

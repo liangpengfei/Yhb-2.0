@@ -1,13 +1,8 @@
 package com.example.fei.yhb_20.ui.fragment;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,24 +11,18 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +30,7 @@ import com.bmob.BmobProFile;
 import com.bmob.btp.callback.ThumbnailListener;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Post;
+import com.example.fei.yhb_20.ui.DeatilActivity;
 import com.example.fei.yhb_20.ui.GalleryUrlActivity;
 import com.example.fei.yhb_20.ui.PersonalActivity;
 import com.example.fei.yhb_20.utils.ACache;
@@ -48,19 +38,14 @@ import com.example.fei.yhb_20.utils.ExpressionUtil;
 import com.example.fei.yhb_20.utils.MyUtils;
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -74,6 +59,11 @@ public class MainFragment extends Fragment {
     private static ACache aCache;
     LinearLayoutManager layoutManager;
     private SharedPreferences sharedPreferences ;
+    private static LinearLayout llFoot;
+    private static Button send;
+    private static EditText comment;
+    private static ImageView face;
+    private static Post currentPost;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,6 +76,30 @@ public class MainFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        send = (Button) view.findViewById(R.id.team_singlechat_id_send);
+        comment = (EditText) view.findViewById(R.id.team_singlechat_id_edit);
+        face = (ImageView) view.findViewById(R.id.team_singlechat_id_expression);
+        llFoot = (LinearLayout) view.findViewById(R.id.team_singlechat_id_foot);
+
+        face.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyUtils.showFaceDialog(getActivity(),comment);
+            }
+        });
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm= (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                llFoot.setVisibility(View.INVISIBLE);
+                MyUtils.commentSend(currentPost,comment,getActivity());
+                //强制隐藏
+                imm.hideSoftInputFromWindow(comment.getWindowToken(),0);
+                comment.setText(null);
+            }
+        });
 
         drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
 
@@ -186,6 +200,7 @@ public class MainFragment extends Fragment {
                 String zhengze = "f0[0-9]{2}|f10[0-7]";
                 SpannableString spannableString = ExpressionUtil.getExpressionString(context, post.getContent(), zhengze);
                 viewHolder.content.setText(spannableString);
+
                 viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
                 viewHolder.merchantName.setText(post.getMerchantName());
 
@@ -194,6 +209,15 @@ public class MainFragment extends Fragment {
                 viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
                 viewHolder.tvConment.setText("评论"+ numberFooter.get(COMMENT));
 
+                viewHolder.container.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, DeatilActivity.class);
+                        intent.putExtra("post",post);
+                        context.startActivity(intent);
+
+                    }
+                });
 
                 /**
                  *定义菜单时间
@@ -201,44 +225,7 @@ public class MainFragment extends Fragment {
                 viewHolder.list.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        View menuView = View.inflate(context,R.layout.popupwindow,null);
-                        Dialog menuDialog = new Dialog(context,R.style.popupDialog);
-                        menuDialog.setContentView(menuView);
-
-                        LinearLayout collect,unfollow,block,report;
-                        collect = (LinearLayout) menuView.findViewById(R.id.collect);
-                        unfollow = (LinearLayout) menuView.findViewById(R.id.unfollow);
-                        block = (LinearLayout) menuView.findViewById(R.id.block);
-                        report = (LinearLayout) menuView.findViewById(R.id.report);
-
-                        /**
-                         * 为弹出菜单写定义事件
-                         */
-                        collect.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //收藏
-                            }
-                        });
-                        unfollow.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //取消关注
-                            }
-                        });
-                        block.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //屏蔽
-                            }
-                        });
-                        report.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //举报
-                            }
-                        });
-                        menuDialog.show();
+                        MyUtils.showPopupMenu(context);
                     }
                 });
 
@@ -249,55 +236,7 @@ public class MainFragment extends Fragment {
                 viewHolder.shared.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (footerBoolean[SHARE]==0){
-                            viewHolder.ivShare.setImageResource(R.drawable.thumbs_up);
-                            //更新数据,和下面的有一些区别
-                            footerBoolean[SHARE]=1;
-                            if (aCache.remove(cacheBooleanKey)){
-                                aCache.put(cacheBooleanKey, footerBoolean);
-                                Log.e(TAG,"remove success");
-                            }
-                            numberFooter.set(SHARE,numberFooter.get(SHARE)-1);
-                            post.setNumberFooter(numberFooter);
-
-                            post.update(context, objectId, new UpdateListener() {
-                                @Override
-                                public void onSuccess() {
-                                    Log.e(TAG, "成功dis shared");
-                                    Toast.makeText(context, "成功dis shared", Toast.LENGTH_LONG).show();
-                                    viewHolder.tvShared.setText("享受过" + (numberFooter.get(SHARE)));
-                                }
-
-                                @Override
-                                public void onFailure(int code, String msg) {
-                                    Log.e(TAG, "失败shared");
-                                }
-                            });
-                        }else{
-                            viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
-
-                            footerBoolean[SHARE]=0;
-                            numberFooter.set(SHARE, (numberFooter.get(SHARE) + 1));
-                            post.setNumberFooter(numberFooter);
-                            if (aCache.remove(cacheBooleanKey)){
-                                aCache.put(cacheBooleanKey,footerBoolean);
-                                Log.e(TAG,"remove success");
-                            }
-                            post.update(context, objectId, new UpdateListener() {
-                                @Override
-                                public void onSuccess() {
-                                    Log.e(TAG, "成功shared");
-                                    Toast.makeText(context,"成功shared",Toast.LENGTH_LONG).show();
-                                    viewHolder.tvShared.setText("享受过"+(numberFooter.get(SHARE)));
-                                }
-
-                                @Override
-                                public void onFailure(int code, String msg) {
-                                    Log.e(TAG,"失败shared");
-                                }
-                            });
-                        }
-
+                        MyUtils.footerCommand(footerBoolean,SHARE,viewHolder.ivShare,viewHolder.tvShared,numberFooter,aCache,post,context,objectId);
                     }
                 });
 
@@ -307,49 +246,7 @@ public class MainFragment extends Fragment {
                 viewHolder.like.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (footerBoolean[LIKE]==0){
-                            viewHolder.ivLike.setImageResource(R.drawable.icon_heart);
-
-                            footerBoolean[LIKE]=1;
-                            numberFooter.set(LIKE,numberFooter.get(LIKE)-1);
-                            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
-                            post.setNumberFooter(numberFooter);
-                            post.update(context, objectId, new UpdateListener() {
-                                @Override
-                                public void onSuccess() {
-                                    Log.e(TAG,"成功dis like");
-                                    Toast.makeText(context,"成功dis like",Toast.LENGTH_LONG).show();
-                                    viewHolder.tvLike.setText("喜欢"+(numberFooter.get(LIKE)));
-                                }
-
-                                @Override
-                                public void onFailure(int code, String msg) {
-                                    Log.e(TAG,"失败dis like");
-                                }
-                            });
-                        }else{
-                            viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
-
-                            footerBoolean[LIKE]=0;
-                            numberFooter.set(LIKE,numberFooter.get(LIKE)+1);
-                            post.setNumberFooter(numberFooter);
-                            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
-                            post.update(context, objectId, new UpdateListener() {
-
-                                @Override
-                                public void onSuccess() {
-                                    Log.e(TAG,"成功like");
-                                    Toast.makeText(context,"成功like",Toast.LENGTH_LONG).show();
-                                    viewHolder.tvLike.setText("喜欢"+(numberFooter.get(LIKE)));
-                                }
-
-                                @Override
-                                public void onFailure(int code, String msg) {
-                                    Log.e(TAG,"失败like");
-                                }
-                            });
-                        }
-
+                        MyUtils.footerCommand(footerBoolean,LIKE,viewHolder.ivLike,viewHolder.tvLike,numberFooter,aCache,post,context,objectId);
                     }
                 });
 
@@ -359,48 +256,7 @@ public class MainFragment extends Fragment {
                 viewHolder.dislike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (footerBoolean[DISLIKE]==0){
-                            viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike);
-
-                            footerBoolean[DISLIKE]=1;
-                            numberFooter.set(DISLIKE, numberFooter.get(DISLIKE) - 1);
-                            post.setNumberFooter(numberFooter);
-                            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
-                            post.update(context, objectId, new UpdateListener() {
-                                @Override
-                                public void onSuccess() {
-                                    Log.e(TAG,"成功dis dislike");
-                                    Toast.makeText(context,"成功dis dislike",Toast.LENGTH_LONG).show();
-                                    viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
-                                }
-
-                                @Override
-                                public void onFailure(int code, String msg) {
-                                    Log.e(TAG,"失败dislike");
-                                }
-                            });
-                        }else{
-                            viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
-
-                            footerBoolean[DISLIKE]=0;
-                            numberFooter.set(DISLIKE, numberFooter.get(DISLIKE) + 1);
-                            post.setNumberFooter(numberFooter);
-                            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
-                            post.update(context, objectId, new UpdateListener() {
-                                @Override
-                                public void onSuccess() {
-                                    Log.e(TAG,"成功dislike");
-                                    Toast.makeText(context,"成功dislike",Toast.LENGTH_LONG).show();
-                                    viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
-                                }
-
-                                @Override
-                                public void onFailure(int code, String msg) {
-                                    Log.e(TAG,"失败dislike");
-                                }
-                            });
-                        }
-
+                        MyUtils.footerCommand(footerBoolean,DISLIKE,viewHolder.ivDislike,viewHolder.tvDislike,numberFooter,aCache,post,context,objectId);
                     }
                 });
 
@@ -410,82 +266,13 @@ public class MainFragment extends Fragment {
                 viewHolder.comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        View menuView = View.inflate(context,R.layout.edittext_comment,null);
-                        final AlertDialog menuDialog = new AlertDialog.Builder(context).create();
-                        menuDialog.setView(menuView);
-                        ImageView face = (ImageView) menuView.findViewById(R.id.team_singlechat_id_expression);
-                        Button send = (Button) menuView.findViewById(R.id.team_singlechat_id_send);
-                        final EditText comment = (EditText) menuView.findViewById(R.id.team_singlechat_id_edit);
-                        comment.setFocusable(true);
-                        /**
-                         * 选择表情按钮
-                         */
-                        face.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                /**
-                                 * 显示选择表情dialog
-                                 */
-                                MyUtils.showFaceDialog(context,comment);
-                            }
-                        });
-                        /**
-                         * 评论发布按钮
-                         */
-                        send.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //其实是定义了一个协议的，表情传送协议,在接受端也要进行处理
-                                String zhengze = "f0[0-9]{2}|f10[0-7]";
-                                SpannableString spannableString = ExpressionUtil.getExpressionString(context, comment.getText().toString(), zhengze);
-                                if (post!=null){
-                                    post.add("comments",comment.getText().toString());
-                                    post.update(context,new UpdateListener() {
-                                        @Override
-                                        public void onSuccess() {
-                                            Log.e(TAG,"成功评论");
-                                            post.add("comments",BmobUser.getCurrentUser(context).getObjectId());
-                                            post.update(context,new UpdateListener() {
-                                                @Override
-                                                public void onSuccess() {
-                                                    Log.e(TAG,"成功添加评论人信息");
-                                                    numberFooter.set(COMMENT, numberFooter.get(COMMENT) + 1);
-                                                    post.setNumberFooter(numberFooter);
-                                                    post.update(context,new UpdateListener() {
-                                                        @Override
-                                                        public void onSuccess() {
-                                                            Log.e(TAG,"评论成功，加一");
-                                                            Toast.makeText(context,"评论成功",Toast.LENGTH_LONG).show();
-                                                        }
-
-                                                        @Override
-                                                        public void onFailure(int i, String s) {
-                                                            Log.e(TAG,"评论失败"+s);
-                                                        }
-                                                    });
-                                                    menuDialog.dismiss();
-                                                }
-
-                                                @Override
-                                                public void onFailure(int i, String s) {
-                                                    Log.e(TAG,"失败添加评论人信息"+s+i);
-                                                }
-                                            });
-                                        }
-
-                                        @Override
-                                        public void onFailure(int i, String s) {
-                                            Log.e(TAG,"失败评论"+s+i);
-                                        }
-                                    } );
-                                }else {
-                                    Toast.makeText(context,"没有网络链接，请检查网络",Toast.LENGTH_LONG).show();
-                                }
-
-                            }
-                        });
-
-                        menuDialog.show();
+                        //得到当前的post
+                        currentPost = post;
+                        InputMethodManager imm= (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        llFoot.setVisibility(View.VISIBLE);
+                        comment.requestFocus();
+                        //强制显示键盘
+                        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
                     }
                 });
 
@@ -508,6 +295,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, PersonalActivity.class);
+                        intent.putExtra("post",post);
                         intent.putExtra("user",post.getUser());
                         context.startActivity(intent);
                     }

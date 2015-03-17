@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:src="@drawable/ic_launcher"/>
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
@@ -14,6 +15,7 @@
             android:layout_height="wrap_content"
             android:text="test"/>
         <TextView
+            android:text="content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         </LinearLayout>

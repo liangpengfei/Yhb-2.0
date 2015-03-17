@@ -1,6 +1,5 @@
 package com.example.fei.yhb_20.utils;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,10 +18,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.Post;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * 杂七杂八的一些便捷的方法
@@ -237,6 +243,161 @@ public class MyUtils {
                 builder.dismiss();
             }
         });
+    }
+
+    /**
+     * 主页的弹出菜单
+     * @param context
+     */
+    public static void showPopupMenu(Context context){
+        View menuView = View.inflate(context,R.layout.popupwindow,null);
+        Dialog menuDialog = new Dialog(context,R.style.popupDialog);
+        menuDialog.setContentView(menuView);
+
+        LinearLayout collect,unfollow,block,report;
+        collect = (LinearLayout) menuView.findViewById(R.id.collect);
+        unfollow = (LinearLayout) menuView.findViewById(R.id.unfollow);
+        block = (LinearLayout) menuView.findViewById(R.id.block);
+        report = (LinearLayout) menuView.findViewById(R.id.report);
+
+        /**
+         * 为弹出菜单写定义事件
+         */
+        collect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //收藏
+            }
+        });
+        unfollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //取消关注
+            }
+        });
+        block.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //屏蔽
+            }
+        });
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //举报
+            }
+        });
+        menuDialog.show();
+    }
+
+    /**
+     * 发送评论
+     * @param post
+     * @param comment
+     * @param context
+     */
+    public static void commentSend(final Post post,EditText comment, final Context context){
+        if (post!=null){
+            final ArrayList<Integer> numberFooter = post.getNumberFooter();
+            post.add("comments",comment.getText().toString());
+            post.update(context,new UpdateListener() {
+                @Override
+                public void onSuccess() {
+                    post.add("comments", BmobUser.getCurrentUser(context).getObjectId());
+                    post.update(context,new UpdateListener() {
+                        @Override
+                        public void onSuccess() {
+                            Log.e(TAG,"成功添加评论人信息");
+                            numberFooter.set(3, numberFooter.get(3) + 1);
+                            post.setNumberFooter(numberFooter);
+                            post.update(context,new UpdateListener() {
+                                @Override
+                                public void onSuccess() {
+                                    Log.e(TAG,"评论成功，加一");
+                                    Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onFailure(int i, String s) {
+                                    Log.e(TAG,"评论失败"+s);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(int i, String s) {
+                            Log.e(TAG,"失败添加评论人信息"+s+i);
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(int i, String s) {
+                    Log.e(TAG,"失败评论"+s+i);
+                }
+            } );
+        }else {
+            Toast.makeText(context,"没有网络链接，请检查网络",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * 处理footer上的相关操作，包括喜欢/享受过/没有帮助
+     * @param footerBoolean
+     * @param index
+     * @param image
+     * @param textView
+     * @param numberFooter
+     * @param aCache
+     * @param post
+     * @param context
+     * @param objectId
+     */
+    public static void footerCommand(byte[] footerBoolean, final int index, final ImageView image, final TextView textView, final ArrayList<Integer> numberFooter,ACache aCache,Post post, final Context context,String objectId){
+        final ArrayList<String> array = new ArrayList<>();
+        array.add("享受过");
+        array.add("喜欢");
+        array.add("没有帮助");
+        array.add("评论");
+        if (footerBoolean[index]==0){
+            image.setImageResource(R.drawable.icon_heart);
+
+            footerBoolean[index]=1;
+            numberFooter.set(index, numberFooter.get(index) - 1);
+            aCache.put(post.getObjectId() + "footerBoolean", footerBoolean);
+            post.setNumberFooter(numberFooter);
+            post.update(context, objectId, new UpdateListener() {
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(context, "成功", Toast.LENGTH_LONG).show();
+                    textView.setText(array.get(index)+(numberFooter.get(index)));
+                }
+                @Override
+                public void onFailure(int code, String msg) {
+                    Log.e(TAG,"失败");
+                }
+            });
+        }else{
+            image.setImageResource(R.drawable.icon_heart_pressed);
+
+            footerBoolean[index]=0;
+            numberFooter.set(index,numberFooter.get(index)+1);
+            post.setNumberFooter(numberFooter);
+            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
+            post.update(context, objectId, new UpdateListener() {
+
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(context,"成功",Toast.LENGTH_LONG).show();
+                    textView.setText(array.get(index)+(numberFooter.get(index)));
+                }
+
+                @Override
+                public void onFailure(int code, String msg) {
+                    Log.e(TAG,"失败");
+                }
+            });
+        }
     }
 
 }

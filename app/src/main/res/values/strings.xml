@@ -45,5 +45,6 @@
     <string name="title_activity_personal">PersonalActivity</string>
     <string name="title_activity_photo_show">PhotoShowActivity</string>
     <string name="title_activity_gallery_url">GalleryUrlActivity</string>
+    <string name="title_activity_deatil">惠报详情</string>
 
 </resources>

@@ -136,7 +136,13 @@
             android:name=".ui.GalleryUrlActivity"
             android:label="@string/title_activity_gallery_url"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.DeatilActivity"
+            android:parentActivityName=".ui.MainActivity"
+            android:label="@string/title_activity_deatil" >
         </activity>
     </application>
 

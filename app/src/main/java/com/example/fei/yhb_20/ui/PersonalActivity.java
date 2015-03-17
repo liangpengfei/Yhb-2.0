@@ -3,8 +3,8 @@ package com.example.fei.yhb_20.ui;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
+import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.ui.fragment.PersonalLikeFragment;
 import com.example.fei.yhb_20.ui.fragment.PersonalShareFragment;
 import com.marshalchen.common.uimodule.huitanScrollView.PullScrollView;
@@ -57,6 +58,8 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
     private void initViews() {
         Intent intent = getIntent();
         user= (BaseUser) intent.getSerializableExtra("user");
+        Post post = (Post) intent.getSerializableExtra("post");
+
         if (user!=null){
             name.setText(user.getUsername());
             if (user.getFollowerId()!=null){
@@ -84,6 +87,9 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
         fragmentManager = getFragmentManager();
         transaction = fragmentManager.beginTransaction();
         PersonalLikeFragment personalLikeFragment = new PersonalLikeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("post",post);
+        personalLikeFragment.setArguments(bundle);
         transaction.add(R.id.container,personalLikeFragment,"LikeFragment");
         transaction.commit();
 
