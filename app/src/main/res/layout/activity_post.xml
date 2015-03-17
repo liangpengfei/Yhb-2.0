@@ -173,6 +173,20 @@
         </LinearLayout>
     </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/face_bar"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/face"
+            android:src="@drawable/chat_expression_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+
 
 
 </RelativeLayout>

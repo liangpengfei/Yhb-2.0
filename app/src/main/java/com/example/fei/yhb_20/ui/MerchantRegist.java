@@ -283,7 +283,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                  * 应该是这样的，但是为了测试方便，决定photopath为空的时候也能上传
                  */
                 if (getPhotoPath()!=null){
-                    MyUtils.showDialog(this,"注册中，请稍后。。。");
+                    MyUtils.showProgressDialog(this,"注册中，请稍后。。。");
                     regist.setEnabled(false);
                     setBean();
                     updatePhotos();

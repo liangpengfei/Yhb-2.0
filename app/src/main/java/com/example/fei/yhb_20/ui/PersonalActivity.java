@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.ui.fragment.PersonalLikeFragment;
+import com.example.fei.yhb_20.ui.fragment.PersonalShareFragment;
 import com.marshalchen.common.uimodule.huitanScrollView.PullScrollView;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
     @InjectView(R.id.user_message)TextView message;
     @InjectView(R.id.background_img)ImageView background_img;
     @InjectView(R.id.scroll_view)PullScrollView mScrollView;
+    @InjectView(R.id.tv_personal_share)TextView tvShare;
+    @InjectView(R.id.tv_personal_like)TextView tvLike;
     private  BaseUser user;
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
@@ -75,6 +78,9 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
 //        String photoPath = user.get
 
 
+        /**
+         * 首先进行了初始化的操作
+         */
         fragmentManager = getFragmentManager();
         transaction = fragmentManager.beginTransaction();
         PersonalLikeFragment personalLikeFragment = new PersonalLikeFragment();
@@ -89,6 +95,8 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
         message.setOnClickListener(this);
         mScrollView.setHeader(background_img);
         mScrollView.setOnTurnListener(this);
+        tvLike.setOnClickListener(this);
+        tvShare.setOnClickListener(this);
     }
 
 
@@ -147,6 +155,21 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
                 break;
             case R.id.user_message:
                 //进入私信界面
+                break;
+            case R.id.tv_personal_like:
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                PersonalLikeFragment likeFragment = new PersonalLikeFragment();
+                transaction.remove(fragmentManager.findFragmentByTag("PersonalShareFragment"));
+                transaction.replace(R.id.container,likeFragment,"LikeFragment");
+                transaction.commit();
+                break;
+            case R.id.tv_personal_share:
+                //应该判断fragment是否已经存在了，如果已经存在了，就不用创建
+                FragmentTransaction transaction2 = fragmentManager.beginTransaction();
+                PersonalShareFragment personalShareFragment = new PersonalShareFragment();
+                transaction2.remove(fragmentManager.findFragmentByTag("LikeFragment"));
+                transaction2.replace(R.id.container,personalShareFragment,"PersonalShareFragment");
+                transaction2.commit();
                 break;
             default:
                 break;

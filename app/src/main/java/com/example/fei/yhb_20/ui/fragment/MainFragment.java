@@ -73,7 +73,6 @@ public class MainFragment extends Fragment {
     private static DrawerLayout drawerLayout;
     private static ACache aCache;
     LinearLayoutManager layoutManager;
-    private static int[] imageIds = new int[107];
     private SharedPreferences sharedPreferences ;
 
     @Override
@@ -183,7 +182,10 @@ public class MainFragment extends Fragment {
                 final String cacheBooleanKey = objectId + "footerBoolean";
                 final ArrayList<Integer> numberFooter = post.getNumberFooter();
                 final byte[] footerBoolean = aCache.getAsBinary(cacheBooleanKey);
-                viewHolder.content.setText(post.getContent());
+                //要显示表情
+                String zhengze = "f0[0-9]{2}|f10[0-7]";
+                SpannableString spannableString = ExpressionUtil.getExpressionString(context, post.getContent(), zhengze);
+                viewHolder.content.setText(spannableString);
                 viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
                 viewHolder.merchantName.setText(post.getMerchantName());
 
@@ -421,82 +423,10 @@ public class MainFragment extends Fragment {
                         face.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //显示表情选择
-                                final Dialog builder = new Dialog(context);
-
                                 /**
-                                 * 生成一个表情对话框中的gridview
-                                 * @return
+                                 * 显示选择表情dialog
                                  */
-                                    final GridView view = new GridView(context);
-                                    List<Map<String,Object>> listItems = new ArrayList<Map<String,Object>>();
-                                    //生成107个表情的id，封装
-                                    for(int i = 0; i < 107; i++){
-                                        try {
-                                            if(i<10){
-                                                Field field = R.drawable.class.getDeclaredField("f00" + i);
-                                                int resourceId = Integer.parseInt(field.get(null).toString());
-                                                imageIds[i] = resourceId;
-                                            }else if(i<100){
-                                                Field field = R.drawable.class.getDeclaredField("f0" + i);
-                                                int resourceId = Integer.parseInt(field.get(null).toString());
-                                                imageIds[i] = resourceId;
-                                            }else{
-                                                Field field = R.drawable.class.getDeclaredField("f" + i);
-                                                int resourceId = Integer.parseInt(field.get(null).toString());
-                                                imageIds[i] = resourceId;
-                                            }
-                                        } catch (NumberFormatException e) {
-                                            e.printStackTrace();
-                                        } catch (SecurityException e) {
-                                            e.printStackTrace();
-                                        } catch (IllegalArgumentException e) {
-                                            e.printStackTrace();
-                                        } catch (NoSuchFieldException e) {
-                                            e.printStackTrace();
-                                        } catch (IllegalAccessException e) {
-                                            e.printStackTrace();
-                                        }
-                                        Map<String,Object> listItem = new HashMap<String,Object>();
-                                        listItem.put("image", imageIds[i]);
-                                        listItems.add(listItem);
-                                    }
-
-                                    SimpleAdapter simpleAdapter = new SimpleAdapter(context, listItems, R.layout.team_layout_single_expression_cell, new String[]{"image"}, new int[]{R.id.image});
-                                    view.setAdapter(simpleAdapter);
-                                    view.setNumColumns(6);
-                                    view.setBackgroundColor(Color.rgb(214, 211, 214));
-                                    view.setHorizontalSpacing(1);
-                                    view.setVerticalSpacing(1);
-                                    view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
-                                    view.setGravity(Gravity.CENTER);
-                                GridView gridView = view;
-                                builder.setContentView(gridView);
-                                builder.setTitle("默认表情");
-                                builder.show();
-                                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                                    @Override
-                                    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                                            long arg3) {
-                                        Bitmap bitmap = null;
-                                        bitmap = BitmapFactory.decodeResource(context.getResources(), imageIds[arg2 % imageIds.length]);
-                                        ImageSpan imageSpan = new ImageSpan(context, bitmap);
-                                        String str = null;
-                                        if(arg2<10){
-                                            str = "f00"+arg2;
-                                        }else if(arg2<100){
-                                            str = "f0"+arg2;
-                                        }else{
-                                            str = "f"+arg2;
-                                        }
-                                        SpannableString spannableString = new SpannableString(str);
-                                        spannableString.setSpan(imageSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                        //添加成一个字符串
-                                        comment.append(spannableString);
-                                        builder.dismiss();
-                                    }
-                                });
+                                MyUtils.showFaceDialog(context,comment);
                             }
                         });
                         /**

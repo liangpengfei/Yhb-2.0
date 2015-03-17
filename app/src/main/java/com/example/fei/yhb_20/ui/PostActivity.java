@@ -92,6 +92,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     @InjectView(R.id.position3)Spinner position3;
     @InjectView(R.id.noScrollgridview)GridView noScrollgridview;
     @InjectView(R.id.et_post_content)EditText content;
+    @InjectView(R.id.face_bar)LinearLayout faceBar;
+    @InjectView(R.id.face)ImageView face;
 
 
     private DBManager dbm;
@@ -140,6 +142,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
             ratingBar.setRating(GV.getRating());
         }
 
+
+
         position1.setPrompt("省");
         position2.setPrompt("市");
         position3.setPrompt("地区");
@@ -160,7 +164,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     }
     
     private void updateIcons(){
-        MyUtils.showDialog(this,"正在发布");
+        MyUtils.showProgressDialog(this,"正在发布");
         final String [] files = getPhotoPath().split("\\|");
         Log.e(TAG,"test");
         BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
@@ -520,6 +524,23 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         back.setOnClickListener(this);
         ok.setOnClickListener(this);
         dingwei.setOnClickListener(this);
+
+        content.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus){
+                    faceBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+        content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                faceBar.setVisibility(View.VISIBLE);
+            }
+        });
+
+        face.setOnClickListener(this);
     }
 
     /**
@@ -729,6 +750,12 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                 }else{
                     Toast.makeText(this,"无网络连接，请检测您的网络设置！",Toast.LENGTH_LONG).show();
                 }
+                break;
+            case R.id.face:
+                /**
+                 * 显示表情选择
+                 */
+                MyUtils.showFaceDialog(PostActivity.this,content);
                 break;
             default:
                 break;

@@ -4,18 +4,35 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Environment;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +45,8 @@ public class MyUtils {
     private static final String TAG = "MyUtils";
     private static DBManager dbm;
     private static SQLiteDatabase db;
+    private static int[] imageIds = new int[107];
+
     public static boolean isEmail(String email){
         return match("\\w+@(\\w+.)+[a-z]{2,3}",email);
     }
@@ -121,11 +140,11 @@ public class MyUtils {
     }
 
     /**
-     * 上传dialog
+     * 显示进度条dialog
      * @param context
      * @param text
      */
-    public static void showDialog(Context context,String text){
+    public static void showProgressDialog(Context context,String text){
         View view = LayoutInflater.from(context).inflate(R.layout.dialog, null);
         TextView tv_text = (TextView) view.findViewById(R.id.tv_custom_dialog);
         tv_text.setText(text);
@@ -133,6 +152,91 @@ public class MyUtils {
         dialog.setContentView(view);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
+    }
+
+    /**
+     * 显示表情选择dialog
+     * @param context
+     * @param editText
+     */
+    public static void showFaceDialog(final Context context, final EditText editText){
+
+        //显示表情选择
+        final Dialog builder = new Dialog(context);
+
+        /**
+         * 生成一个表情对话框中的gridview
+         * @return
+         */
+        final GridView view = new GridView(context);
+        List<Map<String,Object>> listItems = new ArrayList<Map<String,Object>>();
+        //生成107个表情的id，封装
+        for(int i = 0; i < 107; i++){
+            try {
+                if(i<10){
+                    Field field = R.drawable.class.getDeclaredField("f00" + i);
+                    int resourceId = Integer.parseInt(field.get(null).toString());
+                    imageIds[i] = resourceId;
+                }else if(i<100){
+                    Field field = R.drawable.class.getDeclaredField("f0" + i);
+                    int resourceId = Integer.parseInt(field.get(null).toString());
+                    imageIds[i] = resourceId;
+                }else{
+                    Field field = R.drawable.class.getDeclaredField("f" + i);
+                    int resourceId = Integer.parseInt(field.get(null).toString());
+                    imageIds[i] = resourceId;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            Map<String,Object> listItem = new HashMap<String,Object>();
+            listItem.put("image", imageIds[i]);
+            listItems.add(listItem);
+        }
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(context, listItems, R.layout.team_layout_single_expression_cell, new String[]{"image"}, new int[]{R.id.image});
+        view.setAdapter(simpleAdapter);
+        view.setNumColumns(6);
+        view.setBackgroundColor(Color.rgb(214, 211, 214));
+        view.setHorizontalSpacing(1);
+        view.setVerticalSpacing(1);
+        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        view.setGravity(Gravity.CENTER);
+        GridView gridView = view;
+        builder.setContentView(gridView);
+        builder.setTitle("默认表情");
+        builder.show();
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+                Bitmap bitmap = null;
+                bitmap = BitmapFactory.decodeResource(context.getResources(), imageIds[arg2 % imageIds.length]);
+                ImageSpan imageSpan = new ImageSpan(context, bitmap);
+                String str = null;
+                if(arg2<10){
+                    str = "f00"+arg2;
+                }else if(arg2<100){
+                    str = "f0"+arg2;
+                }else{
+                    str = "f"+arg2;
+                }
+                SpannableString spannableString = new SpannableString(str);
+                spannableString.setSpan(imageSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                //添加成一个字符串
+                editText.append(spannableString);
+                builder.dismiss();
+            }
+        });
     }
 
 }

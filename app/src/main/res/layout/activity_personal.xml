@@ -250,6 +250,7 @@
                     android:layout_height="20dp"
                     android:background="@color/color_gray_light"/>
                 <TextView
+                    android:id="@+id/tv_personal_share"
                     android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@id/view"
                     android:layout_width="wrap_content"
