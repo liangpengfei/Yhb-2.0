@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -180,6 +181,14 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                         objComments.add(objComment);
                     }
                     listview.setAdapter(new commentAdapter(DeatilActivity.this,objComments));
+                    MyUtils.setListViewHeightBasedOnChildren(listview);
+                    listview.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                            return false;
+                        }
+                    });
                 }
 
                 @Override
@@ -224,9 +233,11 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
             convertView = LayoutInflater.from(context).inflate(R.layout.comment_item,null);
             ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
             TextView comment = (TextView) convertView.findViewById(R.id.comment);
+            String zhengze = "f0[0-9]{2}|f10[0-7]";
+            SpannableString spannableString = ExpressionUtil.getExpressionString(context, comments.get(position).getComment(), zhengze);
+            comment.setText(spannableString);
             TextView name = (TextView) convertView.findViewById(R.id.comment_username);
             //在这里设置
-            comment.setText(comments.get(position).getComment());
             name.setText(comments.get(position).getBaseUser().getUsername());
             return convertView;
         }
