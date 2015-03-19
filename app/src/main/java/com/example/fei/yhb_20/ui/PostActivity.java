@@ -51,6 +51,7 @@ import com.example.fei.yhb_20.LocationApplication;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.adapter.MyAdapter;
 import com.example.fei.yhb_20.bean.BaseUser;
+import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.MyListItem;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.Bimp;
@@ -207,6 +208,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
 
                     post.setNumberFooter(numberFooter);
+
+                    ArrayList<CommentItem> commentItems = new ArrayList<CommentItem>();
+                    post.setCommentItems(commentItems);
+
                     post.setUser(user);
                     Log.e(TAG,"8");
                     post.save(PostActivity.this,new SaveListener() {

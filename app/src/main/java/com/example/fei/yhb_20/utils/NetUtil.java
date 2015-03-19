@@ -81,7 +81,8 @@ public class NetUtil {
     /**
      * 检查网络是否连接
      * @param context
-     * @return true or false
+     * @return true 有网络连接
+     * @return false 没有网络链接
      */
     public static boolean isNetConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

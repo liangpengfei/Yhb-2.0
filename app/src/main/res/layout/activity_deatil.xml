@@ -220,10 +220,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"/>
 
+
+
                         <ListView
                             android:id="@+id/comment_list"
                             android:layout_width="match_parent"
-                            android:layout_height="350dp"/>
+                            android:layout_height="650dp"/>
 
                     </LinearLayout>
                     </ScrollView>

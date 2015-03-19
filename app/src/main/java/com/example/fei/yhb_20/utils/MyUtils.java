@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.Post;
 
 import java.io.File;
@@ -293,42 +294,88 @@ public class MyUtils {
     }
 
     /**
-     * 发送评论
+     * 发送评论,尚有问题
      * @param post
      * @param comment
      * @param context
      */
+//    public static void commentSend(final Post post,EditText comment, final Context context){
+//        if (post!=null){
+//            final ArrayList<Integer> numberFooter = post.getNumberFooter();
+//            String [] test = {comment.getText().toString(),BmobUser.getCurrentUser(context).getObjectId()};
+//            post.add("comments",test);
+//
+//            post.update(context,new UpdateListener() {
+//                @Override
+//                public void onSuccess() {
+//                    post.add("comments", BmobUser.getCurrentUser(context).getObjectId());
+//                    Log.e(TAG,BmobUser.getCurrentUser(context).getObjectId());
+//                    post.update(context,new UpdateListener() {
+//                        @Override
+//                        public void onSuccess() {
+//                            Log.e(TAG,"成功添加评论人信息");
+//                            numberFooter.set(3, numberFooter.get(3) + 1);
+//                            post.setNumberFooter(numberFooter);
+//                            post.update(context,new UpdateListener() {
+//                                @Override
+//                                public void onSuccess() {
+//                                    Log.e(TAG,"评论成功，加一");
+//                                    Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
+//                                }
+//
+//                                @Override
+//                                public void onFailure(int i, String s) {
+//                                    Log.e(TAG,"评论失败"+s);
+//                                }
+//                            });
+//                        }
+//
+//                        @Override
+//                        public void onFailure(int i, String s) {
+//                            Log.e(TAG,"失败添加评论人信息"+s+i);
+//                        }
+//                    });
+//                }
+//
+//                @Override
+//                public void onFailure(int i, String s) {
+//                    Log.e(TAG,"失败评论"+s+i);
+//                }
+//            } );
+//        }else {
+//            Toast.makeText(context,"没有网络链接，请检查网络",Toast.LENGTH_LONG).show();
+//        }
+//    }
+
     public static void commentSend(final Post post,EditText comment, final Context context){
         if (post!=null){
             final ArrayList<Integer> numberFooter = post.getNumberFooter();
-            post.add("comments",comment.getText().toString());
+
+            final ArrayList<CommentItem> commentItems = post.getCommentItems();
+            CommentItem commentItem = new CommentItem();
+            commentItem.setComment(comment.getText().toString());
+            commentItem.setObjectId(BmobUser.getCurrentUser(context).getObjectId());
+            commentItem.setName(post.getUser().getUsername());
+            commentItems.add(commentItem);
+            post.setCommentItems(commentItems);
+
             post.update(context,new UpdateListener() {
                 @Override
                 public void onSuccess() {
-                    post.add("comments", BmobUser.getCurrentUser(context).getObjectId());
+                    Log.e(TAG,commentItems.toString());
+
+                    numberFooter.set(3, numberFooter.get(3) + 1);
+                    post.setNumberFooter(numberFooter);
                     post.update(context,new UpdateListener() {
                         @Override
                         public void onSuccess() {
-                            Log.e(TAG,"成功添加评论人信息");
-                            numberFooter.set(3, numberFooter.get(3) + 1);
-                            post.setNumberFooter(numberFooter);
-                            post.update(context,new UpdateListener() {
-                                @Override
-                                public void onSuccess() {
-                                    Log.e(TAG,"评论成功，加一");
-                                    Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
-                                }
-
-                                @Override
-                                public void onFailure(int i, String s) {
-                                    Log.e(TAG,"评论失败"+s);
-                                }
-                            });
+                            Log.e(TAG,"评论成功，加一");
+                            Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
                         }
 
                         @Override
                         public void onFailure(int i, String s) {
-                            Log.e(TAG,"失败添加评论人信息"+s+i);
+                            Log.e(TAG,"评论失败"+s);
                         }
                     });
                 }
@@ -356,50 +403,58 @@ public class MyUtils {
      * @param objectId
      */
     public static void footerCommand(byte[] footerBoolean, final int index, final ImageView image, final TextView textView, final ArrayList<Integer> numberFooter,ACache aCache,Post post, final Context context,String objectId){
-        final ArrayList<String> array = new ArrayList<>();
-        array.add("享受过");
-        array.add("喜欢");
-        array.add("没有帮助");
-        array.add("评论");
-        if (footerBoolean[index]==0){
-            image.setImageResource(R.drawable.icon_heart);
+        int [] resources = {R.drawable.thumbs_up,R.drawable.icon_heart,R.drawable.icon_dislike};
+        int [] resourcesPressed = {R.drawable.thumbs_up_pressed,R.drawable.icon_heart_pressed,R.drawable.icon_dislike_pressed};
+        if (NetUtil.isNetConnected(context)){
+            final ArrayList<String> array = new ArrayList<>();
+            array.add("享受过");
+            array.add("喜欢");
+            array.add("没有帮助");
+            array.add("评论");
+            if (footerBoolean[index]==0){
+                image.setImageResource(resources[index]);
 
-            footerBoolean[index]=1;
-            numberFooter.set(index, numberFooter.get(index) - 1);
-            aCache.put(post.getObjectId() + "footerBoolean", footerBoolean);
-            post.setNumberFooter(numberFooter);
-            post.update(context, objectId, new UpdateListener() {
-                @Override
-                public void onSuccess() {
-                    Toast.makeText(context, "成功", Toast.LENGTH_LONG).show();
-                    textView.setText(array.get(index)+(numberFooter.get(index)));
-                }
-                @Override
-                public void onFailure(int code, String msg) {
-                    Log.e(TAG,"失败");
-                }
-            });
-        }else{
-            image.setImageResource(R.drawable.icon_heart_pressed);
+                footerBoolean[index]=1;
+                numberFooter.set(index, numberFooter.get(index) - 1);
+                aCache.put(post.getObjectId() + "footerBoolean", footerBoolean);
+                post.setNumberFooter(numberFooter);
+                post.update(context, objectId, new UpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(context, "成功", Toast.LENGTH_LONG).show();
+                        textView.setText(array.get(index)+(numberFooter.get(index)));
+                    }
+                    @Override
+                    public void onFailure(int code, String msg) {
+                        Log.e(TAG,"失败");
+                    }
+                });
+            }else{
+                image.setImageResource(resourcesPressed[index]);
 
-            footerBoolean[index]=0;
-            numberFooter.set(index,numberFooter.get(index)+1);
-            post.setNumberFooter(numberFooter);
-            aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
-            post.update(context, objectId, new UpdateListener() {
+                footerBoolean[index]=0;
+                numberFooter.set(index,numberFooter.get(index)+1);
+                post.setNumberFooter(numberFooter);
+                aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
+                post.update(context, objectId, new UpdateListener() {
 
-                @Override
-                public void onSuccess() {
-                    Toast.makeText(context,"成功",Toast.LENGTH_LONG).show();
-                    textView.setText(array.get(index)+(numberFooter.get(index)));
-                }
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(context,"成功",Toast.LENGTH_LONG).show();
+                        textView.setText(array.get(index)+(numberFooter.get(index)));
+                    }
 
-                @Override
-                public void onFailure(int code, String msg) {
-                    Log.e(TAG,"失败");
-                }
-            });
+                    @Override
+                    public void onFailure(int code, String msg) {
+                        Log.e(TAG,"失败");
+                    }
+                });
+            }
         }
+        else{
+            Toast.makeText(context,"好像没网咯",Toast.LENGTH_LONG).show();
+        }
+
     }
 
 //    public static void setListViewHeightBasedOnChildren(ListView listView) {
