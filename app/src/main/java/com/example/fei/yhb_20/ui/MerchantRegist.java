@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -44,7 +45,10 @@ import com.bmob.BmobProFile;
 import com.bmob.btp.callback.UploadBatchListener;
 import com.example.fei.yhb_20.LocationApplication;
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.BaseUser;
+import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.Merchant;
+import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.Bimp;
 import com.example.fei.yhb_20.utils.FileUtils;
 import com.example.fei.yhb_20.utils.GV;
@@ -59,11 +63,16 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * 商户注册界面，这个是单独为商户抽象出来的，有一些独特的地方
@@ -91,7 +100,6 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.et_mr_license)EditText license;
     @InjectView(R.id.tv_mr_protocol)TextView protocol;
     @InjectView(R.id.bt_mr_regist)Button regist;
-    @InjectView(R.id.numberbar)NumberProgressBar progressBar;
     @InjectView(R.id.noScrollgridview)GridView noScrollgridview;
 
 
@@ -238,7 +246,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
             builder.append("|");
 
         }
-        return builder.toString();
+        return builder.toString().trim();
     }
 
     public void photo() {
@@ -270,24 +278,17 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                 //go to the protocol view page
                 break;
             case R.id.bt_mr_regist:
-//                if (getPhotoPath()!=null){
-//                    MyUtils.showDialog(this,"注册中，请稍后。。。");
-//                    regist.setEnabled(false);
-//                    setBean();
-//                    updatePhotos();
-//                }else {
-//                    Toast.makeText(this,"请添加执照照片",Toast.LENGTH_LONG).show();
-//                }
-
-                /**
-                 * 应该是这样的，但是为了测试方便，决定photopath为空的时候也能上传
-                 */
+                Log.e(TAG,"registtest");
                 if (getPhotoPath()!=null){
                     MyUtils.showProgressDialog(this,"注册中，请稍后。。。");
                     regist.setEnabled(false);
+                    Log.e(TAG,"111");
                     setBean();
+                    Log.e(TAG,"222");
                     updatePhotos();
+                    Log.e(TAG,"333");
                 }else {
+                    Log.e(TAG,"444");
                     Toast.makeText(this,"请添加执照照片",Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -300,24 +301,23 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
      * 首先上传相应的图片，上传图片成功之后再进行用户信息的注册
      */
     private void updatePhotos() {
-        progressBar.setVisibility(View.VISIBLE);
         String [] files = getPhotoPath().split("\\|");
-        Log.d(TAG, getPhotoPath());
+        Log.d(TAG, getPhotoPath()+"liangtest");
         BmobProFile.getInstance(MerchantRegist.this).uploadBatch(files, new UploadBatchListener() {
             @Override
-            public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
+            public void onSuccess(boolean isFinished, String[] fileNames, String[] urls) {
                 if (isFinished) {
-                    progressBar.setVisibility(View.INVISIBLE);
+                    Log.e(TAG,"88");
                     Toast.makeText(MerchantRegist.this, "成功上传", Toast.LENGTH_LONG).show();
-                    StringBuilder stringBuilder = new StringBuilder("");
-                    for (int i = 0 ;i<strings.length;i++){
-                        stringBuilder.append(BmobProFile.getInstance(MerchantRegist.this).signURL(strings[i], strings2[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
-                        stringBuilder.append("|");
+                    ArrayList<String> photoPaths = new ArrayList<String>();
+                    for (int i = 0 ;i < fileNames.length;i++){
+                        photoPaths.add(BmobProFile.getInstance(MerchantRegist.this).signURL(fileNames[i], urls[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
                     }
-                    merchant.setPhotoPath(stringBuilder.toString());
-                    merchant.signUp(MerchantRegist.this, new SaveListener() {
+                    merchant.setPhotoPaths(photoPaths);
+                    merchant.signUp(MerchantRegist.this,new SaveListener() {
                         @Override
                         public void onSuccess() {
+                            Log.e(TAG,"success really");
                             //注册成功，跳转到主页
                             Intent intent = new Intent(MerchantRegist.this, MainActivity.class);
                             startActivity(intent);
@@ -326,50 +326,70 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 
                         @Override
                         public void onFailure(int i, String s) {
-                            Toast.makeText(MerchantRegist.this, s, Toast.LENGTH_LONG).show();
+                            Log.e(TAG,s+i);
                         }
                     });
 
                 }
             }
-
-            /**
-             * 在这个方法中更新上传进度条，使用的是DemoOfUi中的进度条
-             * 基本思路是使用message和handler来不断的更新progressbar中的进度
-             * @param curIndex
-             * @param curPercent
-             * @param total
-             * @param totalPercent
-             */
             @Override
             public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
-                String sMsg = "curIndex:"+curIndex+"curPercent:"+curPercent+"total:"+total+"totalParcent:"+totalPercent;
-                Message msg = new Message();
-                Bundle bundle = new Bundle();
-                bundle.putInt("curIndex",curIndex);
-                bundle.putInt("curPercent",curPercent);
-                bundle.putInt("total",total);
-                bundle.putInt("totalPercent",totalPercent);
-                msg.setData(bundle);
-                mHandler.sendMessage(msg);
-                Log.d(TAG, sMsg);
+                Log.e(TAG, String.valueOf(curPercent));
             }
 
             @Override
             public void onError(int i, String s) {
-                Log.d(TAG,s);
+                Log.e(TAG,"上传图片失败"+s+i);
+                Toast.makeText(MerchantRegist.this,s,Toast.LENGTH_LONG).show();
             }
         });
+//        BmobProFile.getInstance(MerchantRegist.this).uploadBatch(files, new UploadBatchListener() {
+//            @Override
+//            public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
+//                if (isFinished) {
+//                    Toast.makeText(MerchantRegist.this, "成功上传", Toast.LENGTH_LONG).show();
+//                    StringBuilder stringBuilder = new StringBuilder("");
+//                    for (int i = 0; i < strings.length; i++) {
+//                        stringBuilder.append(BmobProFile.getInstance(MerchantRegist.this).signURL(strings[i], strings2[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
+//                        stringBuilder.append("|");
+//                    }
+//                    merchant.setPhotoPath(stringBuilder.toString());
+//                    merchant.signUp(MerchantRegist.this, new SaveListener() {
+//                        @Override
+//                        public void onSuccess() {
+//                            //注册成功，跳转到主页
+//                            Intent intent = new Intent(MerchantRegist.this, MainActivity.class);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//
+//                        @Override
+//                        public void onFailure(int i, String s) {
+//                            Toast.makeText(MerchantRegist.this, s, Toast.LENGTH_LONG).show();
+//                        }
+//                    });
+//
+//                }
+//            }
+//
+//            /**
+//             * 不再使用上传时候的进度条，而是使用一个弹出框来提示用户
+//             * @param curIndex
+//             * @param curPercent
+//             * @param total
+//             * @param totalPercent
+//             */
+//            @Override
+//            public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
+//
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                Log.d(TAG, s);
+//            }
+//        });
     }
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle bundle = msg.getData();
-            progressBar.setProgress(bundle.getInt("curPercent"));
-        }
-    };
 
     /**
      * 设置当前获取到的用户输入的注册信息，并封装为一个bean，以供注册的时候使用

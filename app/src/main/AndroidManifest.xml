@@ -139,10 +139,16 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.DeatilActivity"
+            android:label="@string/title_activity_deatil"
             android:parentActivityName=".ui.MainActivity"
-            android:label="@string/title_activity_deatil" >
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.MerchantInfoPage"
+            android:parentActivityName=".ui.MainActivity"
+            android:label="@string/title_activity_merchant_info_page" >
         </activity>
     </application>
 

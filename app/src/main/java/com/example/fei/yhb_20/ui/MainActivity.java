@@ -66,6 +66,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @InjectView(R.id.user_albums)TextView albums;
     @InjectView(R.id.user_list)ListView list;
 
+    private BaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +94,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             }
         }
-        BaseUser user = BmobUser.getCurrentUser(this, BaseUser.class);
+        user= BmobUser.getCurrentUser(this, BaseUser.class);
         avatar.setImageResource(R.drawable.pull_scroll_view_avatar_default);
         name.setText(user.getUsername());
 //        postNumber.setText(user.get);
@@ -200,6 +202,59 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         logout.setOnClickListener(this);
         choose_position.setOnClickListener(this);
         message.setOnClickListener(this);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (user.getAttribute()==GV.PERSON){
+                    switch (position){
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (user.getAttribute()==GV.MAIN_PRESSED){
+                    Intent intent = null;
+                    switch (position){
+                        case 0:
+                            intent = new Intent(MainActivity.this,MerchantInfoPage.class);
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            break;
+                        case 7:
+                            break;
+                        case 8:
+                            break;
+                        default:
+                            break;
+                    }
+                    startActivity(intent);
+                }
+            }
+        });
+
     }
 
     private void hideFragment(FragmentTransaction transaction)

@@ -1,0 +1,164 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.example.fei.yhb_20.ui.MerchantInfoPage">
+
+    <RelativeLayout
+        android:id="@+id/rl_info_0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="商户名"/>
+        <TextView
+            android:id="@+id/tv_info_merchantName"
+            android:paddingRight="10dp"
+            android:layout_toLeftOf="@+id/arraw0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="成都王府井百货"/>
+        <ImageView
+            android:id="@+id/arraw0"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arraw_right"/>
+
+        </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_info_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="商户照片"/>
+
+
+
+        <ImageView
+            android:id="@+id/arraw1"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arraw_right"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_info_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="地址"/>
+        <TextView
+            android:id="@+id/tv_info_address"
+            android:paddingRight="10dp"
+            android:layout_toLeftOf="@+id/arraw2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未填写"/>
+        <ImageView
+            android:id="@+id/arraw2"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arraw_right"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_info_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="电话"/>
+        <TextView
+            android:id="@+id/tv_info_phone"
+            android:paddingRight="10dp"
+            android:layout_toLeftOf="@+id/arraw3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未填写"/>
+        <ImageView
+            android:id="@+id/arraw3"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arraw_right"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_info_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="营业时间"/>
+        <TextView
+            android:id="@+id/tv_info_onTime"
+            android:paddingRight="10dp"
+            android:layout_toLeftOf="@+id/arraw4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未填写"/>
+        <ImageView
+            android:id="@+id/arraw4"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arraw_right"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_info_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分类"/>
+        <TextView
+            android:id="@+id/tv_info_sort"
+            android:paddingRight="10dp"
+            android:layout_toLeftOf="@+id/arraw5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未填写"/>
+        <ImageView
+            android:id="@+id/arraw5"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arraw_right"/>
+
+    </RelativeLayout>
+</LinearLayout>
