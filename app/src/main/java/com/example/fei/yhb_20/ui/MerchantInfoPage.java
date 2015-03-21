@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Merchant;
+import com.example.fei.yhb_20.bean.MerchantInfo;
+import com.example.fei.yhb_20.utils.MyUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -38,15 +40,23 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
         setContentView(R.layout.activity_merchant_info_page);
         ButterKnife.inject(this);
         merchant = BmobUser.getCurrentUser(this,Merchant.class);
-        if (merchant!=null){
-            mMerchantName.setText(merchant.getMerchantName());
-        }
+
         initViews();
         initEvents();
     }
 
     private void initViews() {
-
+        if (merchant!=null){
+            mMerchantName.setText(merchant.getMerchantName());
+            //在这里用反射来实现
+            MerchantInfo merchantInfo = (MerchantInfo) MyUtils.formatObjectforTextView(MerchantInfo.class, merchant.getMerchantInfo());
+            if (merchantInfo!=null){
+                mAddress.setText(merchantInfo.getAddress());
+                mPhone.setText(merchantInfo.getPhone());
+                mOnTime.setText(merchantInfo.getOnTime());
+                mSort.setText(merchantInfo.getSort());
+            }
+        }
     }
 
     private void initEvents() {

@@ -14,6 +14,7 @@ public class BaseUser extends BmobUser {
     private int attribute;
     private BmobRelation post;
     private ArrayList<String> followerId,folloingId;
+    private MyInfo myInfo;
 
     public ArrayList<String> getFolloingId() {
         return folloingId;

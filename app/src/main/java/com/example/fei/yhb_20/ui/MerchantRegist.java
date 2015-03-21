@@ -48,6 +48,7 @@ import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.Merchant;
+import com.example.fei.yhb_20.bean.MerchantInfo;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.Bimp;
 import com.example.fei.yhb_20.utils.FileUtils;
@@ -280,15 +281,11 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
             case R.id.bt_mr_regist:
                 Log.e(TAG,"registtest");
                 if (getPhotoPath()!=null){
-                    MyUtils.showProgressDialog(this,"注册中，请稍后。。。");
+                    MyUtils.showProgressDialog(this, "注册中，请稍后。。。");
                     regist.setEnabled(false);
-                    Log.e(TAG,"111");
                     setBean();
-                    Log.e(TAG,"222");
                     updatePhotos();
-                    Log.e(TAG,"333");
                 }else {
-                    Log.e(TAG,"444");
                     Toast.makeText(this,"请添加执照照片",Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -409,6 +406,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         merchant.setLicense(sLicense);
         merchant.setName(sName);
         merchant.setAttribute(GV.MERCHANT);
+        merchant.setMerchantInfo(new MerchantInfo());
     }
 
     @Override

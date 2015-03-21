@@ -10,4 +10,6 @@
 
     <!-- match_parent = -1dp / wrap_content = -2dp -->
     <dimen name="drawerWidth">-1dp</dimen>
+
+    <dimen name="tvNormalSize">20sp</dimen>
 </resources>

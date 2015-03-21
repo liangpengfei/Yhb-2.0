@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/Gallery/Gallery.iml" filepath="$PROJECT_DIR$/Gallery/Gallery.iml" />
       <module fileurl="file://$PROJECT_DIR$/MyApplication.iml" filepath="$PROJECT_DIR$/MyApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/combinationImageView/combinationImageView.iml" filepath="$PROJECT_DIR$/combinationImageView/combinationImageView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/combinationimage/combinationimage.iml" filepath="$PROJECT_DIR$/combinationimage/combinationimage.iml" />
       <module fileurl="file://$PROJECT_DIR$/ultimateandroid/ultimateandroid.iml" filepath="$PROJECT_DIR$/ultimateandroid/ultimateandroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/ultimateandroidui/ultimateandroidui.iml" filepath="$PROJECT_DIR$/ultimateandroidui/ultimateandroidui.iml" />
       <module fileurl="file://$PROJECT_DIR$/volley/volley.iml" filepath="$PROJECT_DIR$/volley/volley.iml" />

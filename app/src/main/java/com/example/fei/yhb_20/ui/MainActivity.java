@@ -47,7 +47,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private Fragment fMain;
     private Fragment fClass;
 
-//    @InjectView(R.id.bt_slide_logout)Button logout;
     @InjectView(R.id.id_tab_class)LinearLayout mTabClass;
     @InjectView(R.id.id_tab_main)LinearLayout mTabMain;
     @InjectView(R.id.id_tab_post)LinearLayout mTabPost;
@@ -97,7 +96,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         user= BmobUser.getCurrentUser(this, BaseUser.class);
         avatar.setImageResource(R.drawable.pull_scroll_view_avatar_default);
         name.setText(user.getUsername());
-//        postNumber.setText(user.get);
         if (user.getFolloingId()!=null){
             follower.setText("粉丝 "+user.getFollowerId().size());
         }
@@ -105,7 +103,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             following.setText("关注 "+user.getFolloingId().size());
         }
 
-        //TODO 为什么会有这个错
         String [] data ;
         if (user.getAttribute()==GV.MERCHANT){
             data = new String[]{"商户信息", "待完善的相关惠报", "我享受过的", "我喜欢的", "我的足迹", "我的收藏", "我的消息", "草稿箱"};

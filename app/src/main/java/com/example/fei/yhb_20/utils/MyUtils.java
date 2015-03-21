@@ -498,4 +498,31 @@ public class MyUtils {
         listView.requestLayout();
     }
 
+    /**
+     * 将从网上下载到的bean格式化为适合自定义的textView的settext方法
+     * 如果bean中的某些属性是空的，则设置这些属性为“”，以防止空指针异常
+     * @param c 是一个类
+     * @param bean  想要格式化的对象
+     * @return
+     */
+    public static Object formatObjectforTextView(Class c,Object bean){
+
+        Object object = null;
+        try {
+            object = Class.forName(c.getName()).newInstance();
+            Class<?> obj = object.getClass();
+            Field[] fields = obj.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                fields[i].setAccessible(true);
+                if (fields[i].get(bean)==null){
+                    fields[i].set(object,"未填写");
+                }
+            }
+            return object;
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
