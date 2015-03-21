@@ -32,6 +32,7 @@ import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
+import com.marshalchen.common.uimodule.huitanScrollView.PullScrollView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -40,7 +41,7 @@ import cn.bmob.v3.BmobUser;
 /**
  * 主界面，里面使用了fragment来处理不同的tab，框架已经搭好
  */
-public class MainActivity extends FragmentActivity implements View.OnClickListener{
+public class MainActivity extends FragmentActivity implements View.OnClickListener,PullScrollView.OnTurnListener{
 
     private static final String TAG = "MainActivity";
 
@@ -55,6 +56,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @InjectView(R.id.iv_main_message)ImageView message;
     @InjectView(R.id.tv_main_choose_position)TextView choose_position;
     @InjectView(R.id.logout)TextView logout;
+    @InjectView(R.id.setting)TextView setting;
     @InjectView(R.id.user_photo)ImageView avatar;
     @InjectView(R.id.user_name)TextView name;
     @InjectView(R.id.user_motto)TextView motto;
@@ -111,6 +113,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         }
         list.setAdapter(new SlideAdapter(data,this) );
+    }
+
+    @Override
+    public void onTurn() {
+
     }
 
     private class SlideAdapter extends BaseAdapter {
@@ -197,6 +204,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mTabPost.setOnClickListener(this);
 
         logout.setOnClickListener(this);
+        setting.setOnClickListener(this);
         choose_position.setOnClickListener(this);
         message.setOnClickListener(this);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -333,6 +341,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 popup_pos.setBackgroundDrawable(getResources().getDrawable(
                         R.drawable.popup_pos_selector));
                 popup_pos.showAsDropDown(choose_position);
+                break;
+            case R.id.setting:
+                Intent settingIntent = new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(settingIntent);
                 break;
             default:
                 break;

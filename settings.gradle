@@ -1,2 +1,2 @@
-include ':app', ":volley", ':ultimateandroid', ':ultimateandroidui', ':combinationImageView', ':combinationimage'
+include ':app', ":volley", ':ultimateandroid', ':ultimateandroidui', ':combinationimageview'
 include ':Gallery'

@@ -157,49 +157,6 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 gallery.addView(imageView);
             }
             listview.setAdapter(new commentAdapter(this,post.getCommentItems()));
-//            String [] allComments = post.getComments();
-//            if (allComments!=null){
-//                final String [] comments = new String[allComments.length/2+1];
-//                String [] userIds = new String[allComments.length/2+1];
-//                //
-//                for (int i = 0 ;i<allComments.length;i++){
-//                    if (i%2==0){
-//                        comments[i/2] = allComments[i];
-//                    }else{
-//                        userIds[i/2] = allComments[i];
-//                    }
-//                }
-//                BmobQuery<BaseUser> query = new BmobQuery<BaseUser>();
-//                query.addWhereContainedIn("objectId", Arrays.asList(userIds));
-//                query.findObjects(this, new FindListener<BaseUser>() {
-//                    @Override
-//                    public void onSuccess(List<BaseUser> baseUsers) {
-////                    List<Comment> objComments = null;
-//                        ArrayList objComments = new ArrayList();
-//                        for (int i = 0;i<baseUsers.size();i++){
-//                            Comment objComment = new Comment();
-//                            objComment.setBaseUser(baseUsers.get(i));
-//                            objComment.setComment(comments[i]);
-//                            objComments.add(objComment);
-//                        }
-//                        listview.setAdapter(new commentAdapter(DeatilActivity.this,objComments));
-//                        MyUtils.setListViewHeightBasedOnChildren(listview);
-//                        listview.setOnTouchListener(new View.OnTouchListener() {
-//                            @Override
-//                            public boolean onTouch(View v, MotionEvent event) {
-//                                v.getParent().requestDisallowInterceptTouchEvent(true);
-//                                return false;
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onError(int i, String s) {
-//                        Log.e(TAG,"错误"+s+i);
-//                    }
-//                });
-//            }
-
 
         }
 
