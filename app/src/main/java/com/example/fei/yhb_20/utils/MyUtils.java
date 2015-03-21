@@ -294,58 +294,11 @@ public class MyUtils {
     }
 
     /**
-     * 发送评论,尚有问题
+     * 发送评论,已经更改问题
      * @param post
      * @param comment
      * @param context
      */
-//    public static void commentSend(final Post post,EditText comment, final Context context){
-//        if (post!=null){
-//            final ArrayList<Integer> numberFooter = post.getNumberFooter();
-//            String [] test = {comment.getText().toString(),BmobUser.getCurrentUser(context).getObjectId()};
-//            post.add("comments",test);
-//
-//            post.update(context,new UpdateListener() {
-//                @Override
-//                public void onSuccess() {
-//                    post.add("comments", BmobUser.getCurrentUser(context).getObjectId());
-//                    Log.e(TAG,BmobUser.getCurrentUser(context).getObjectId());
-//                    post.update(context,new UpdateListener() {
-//                        @Override
-//                        public void onSuccess() {
-//                            Log.e(TAG,"成功添加评论人信息");
-//                            numberFooter.set(3, numberFooter.get(3) + 1);
-//                            post.setNumberFooter(numberFooter);
-//                            post.update(context,new UpdateListener() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    Log.e(TAG,"评论成功，加一");
-//                                    Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
-//                                }
-//
-//                                @Override
-//                                public void onFailure(int i, String s) {
-//                                    Log.e(TAG,"评论失败"+s);
-//                                }
-//                            });
-//                        }
-//
-//                        @Override
-//                        public void onFailure(int i, String s) {
-//                            Log.e(TAG,"失败添加评论人信息"+s+i);
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onFailure(int i, String s) {
-//                    Log.e(TAG,"失败评论"+s+i);
-//                }
-//            } );
-//        }else {
-//            Toast.makeText(context,"没有网络链接，请检查网络",Toast.LENGTH_LONG).show();
-//        }
-//    }
 
     public static void commentSend(final Post post,EditText comment, final Context context){
         if (post!=null){
@@ -457,25 +410,6 @@ public class MyUtils {
 
     }
 
-//    public static void setListViewHeightBasedOnChildren(ListView listView) {
-//        ListAdapter listAdapter = listView.getAdapter();
-//        if (listAdapter == null) {
-//            // pre-condition
-//            return;
-//        }
-//
-//        int totalHeight = 0;
-//        for (int i = 0; i < listAdapter.getCount(); i++) {
-//            View listItem = listAdapter.getView(i, null, listView);
-//            listItem.measure(0, 0);
-//            totalHeight += listItem.getMeasuredHeight();
-//        }
-//
-//        ViewGroup.LayoutParams params = listView.getLayoutParams();
-//        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-//        listView.setLayoutParams(params);
-//    }
-
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
@@ -515,7 +449,9 @@ public class MyUtils {
             for (int i = 0; i < fields.length; i++) {
                 fields[i].setAccessible(true);
                 if (fields[i].get(bean)==null){
-                    fields[i].set(object,"未填写");
+                    fields[i].set(object,"去填写");
+                }else{
+                    fields[i].set(object,fields[i].get(bean));
                 }
             }
             return object;

@@ -36,11 +36,16 @@
             android:src="@drawable/arraw_right"/>
 
         </RelativeLayout>
+    <View
+        android:background="@color/color_gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
     <RelativeLayout
         android:gravity="center"
         android:id="@+id/rl_info_1"
         android:layout_width="match_parent"
         android:layout_height="60dp">
+
         <TextView
             android:textSize="@dimen/tvNormalSize"
             android:layout_marginLeft="10dp"
@@ -60,6 +65,11 @@
             android:src="@drawable/arraw_right"/>
 
     </RelativeLayout>
+
+    <View
+        android:background="@color/color_gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 
     <RelativeLayout
         android:gravity="center"
@@ -81,7 +91,7 @@
             android:layout_toLeftOf="@+id/arraw2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="未填写"/>
+            android:text="去填写"/>
         <ImageView
             android:id="@+id/arraw2"
             android:layout_alignParentRight="true"
@@ -91,6 +101,11 @@
             android:src="@drawable/arraw_right"/>
 
     </RelativeLayout>
+
+    <View
+        android:background="@color/color_gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 
     <RelativeLayout
         android:gravity="center"
@@ -111,7 +126,7 @@
             android:layout_toLeftOf="@+id/arraw3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="未填写"/>
+            android:text="去填写"/>
         <ImageView
             android:id="@+id/arraw3"
             android:layout_alignParentRight="true"
@@ -121,6 +136,12 @@
             android:src="@drawable/arraw_right"/>
 
     </RelativeLayout>
+
+    <View
+        android:background="@color/color_gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
     <RelativeLayout
         android:gravity="center"
         android:id="@+id/rl_info_4"
@@ -140,7 +161,7 @@
             android:layout_toLeftOf="@+id/arraw4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="未填写"/>
+            android:text="去填写"/>
         <ImageView
             android:id="@+id/arraw4"
             android:layout_alignParentRight="true"
@@ -150,6 +171,12 @@
             android:src="@drawable/arraw_right"/>
 
     </RelativeLayout>
+
+    <View
+        android:background="@color/color_gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
     <RelativeLayout
         android:gravity="center"
         android:id="@+id/rl_info_5"
@@ -169,7 +196,7 @@
             android:layout_toLeftOf="@+id/arraw5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="未填写"/>
+            android:text="去填写"/>
         <ImageView
             android:id="@+id/arraw5"
             android:layout_alignParentRight="true"
@@ -179,4 +206,9 @@
             android:src="@drawable/arraw_right"/>
 
     </RelativeLayout>
+
+    <View
+        android:background="@color/color_gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 </LinearLayout>

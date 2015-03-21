@@ -81,5 +81,14 @@
         <item name="android:backgroundDimAmount">0.6</item>
     </style>
 
+    <!--通用的dialog样式-->
+    <style name="normal_dialog_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/change_info_dialog_shape</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+
 
 </resources>
