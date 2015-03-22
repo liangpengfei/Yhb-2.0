@@ -50,6 +50,7 @@ import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.MerchantInfo;
 import com.example.fei.yhb_20.bean.MyInfo;
+import com.example.fei.yhb_20.bean.OtherInfo;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.Bimp;
 import com.example.fei.yhb_20.utils.FileUtils;
@@ -316,7 +317,37 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                         @Override
                         public void onSuccess() {
                             Log.e(TAG,"success really");
-                            //注册成功，跳转到主页
+                            //注册成功，跳转到主页之前添加与OtherInfo的关联
+
+                            final OtherInfo otherInfo = new OtherInfo();
+
+                            otherInfo.setUser(merchant);
+                            otherInfo.save(MerchantRegist.this,new SaveListener() {
+                                @Override
+                                public void onSuccess() {
+                                    BmobRelation otherInfos = new BmobRelation();
+                                    otherInfos.add(otherInfo);
+                                    merchant.setOtherInfo(otherInfos);
+                                    merchant.update(MerchantRegist.this,new UpdateListener() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.e(TAG,"成功添加otherInfo和baseuser的关联");
+                                        }
+
+                                        @Override
+                                        public void onFailure(int i, String s) {
+                                            Log.e(TAG,s+i);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onFailure(int i, String s) {
+                                    Log.e(TAG,s+i);
+                                }
+                            });
+
+
                             Intent intent = new Intent(MerchantRegist.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -341,58 +372,15 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                 Toast.makeText(MerchantRegist.this,s,Toast.LENGTH_LONG).show();
             }
         });
-//        BmobProFile.getInstance(MerchantRegist.this).uploadBatch(files, new UploadBatchListener() {
-//            @Override
-//            public void onSuccess(boolean isFinished, String[] strings, String[] strings2) {
-//                if (isFinished) {
-//                    Toast.makeText(MerchantRegist.this, "成功上传", Toast.LENGTH_LONG).show();
-//                    StringBuilder stringBuilder = new StringBuilder("");
-//                    for (int i = 0; i < strings.length; i++) {
-//                        stringBuilder.append(BmobProFile.getInstance(MerchantRegist.this).signURL(strings[i], strings2[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
-//                        stringBuilder.append("|");
-//                    }
-//                    merchant.setPhotoPath(stringBuilder.toString());
-//                    merchant.signUp(MerchantRegist.this, new SaveListener() {
-//                        @Override
-//                        public void onSuccess() {
-//                            //注册成功，跳转到主页
-//                            Intent intent = new Intent(MerchantRegist.this, MainActivity.class);
-//                            startActivity(intent);
-//                            finish();
-//                        }
-//
-//                        @Override
-//                        public void onFailure(int i, String s) {
-//                            Toast.makeText(MerchantRegist.this, s, Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//
-//                }
-//            }
-//
-//            /**
-//             * 不再使用上传时候的进度条，而是使用一个弹出框来提示用户
-//             * @param curIndex
-//             * @param curPercent
-//             * @param total
-//             * @param totalPercent
-//             */
-//            @Override
-//            public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
-//
-//            }
-//
-//            @Override
-//            public void onError(int i, String s) {
-//                Log.d(TAG, s);
-//            }
-//        });
     }
 
     /**
      * 设置当前获取到的用户输入的注册信息，并封装为一个bean，以供注册的时候使用
      */
     private void setBean() {
+
+        //不能在这里进行，应为还没有注册成功，没有用户id
+
 
         String sName = name.getText().toString();
         String sMerchantName = merchantNmae.getText().toString();
