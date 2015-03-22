@@ -32,7 +32,6 @@ import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
-import com.marshalchen.common.uimodule.huitanScrollView.PullScrollView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -41,7 +40,7 @@ import cn.bmob.v3.BmobUser;
 /**
  * 主界面，里面使用了fragment来处理不同的tab，框架已经搭好
  */
-public class MainActivity extends FragmentActivity implements View.OnClickListener,PullScrollView.OnTurnListener{
+public class MainActivity extends FragmentActivity implements View.OnClickListener{
 
     private static final String TAG = "MainActivity";
 
@@ -113,11 +112,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         }
         list.setAdapter(new SlideAdapter(data,this) );
-    }
-
-    @Override
-    public void onTurn() {
-
     }
 
     private class SlideAdapter extends BaseAdapter {
@@ -343,8 +337,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 popup_pos.showAsDropDown(choose_position);
                 break;
             case R.id.setting:
-                Intent settingIntent = new Intent(MainActivity.this,SettingActivity.class);
-                startActivity(settingIntent);
+                if (user.getAttribute()== GV.MERCHANT){
+                    Intent settingIntent = new Intent(MainActivity.this,SettingMerchantActivity.class);
+                    startActivity(settingIntent);
+                }
                 break;
             default:
                 break;

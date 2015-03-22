@@ -30,8 +30,10 @@ import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.Post;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -459,6 +461,41 @@ public class MyUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 从byte对象中获取bitmap
+     * @param bytes
+     * @param opts
+     * @return
+     */
+    public static Bitmap getPicFromBytes(byte[] bytes, BitmapFactory.Options opts) {
+        if (bytes != null)
+            if (opts != null)
+                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length,opts);
+            else
+                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return null;
+    }
+
+    /**
+     * 从输入流中获取byte
+     * @param inStream
+     * @return
+     * @throws Exception
+     */
+    public static byte[] readStream(InputStream inStream) throws Exception {
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        while ((len = inStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, len);
+        }
+        byte[] data = outStream.toByteArray();
+        outStream.close();
+        inStream.close();
+        return data;
+
     }
 
 }

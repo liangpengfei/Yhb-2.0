@@ -22,7 +22,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':volley')
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.0.0'
     compile files('src/main/java/lib/BmobPush_V0.5beta_1027.jar')
     compile files('src/main/java/lib/BmobSDK_V3.3.2_0127.jar')
     compile project(':ultimateandroid')

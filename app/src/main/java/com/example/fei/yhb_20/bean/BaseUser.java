@@ -71,4 +71,12 @@ public class BaseUser extends BmobUser {
     public void setAttribute(int attribute) {
         this.attribute = attribute;
     }
+
+    public MyInfo getMyInfo() {
+        return myInfo;
+    }
+
+    public void setMyInfo(MyInfo myInfo) {
+        this.myInfo = myInfo;
+    }
 }

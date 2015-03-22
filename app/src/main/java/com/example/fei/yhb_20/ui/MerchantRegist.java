@@ -49,6 +49,7 @@ import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.MerchantInfo;
+import com.example.fei.yhb_20.bean.MyInfo;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.Bimp;
 import com.example.fei.yhb_20.utils.FileUtils;
@@ -407,6 +408,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         merchant.setName(sName);
         merchant.setAttribute(GV.MERCHANT);
         merchant.setMerchantInfo(new MerchantInfo());
+        merchant.setMyInfo(new MyInfo());
     }
 
     @Override
