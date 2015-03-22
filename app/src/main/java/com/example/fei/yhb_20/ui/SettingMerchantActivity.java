@@ -115,30 +115,30 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
             }else{
                 mHometown.setText("未填写");
             }
-
-            /**
-             * 不知道为什么总是返回空值，所以用了这个办法
-             * 这个办法不完美
-             */
-            BmobQuery<Merchant> query = new BmobQuery<Merchant>();
-            query.getObject(this,merchant.getObjectId(),new GetListener<Merchant>() {
-                @Override
-                public void onSuccess(Merchant merchant) {
-                    if (merchant.getAvatarPaht()!=null){
-                        Picasso.with(SettingMerchantActivity.this).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
-                    }else{
-                        Toast.makeText(SettingMerchantActivity.this,"test",Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(int i, String s) {
-
-                }
-            });
-
-
+            refreshAvatar();
         }
+    }
+
+    /**
+     * 头像更改后刷新
+     */
+    private void refreshAvatar(){
+        BmobQuery<Merchant> query = new BmobQuery<Merchant>();
+        query.getObject(this,merchant.getObjectId(),new GetListener<Merchant>() {
+            @Override
+            public void onSuccess(Merchant merchant) {
+                if (merchant.getAvatarPaht()!=null){
+                    Picasso.with(SettingMerchantActivity.this).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
+                }else{
+                    Toast.makeText(SettingMerchantActivity.this,"test",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
     }
 
     private void initEvents() {
@@ -173,6 +173,13 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        refreshAvatar();
     }
 
     @Override

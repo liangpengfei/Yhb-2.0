@@ -70,13 +70,11 @@ public class CropperImageActivity extends ActionBarActivity {
                             BmobProFile.getInstance(CropperImageActivity.this).upload(getAbsoluteImagePath(uri),new UploadListener() {
                                 @Override
                                 public void onSuccess(String filename, String url) {
-//                                    Merchant currentUser =BmobUser.getCurrentUser(CropperImageActivity.this,Merchant.class);
                                     merchant.setAvatarPaht(BmobProFile.getInstance(CropperImageActivity.this).signURL(filename, url, "54f197dc6dce11fc7c078c07420a080e", 0, null));
                                     merchant.update(CropperImageActivity.this,new UpdateListener() {
                                         @Override
                                         public void onSuccess() {
                                             Toast.makeText(CropperImageActivity.this,"成功设置头像",Toast.LENGTH_LONG).show();
-
                                             finish();
                                         }
 

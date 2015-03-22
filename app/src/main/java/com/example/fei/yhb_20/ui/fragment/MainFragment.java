@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.bmob.BmobProFile;
 import com.bmob.btp.callback.ThumbnailListener;
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.ui.DeatilActivity;
 import com.example.fei.yhb_20.ui.GalleryUrlActivity;
@@ -47,6 +48,7 @@ import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.GetListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 
@@ -209,6 +211,23 @@ public class MainFragment extends Fragment {
                 viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
                 viewHolder.tvConment.setText("评论"+ numberFooter.get(COMMENT));
 
+                BmobQuery<Merchant> query = new BmobQuery<Merchant>();
+                query.getObject(context,post.getUser().getObjectId(),new GetListener<Merchant>() {
+                    @Override
+                    public void onSuccess(Merchant merchant) {
+                        if (merchant.getAvatarPaht()!=null){
+                            Picasso.with(context).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(viewHolder.avata);
+                        }else{
+                            Toast.makeText(context,"获取头像失败",Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Log.e(TAG,s+i);
+                    }
+                });
+
                 viewHolder.container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -297,6 +316,9 @@ public class MainFragment extends Fragment {
                         Intent intent = new Intent(context, PersonalActivity.class);
                         intent.putExtra("post",post);
                         intent.putExtra("user",post.getUser());
+                        viewHolder.avata.setDrawingCacheEnabled(true);
+                        intent.putExtra("avatar",viewHolder.avata.getDrawingCache());
+                        viewHolder.avata.setDrawingCacheEnabled(false);
                         context.startActivity(intent);
                     }
                 });

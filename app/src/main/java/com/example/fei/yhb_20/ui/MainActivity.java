@@ -27,15 +27,19 @@ import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
+import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.ui.fragment.ClassFragment;
 import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
+import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.GetListener;
 
 /**
  * 主界面，里面使用了fragment来处理不同的tab，框架已经搭好
@@ -112,6 +116,34 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         }
         list.setAdapter(new SlideAdapter(data,this) );
+
+        refreshAvatar();
+
+    }
+
+    private void refreshAvatar(){
+        BmobQuery<Merchant> query = new BmobQuery<Merchant>();
+        query.getObject(this,user.getObjectId(),new GetListener<Merchant>() {
+            @Override
+            public void onSuccess(Merchant merchant) {
+                if (merchant.getAvatarPaht()!=null){
+                    Picasso.with(MainActivity.this).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
+                }else{
+                    Toast.makeText(MainActivity.this,"test",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        refreshAvatar();
     }
 
     private class SlideAdapter extends BaseAdapter {
@@ -249,7 +281,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         default:
                             break;
                     }
-                    startActivity(intent);
+                    if (intent!=null){
+                        startActivity(intent);
+                    }
+
                 }
             }
         });

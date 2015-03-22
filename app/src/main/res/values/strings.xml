@@ -49,6 +49,6 @@
     <string name="title_activity_merchant_info_page">商户信息编辑</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_image_show">ImageShowActivity</string>
-    <string name="title_activity_cropper_image">CropperImage</string>
+    <string name="title_activity_cropper_image">裁剪照片</string>
 
 </resources>

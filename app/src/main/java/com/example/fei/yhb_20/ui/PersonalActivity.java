@@ -3,6 +3,7 @@ package com.example.fei.yhb_20.ui;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -74,6 +75,10 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
             }
             if (user.getMotto()!=null){
                 des.setText(user.getMotto());
+            }
+            Bitmap bitmap = intent.getParcelableExtra("avatar");
+            if (bitmap!=null){
+                avater.setImageBitmap(bitmap);
             }
         }
 

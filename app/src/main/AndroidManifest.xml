@@ -162,6 +162,7 @@
             android:label="@string/title_activity_image_show" >
         </activity>
         <activity
+            android:parentActivityName=".ui.SettingMerchantActivity"
             android:screenOrientation="portrait"
             android:name=".ui.CropperImageActivity"
             android:label="@string/title_activity_cropper_image" >
