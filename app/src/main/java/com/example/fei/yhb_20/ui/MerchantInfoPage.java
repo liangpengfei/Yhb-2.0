@@ -1,6 +1,7 @@
 package com.example.fei.yhb_20.ui;
 
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.MerchantInfo;
 import com.example.fei.yhb_20.utils.MyUtils;
+import com.fenjuly.combinationimageview.CombinationImageView;
+import com.squareup.picasso.Transformation;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,6 +40,8 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
     @InjectView(R.id.rl_info_3)RelativeLayout relativeLayout3;
     @InjectView(R.id.rl_info_4)RelativeLayout relativeLayout4;
     @InjectView(R.id.rl_info_5)RelativeLayout relativeLayout5;
+
+    @InjectView(R.id.combinationImage)CombinationImageView combinationImageView;
 
     private Merchant merchant;
     private MerchantInfo merchantInfo;
@@ -64,6 +69,7 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
                 mSort.setText(merchantInfo.getSort());
             }
         }
+        combinationImageView.addImageView(R.drawable.example5);
     }
 
     private void initEvents() {

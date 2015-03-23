@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.CommentItem;
+import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
@@ -43,6 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.GetListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 public class DeatilActivity extends ActionBarActivity implements View.OnClickListener{
@@ -74,6 +76,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.iv_main_comment)ImageView ivComment;
     @InjectView(R.id.ll_gallery)LinearLayout gallery;
     @InjectView(R.id.comment_list)ListView listview;
+    @InjectView(R.id.iv_main_logo)ImageView mAvatar;
 
     private static final int SHARE = 0;
     private static final int LIKE = 1;
@@ -157,10 +160,29 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 gallery.addView(imageView);
             }
             listview.setAdapter(new commentAdapter(this,post.getCommentItems()));
-
+            refreshAvatar();
         }
 
 
+    }
+
+    private void refreshAvatar(){
+        BmobQuery<Merchant> query = new BmobQuery<Merchant>();
+        query.getObject(this,post.getUser().getObjectId(),new GetListener<Merchant>() {
+            @Override
+            public void onSuccess(Merchant merchant) {
+                if (merchant.getAvatarPaht()!=null){
+                    Picasso.with(DeatilActivity.this).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(mAvatar);
+                }else{
+                    Toast.makeText(DeatilActivity.this,"test",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                Log.e(TAG,s+i);
+            }
+        });
     }
 
     class commentAdapter extends BaseAdapter{

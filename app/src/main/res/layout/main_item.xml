@@ -9,22 +9,6 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:background="@color/color_gray_light"
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_main_merchantName"/>
-            <TextView
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="下很多人喜欢了"/>
-        </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
@@ -53,12 +37,25 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_main_postName"
                         android:text="default name"/>
-                    <TextView
-                        android:id="@+id/tv_main_time"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="default time"/>
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tv_main_time"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="default time"/>
+                        <TextView
+                            android:id="@+id/tv_main_merchantName"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="商户名"/>
+                        </LinearLayout>
+
                 </LinearLayout>
                 <ImageView
                     android:layout_gravity="center_vertical"
@@ -77,6 +74,7 @@
                     android:id="@+id/iv_main_list"/>
             </LinearLayout>
             <TextView
+                android:layout_marginTop="20dp"
                 android:id="@+id/tv_main_content"
                 android:paddingTop="6dp"
                 android:layout_width="wrap_content"
@@ -104,33 +102,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="1"
+                android:weightSum="3"
                 android:layout_height="wrap_content">
                 <LinearLayout
-                    android:id="@+id/ll_main_shared"
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.25"
-                    android:layout_height="fill_parent">
-                    <ImageView
-                        android:id="@+id/iv_main_shared"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/thumbs_up"/>
-                    <TextView
-                        android:layout_gravity="center_horizontal"
-                        android:id="@+id/tv_main_shared"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="我享受过"/>
-
-                </LinearLayout>
-                <LinearLayout
+                    android:background="@drawable/footer_background"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:id="@+id/ll_main_like"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_width="0dp"
-                    android:layout_weight="0.25"
+                    android:layout_weight="1"
                     android:layout_height="fill_parent">
                     <ImageView
                         android:id="@+id/iv_main_like"
@@ -139,17 +120,22 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_heart"/>
                     <TextView
-                        android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_main_like"
+                        android:layout_marginLeft="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="喜欢"/>
+                        android:text="0"/>
+
                 </LinearLayout>
+
                 <LinearLayout
+                    android:background="@drawable/footer_background"
+
+                    android:gravity="center"
                     android:id="@+id/ll_main_dislike"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_width="0dp"
-                    android:layout_weight="0.25"
+                    android:layout_weight="1"
                     android:layout_height="fill_parent">
                     <ImageView
                         android:id="@+id/iv_main_dislike"
@@ -158,17 +144,19 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_dislike"/>
                     <TextView
-                        android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_main_dislike"
+                        android:layout_marginLeft="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="没有帮助"/>
+                        android:text="0"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:background="@drawable/footer_background"
+                    android:gravity="center"
                     android:id="@+id/ll_main_conment"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_width="0dp"
-                    android:layout_weight="0.25"
+                    android:layout_weight="1"
                     android:layout_height="fill_parent">
                     <ImageView
                         android:id="@+id/iv_main_comment"
@@ -177,11 +165,11 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_chat"/>
                     <TextView
-                        android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_main_comment"
+                        android:layout_marginLeft="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="评论"/>
+                        android:text="0"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

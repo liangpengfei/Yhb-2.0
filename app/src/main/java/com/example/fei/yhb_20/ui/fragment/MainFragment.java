@@ -168,7 +168,6 @@ public class MainFragment extends Fragment {
     }
 
     private static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-        private static final int SHARE = 0;
         private static final int LIKE = 1;
         private static final int DISLIKE = 2;
         private static final int COMMENT = 3;
@@ -206,10 +205,9 @@ public class MainFragment extends Fragment {
                 viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
                 viewHolder.merchantName.setText(post.getMerchantName());
 
-                viewHolder.tvShared.setText("享受过" + (numberFooter.get(SHARE)));
-                viewHolder.tvLike.setText("喜欢"+(numberFooter.get(LIKE)));
-                viewHolder.tvDislike.setText("没有帮助" + (numberFooter.get(DISLIKE)));
-                viewHolder.tvConment.setText("评论"+ numberFooter.get(COMMENT));
+                viewHolder.tvLike.setText(String.valueOf(numberFooter.get(LIKE)));
+                viewHolder.tvDislike.setText(String.valueOf(numberFooter.get(DISLIKE)));
+                viewHolder.tvConment.setText(String.valueOf(numberFooter.get(COMMENT)));
 
                 BmobQuery<Merchant> query = new BmobQuery<Merchant>();
                 query.getObject(context,post.getUser().getObjectId(),new GetListener<Merchant>() {
@@ -245,17 +243,6 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         MyUtils.showPopupMenu(context);
-                    }
-                });
-
-
-                /**
-                 * 享受过
-                 */
-                viewHolder.shared.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MyUtils.footerCommand(footerBoolean,SHARE,viewHolder.ivShare,viewHolder.tvShared,numberFooter,aCache,post,context,objectId);
                     }
                 });
 
@@ -316,9 +303,6 @@ public class MainFragment extends Fragment {
                         Intent intent = new Intent(context, PersonalActivity.class);
                         intent.putExtra("post",post);
                         intent.putExtra("user",post.getUser());
-                        viewHolder.avata.setDrawingCacheEnabled(true);
-                        intent.putExtra("avatar",viewHolder.avata.getDrawingCache());
-                        viewHolder.avata.setDrawingCacheEnabled(false);
                         context.startActivity(intent);
                     }
                 });
@@ -343,9 +327,6 @@ public class MainFragment extends Fragment {
                     if (footerBoolean[LIKE]==0){
                         viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
                     }
-                    if (footerBoolean[SHARE]==0){
-                        viewHolder.ivShare.setImageResource(R.drawable.thumbs_up_pressed);
-                    }
                 }
 
 
@@ -368,26 +349,6 @@ public class MainFragment extends Fragment {
 
                 final ArrayList<String> arrayList = post.getThumnailsName();
                 Log.e(TAG,arrayList.toString());
-
-//                for (int i1 = 0 ;i1 <paths.length; i1++) {
-//
-//                    final ImageView imageView;
-//                    imageView = new ImageView(context);
-//                    picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
-//                    imageView.setPadding(2, 2, 2, 2);
-//                    imageView.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Dialog dialog = new Dialog(context);
-//                            View photoView = LayoutInflater.from(context).inflate(R.layout.photo_view,null);
-//                            ImageView photo = (ImageView) photoView.findViewById(R.id.photo);
-//                            photo.setImageDrawable(imageView.getDrawable());
-//                            dialog.setContentView(photoView);
-//                            dialog.show();
-//                        }
-//                    });
-//                    viewHolder.gallery.addView(imageView);
-//                }
 
                 /**
                  * 想获取缩略图，但是没有成功
@@ -442,9 +403,9 @@ public class MainFragment extends Fragment {
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView merchantName,userName,content,time,tvShared,tvLike,tvDislike,tvConment;
-            ImageView avata,share,list,ivShare,ivLike,ivDislike,ivComment;
-            LinearLayout shared,like,dislike,comment,gallery;
+            TextView merchantName,userName,content,time,tvLike,tvDislike,tvConment;
+            ImageView avata,share,list,ivLike,ivDislike,ivComment;
+            LinearLayout like,dislike,comment,gallery;
             CardView container;
 
             public ViewHolder(View itemView) {
@@ -455,11 +416,9 @@ public class MainFragment extends Fragment {
                 content = (TextView) itemView.findViewById(R.id.tv_main_content);
                 time = (TextView) itemView.findViewById(R.id.tv_main_time);
                 avata = (ImageView) itemView.findViewById(R.id.iv_main_logo);
-                shared = (LinearLayout) itemView.findViewById(R.id.ll_main_shared);
                 like = (LinearLayout) itemView.findViewById(R.id.ll_main_like);
                 dislike = (LinearLayout) itemView.findViewById(R.id.ll_main_dislike);
                 comment = (LinearLayout) itemView.findViewById(R.id.ll_main_conment);
-                tvShared = (TextView) itemView.findViewById(R.id.tv_main_shared);
                 tvLike = (TextView) itemView.findViewById(R.id.tv_main_like);
                 tvDislike = (TextView) itemView.findViewById(R.id.tv_main_dislike);
                 tvConment = (TextView) itemView.findViewById(R.id.tv_main_comment);
@@ -469,7 +428,6 @@ public class MainFragment extends Fragment {
                 ivComment = (ImageView) itemView.findViewById(R.id.iv_main_comment);
                 ivDislike = (ImageView) itemView.findViewById(R.id.iv_main_dislike);
                 ivLike = (ImageView) itemView.findViewById(R.id.iv_main_like);
-                ivShare = (ImageView) itemView.findViewById(R.id.iv_main_shared);
 
                 container = (CardView) itemView.findViewById(R.id.container);
             }

@@ -358,14 +358,9 @@ public class MyUtils {
      * @param objectId
      */
     public static void footerCommand(byte[] footerBoolean, final int index, final ImageView image, final TextView textView, final ArrayList<Integer> numberFooter,ACache aCache,Post post, final Context context,String objectId){
-        int [] resources = {R.drawable.thumbs_up,R.drawable.icon_heart,R.drawable.icon_dislike};
-        int [] resourcesPressed = {R.drawable.thumbs_up_pressed,R.drawable.icon_heart_pressed,R.drawable.icon_dislike_pressed};
+        int [] resources = {R.drawable.icon_heart,R.drawable.icon_dislike};
+        int [] resourcesPressed = {R.drawable.icon_heart_pressed,R.drawable.icon_dislike_pressed};
         if (NetUtil.isNetConnected(context)){
-            final ArrayList<String> array = new ArrayList<>();
-            array.add("享受过");
-            array.add("喜欢");
-            array.add("没有帮助");
-            array.add("评论");
             if (footerBoolean[index]==0){
                 image.setImageResource(resources[index]);
 
@@ -377,7 +372,7 @@ public class MyUtils {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(context, "成功", Toast.LENGTH_LONG).show();
-                        textView.setText(array.get(index)+(numberFooter.get(index)));
+                        textView.setText(String.valueOf(numberFooter.get(index)));
                     }
                     @Override
                     public void onFailure(int code, String msg) {
@@ -396,7 +391,7 @@ public class MyUtils {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(context,"成功",Toast.LENGTH_LONG).show();
-                        textView.setText(array.get(index)+(numberFooter.get(index)));
+                        textView.setText(String.valueOf(numberFooter.get(index)));
                     }
 
                     @Override

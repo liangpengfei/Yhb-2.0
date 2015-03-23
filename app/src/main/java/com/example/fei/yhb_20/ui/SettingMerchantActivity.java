@@ -449,7 +449,7 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
         View  view = LayoutInflater.from(this).inflate(R.layout.change_motto,null);
         final Dialog dialog = new Dialog(this,R.style.normal_dialog_style);
         dialog.setContentView(view);
-        final EditText etMotto = (EditText) view.findViewById(R.id.et_change_info);
+        final EditText etMotto = (EditText) view.findViewById(R.id.et_change_motto);
         Button cancel = (Button) view.findViewById(R.id.change_info_cancel);
         Button ok = (Button) view.findViewById(R.id.change_info_ok);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -468,6 +468,7 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                         public void onSuccess() {
                             mMotto.setText(etMotto.getText().toString());
                             Toast.makeText(SettingMerchantActivity.this,"签名发布成功",Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
                         }
 
                         @Override
