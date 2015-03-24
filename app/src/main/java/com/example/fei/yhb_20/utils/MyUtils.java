@@ -303,46 +303,51 @@ public class MyUtils {
      */
 
     public static void commentSend(final Post post,EditText comment, final Context context){
-        if (post!=null){
-            final ArrayList<Integer> numberFooter = post.getNumberFooter();
-
-            final ArrayList<CommentItem> commentItems = post.getCommentItems();
-            CommentItem commentItem = new CommentItem();
-            commentItem.setComment(comment.getText().toString());
-            commentItem.setObjectId(BmobUser.getCurrentUser(context).getObjectId());
-            commentItem.setName(post.getUser().getUsername());
-            commentItems.add(commentItem);
-            post.setCommentItems(commentItems);
-
-            post.update(context,new UpdateListener() {
-                @Override
-                public void onSuccess() {
-                    Log.e(TAG,commentItems.toString());
-
-                    numberFooter.set(3, numberFooter.get(3) + 1);
-                    post.setNumberFooter(numberFooter);
-                    post.update(context,new UpdateListener() {
-                        @Override
-                        public void onSuccess() {
-                            Log.e(TAG,"评论成功，加一");
-                            Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s) {
-                            Log.e(TAG,"评论失败"+s);
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(int i, String s) {
-                    Log.e(TAG,"失败评论"+s+i);
-                }
-            } );
+        if (comment.getText()==null || comment.getText().toString()==""){
+            Toast.makeText(context,"没有输入内容",Toast.LENGTH_LONG).show();
         }else {
-            Toast.makeText(context,"没有网络链接，请检查网络",Toast.LENGTH_LONG).show();
+            if (post!=null){
+                final ArrayList<Integer> numberFooter = post.getNumberFooter();
+
+                final ArrayList<CommentItem> commentItems = post.getCommentItems();
+                CommentItem commentItem = new CommentItem();
+                commentItem.setComment(comment.getText().toString());
+                commentItem.setObjectId(BmobUser.getCurrentUser(context).getObjectId());
+                commentItem.setName(post.getUser().getUsername());
+                commentItems.add(commentItem);
+                post.setCommentItems(commentItems);
+
+                post.update(context,new UpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.e(TAG,commentItems.toString());
+
+                        numberFooter.set(3, numberFooter.get(3) + 1);
+                        post.setNumberFooter(numberFooter);
+                        post.update(context,new UpdateListener() {
+                            @Override
+                            public void onSuccess() {
+                                Log.e(TAG,"评论成功，加一");
+                                Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onFailure(int i, String s) {
+                                Log.e(TAG,"评论失败"+s);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Log.e(TAG,"失败评论"+s+i);
+                    }
+                } );
+            }else {
+                Toast.makeText(context,"没有网络链接，请检查网络",Toast.LENGTH_LONG).show();
+            }
         }
+
     }
 
     /**
@@ -358,6 +363,7 @@ public class MyUtils {
      * @param objectId
      */
     public static void footerCommand(byte[] footerBoolean, final int index, final ImageView image, final TextView textView, final ArrayList<Integer> numberFooter,ACache aCache,Post post, final Context context,String objectId){
+        Log.e(TAG, String.valueOf(index));
         int [] resources = {R.drawable.icon_heart,R.drawable.icon_dislike};
         int [] resourcesPressed = {R.drawable.icon_heart_pressed,R.drawable.icon_dislike_pressed};
         if (NetUtil.isNetConnected(context)){

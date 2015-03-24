@@ -3,7 +3,6 @@ package com.example.fei.yhb_20.ui;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -19,21 +18,17 @@ import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.OtherInfo;
 import com.example.fei.yhb_20.bean.Post;
-import com.example.fei.yhb_20.ui.fragment.PersonalLikeFragment;
-import com.example.fei.yhb_20.ui.fragment.PersonalShareFragment;
 import com.marshalchen.common.uimodule.huitanScrollView.PullScrollView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobPointer;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
-import cn.bmob.v3.listener.UpdateListener;
 
 public class PersonalActivity extends ActionBarActivity implements View.OnClickListener,PullScrollView.OnTurnListener{
 
@@ -47,11 +42,7 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
     @InjectView(R.id.user_message)TextView message;
     @InjectView(R.id.background_img)ImageView background_img;
     @InjectView(R.id.scroll_view)PullScrollView mScrollView;
-    @InjectView(R.id.tv_personal_share)TextView tvShare;
-    @InjectView(R.id.tv_personal_like)TextView tvLike;
     private  BaseUser user;
-    private FragmentManager fragmentManager;
-    private FragmentTransaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +57,7 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
     private void initViews() {
         Intent intent = getIntent();
         user = (BaseUser) intent.getSerializableExtra("user");
-        Post post = (Post) intent.getSerializableExtra("post");
+        final Post post = (Post) intent.getSerializableExtra("post");
 
         if (user != null) {
             name.setText(user.getUsername());
@@ -84,23 +75,25 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
                 des.setText(user.getMotto());
             }
             refreshAvatar();
+
+            //查询这个user发布过的所有的惠报
+            BmobQuery<Post> query = new BmobQuery<>();
+            query.order("-updatedAt");
+            query.addWhereEqualTo("user",user);
+            query.findObjects(this,new FindListener<Post>() {
+                @Override
+                public void onSuccess(List<Post> posts) {
+                    Log.e(TAG,posts.toString());
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    Log.e(TAG,s+i);
+                }
+            });
+
         }
 
-        //在这里设置照片,这里是所有的照片
-//        String photoPath = user.get
-
-
-        /**
-         * 首先进行了初始化的操作
-         */
-        fragmentManager = getFragmentManager();
-        transaction = fragmentManager.beginTransaction();
-        PersonalLikeFragment personalLikeFragment = new PersonalLikeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("post",post);
-        personalLikeFragment.setArguments(bundle);
-        transaction.add(R.id.container,personalLikeFragment,"LikeFragment");
-        transaction.commit();
 
     }
 
@@ -129,8 +122,6 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
         message.setOnClickListener(this);
         mScrollView.setHeader(background_img);
         mScrollView.setOnTurnListener(this);
-        tvLike.setOnClickListener(this);
-        tvShare.setOnClickListener(this);
     }
 
 
@@ -232,21 +223,6 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
                 break;
             case R.id.user_message:
                 //进入私信界面
-                break;
-            case R.id.tv_personal_like:
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                PersonalLikeFragment likeFragment = new PersonalLikeFragment();
-                transaction.remove(fragmentManager.findFragmentByTag("PersonalShareFragment"));
-                transaction.replace(R.id.container,likeFragment,"LikeFragment");
-                transaction.commit();
-                break;
-            case R.id.tv_personal_share:
-                //应该判断fragment是否已经存在了，如果已经存在了，就不用创建
-                FragmentTransaction transaction2 = fragmentManager.beginTransaction();
-                PersonalShareFragment personalShareFragment = new PersonalShareFragment();
-                transaction2.remove(fragmentManager.findFragmentByTag("LikeFragment"));
-                transaction2.replace(R.id.container,personalShareFragment,"PersonalShareFragment");
-                transaction2.commit();
                 break;
             default:
                 break;

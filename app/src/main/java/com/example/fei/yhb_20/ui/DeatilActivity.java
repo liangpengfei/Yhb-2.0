@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,11 +56,9 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.iv_main_share)ImageView share;
     @InjectView(R.id.iv_main_list)ImageView list;
     @InjectView(R.id.tv_main_content)TextView content;
-    @InjectView(R.id.tv_main_shared)TextView shared;
     @InjectView(R.id.tv_main_like)TextView like;
     @InjectView(R.id.tv_main_dislike)TextView dislike;
     @InjectView(R.id.tv_main_comment)TextView comment;
-    @InjectView(R.id.ll_main_shared)LinearLayout llShare;
     @InjectView(R.id.ll_main_like)LinearLayout llLike;
     @InjectView(R.id.ll_main_dislike)LinearLayout llDislike;
     @InjectView(R.id.ll_main_conment)LinearLayout llComment;
@@ -70,30 +69,27 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.ratingbar)RatingBar ratingBar;
     @InjectView(R.id.location)TextView location;
     @InjectView(R.id.lastTime)TextView lastTime;
-    @InjectView(R.id.iv_main_shared)ImageView ivShared;
     @InjectView(R.id.iv_main_like)ImageView ivLike;
     @InjectView(R.id.iv_main_dislike)ImageView ivDislike;
     @InjectView(R.id.iv_main_comment)ImageView ivComment;
     @InjectView(R.id.ll_gallery)LinearLayout gallery;
-    @InjectView(R.id.comment_list)ListView listview;
     @InjectView(R.id.iv_main_logo)ImageView mAvatar;
 
-    private static final int SHARE = 0;
-    private static final int LIKE = 1;
-    private static final int DISLIKE = 2;
-    private static final int COMMENT = 3;
+    private static final int LIKE = 0;
+    private static final int DISLIKE = 1;
+    private static final int COMMENT = 2;
     private static ACache aCache;
     private Post post;
     private String objectId;
     private ArrayList numberFooter;
     private byte[] footerBoolean;
     private Picasso picasso;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deatil);
-        ButterKnife.inject(this);
         aCache =  ACache.get(this);
         picasso = Picasso.with(this);
         initViews();
@@ -104,6 +100,8 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     private void initViews() {
         Intent intent = getIntent();
         if (intent!=null){
+            View header = LayoutInflater.from(this).inflate(R.layout.header,null);
+            ButterKnife.inject(this,header);
             post = (Post) intent.getSerializableExtra("post");
 
             final String paths [] = post.getPaths().split("\\|");
@@ -127,10 +125,9 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
             content.setText(spannableString);
 
             numberFooter= post.getNumberFooter();
-            shared.setText("我享受过 "+numberFooter.get(SHARE));
-            like.setText("我喜欢 "+numberFooter.get(LIKE));
-            dislike.setText("没有帮助"+numberFooter.get(DISLIKE));
-            comment.setText("评论" + numberFooter.get(COMMENT));
+            like.setText(String.valueOf(numberFooter.get(LIKE)));
+            dislike.setText(String.valueOf(numberFooter.get(DISLIKE)));
+            comment.setText(String.valueOf(numberFooter.get(COMMENT)));
             ratingBar.setRating(post.getRating());
             lastTime.setText("活动时间:"+post.getActivityTiem());
             if (footerBoolean!=null){
@@ -139,9 +136,6 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 }
                 if (footerBoolean[LIKE]==0){
                     ivLike.setImageResource(R.drawable.icon_heart_pressed);
-                }
-                if (footerBoolean[SHARE]==0){
-                    ivShared.setImageResource(R.drawable.thumbs_up_pressed);
                 }
             }
             for (int i1 = 0 ;i1 <paths.length; i1++) {
@@ -159,7 +153,11 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 });
                 gallery.addView(imageView);
             }
-            listview.setAdapter(new commentAdapter(this,post.getCommentItems()));
+
+            ArrayList<CommentItem> data = post.getCommentItems();
+            data.add(0,new CommentItem());
+            listView = (ListView) findViewById(R.id.comment_list);
+            listView.setAdapter(new commentAdapter(this,data,header));
             refreshAvatar();
         }
 
@@ -189,11 +187,12 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
 
         private Context context;
         private ArrayList<CommentItem> commentItems;
+        private View header;
 
-        public commentAdapter(Context context,ArrayList<CommentItem> commentItems){
+        public commentAdapter(Context context,ArrayList<CommentItem> commentItems,View header){
             this.context = context;
             this.commentItems = commentItems;
-
+            this.header = header;
         }
 
         @Override
@@ -213,16 +212,21 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.comment_item,null);
-            ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
-            TextView comment = (TextView) convertView.findViewById(R.id.comment);
-            String zhengze = "f0[0-9]{2}|f10[0-7]";
-            SpannableString spannableString = ExpressionUtil.getExpressionString(context, commentItems.get(position).getComment(), zhengze);
-            comment.setText(spannableString);
-            TextView name = (TextView) convertView.findViewById(R.id.comment_username);
-            //在这里设置
-            name.setText(commentItems.get(position).getName());
-            return convertView;
+            if (position==0){
+                return header;
+            }else{
+                convertView = LayoutInflater.from(context).inflate(R.layout.comment_item,null);
+                ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
+                TextView comment = (TextView) convertView.findViewById(R.id.comment);
+                String zhengze = "f0[0-9]{2}|f10[0-7]";
+                SpannableString spannableString = ExpressionUtil.getExpressionString(context, commentItems.get(position).getComment(), zhengze);
+                comment.setText(spannableString);
+                TextView name = (TextView) convertView.findViewById(R.id.comment_username);
+                //在这里设置
+                name.setText(commentItems.get(position).getName());
+                return convertView;
+            }
+
         }
     }
 
@@ -232,9 +236,19 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         llComment.setOnClickListener(this);
         llLike.setOnClickListener(this);
         llDislike.setOnClickListener(this);
-        llShare.setOnClickListener(this);
         face.setOnClickListener(this);
         send.setOnClickListener(this);
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
     }
 
 
@@ -291,16 +305,13 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 edComment.setText(null);
                 break;
             case R.id.team_singlechat_id_expression:
-                MyUtils.showFaceDialog(this,edComment);
+                MyUtils.showFaceDialog(this, edComment);
                 break;
             case R.id.ll_main_dislike:
                 MyUtils.footerCommand(footerBoolean,DISLIKE,ivDislike,dislike,numberFooter,aCache,post,this,objectId);
                 break;
             case R.id.ll_main_like:
                 MyUtils.footerCommand(footerBoolean,LIKE,ivLike,like,numberFooter,aCache,post,this,objectId);
-                break;
-            case R.id.ll_main_shared:
-                MyUtils.footerCommand(footerBoolean,SHARE,ivShared,shared,numberFooter,aCache,post,this,objectId);
                 break;
             default:
                 break;

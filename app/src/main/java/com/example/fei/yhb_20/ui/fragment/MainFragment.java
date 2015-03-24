@@ -168,9 +168,9 @@ public class MainFragment extends Fragment {
     }
 
     private static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-        private static final int LIKE = 1;
-        private static final int DISLIKE = 2;
-        private static final int COMMENT = 3;
+        private static final int LIKE = 0;
+        private static final int DISLIKE = 1;
+        private static final int COMMENT = 2;
         private int lastPosition = -1;
         private List<Post> data;
         private Context context;
@@ -362,7 +362,7 @@ public class MainFragment extends Fragment {
                         public void onSuccess(String thumbnailName, String thumbnailUrl) {
                             ImageView imageView =new ImageView(context);
                             picasso.load(BmobProFile.getInstance(context).signURL(thumbnailName, thumbnailUrl, "54f197dc6dce11fc7c078c07420a080e", 0, null)).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
-                            imageView.setPadding(2,2,2,2);
+                            imageView.setPadding(3,3,3,3);
                             viewHolder.gallery.addView(imageView);
                             imageView.setOnClickListener(new View.OnClickListener() {
                                 @Override
