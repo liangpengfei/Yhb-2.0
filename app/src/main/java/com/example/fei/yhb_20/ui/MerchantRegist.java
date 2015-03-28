@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -45,13 +44,10 @@ import com.bmob.BmobProFile;
 import com.bmob.btp.callback.UploadBatchListener;
 import com.example.fei.yhb_20.LocationApplication;
 import com.example.fei.yhb_20.R;
-import com.example.fei.yhb_20.bean.BaseUser;
-import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.MerchantInfo;
 import com.example.fei.yhb_20.bean.MyInfo;
 import com.example.fei.yhb_20.bean.OtherInfo;
-import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.utils.Bimp;
 import com.example.fei.yhb_20.utils.FileUtils;
 import com.example.fei.yhb_20.utils.GV;
@@ -60,22 +56,16 @@ import com.example.fei.yhb_20.utils.MD5;
 import com.example.fei.yhb_20.utils.MyUtils;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
-import com.marshalchen.common.ui.NumberProgressBar;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * 商户注册界面，这个是单独为商户抽象出来的，有一些独特的地方
@@ -320,32 +310,46 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                             //注册成功，跳转到主页之前添加与OtherInfo的关联
 
                             final OtherInfo otherInfo = new OtherInfo();
-
-                            otherInfo.setUser(merchant);
+                            otherInfo.setUserId(merchant.getObjectId());
+                            ArrayList<String> followerIds = new ArrayList<String>();
+                            otherInfo.setFollowerIds(followerIds);
                             otherInfo.save(MerchantRegist.this,new SaveListener() {
                                 @Override
                                 public void onSuccess() {
-                                    BmobRelation otherInfos = new BmobRelation();
-                                    otherInfos.add(otherInfo);
-                                    merchant.setOtherInfo(otherInfos);
-                                    merchant.update(MerchantRegist.this,new UpdateListener() {
-                                        @Override
-                                        public void onSuccess() {
-                                            Log.e(TAG,"成功添加otherInfo和baseuser的关联");
-                                        }
-
-                                        @Override
-                                        public void onFailure(int i, String s) {
-                                            Log.e(TAG,s+i);
-                                        }
-                                    });
+                                    Toast.makeText(MerchantRegist.this,"关注成功",Toast.LENGTH_LONG).show();
                                 }
 
                                 @Override
                                 public void onFailure(int i, String s) {
-                                    Log.e(TAG,s+i);
+                                    Toast.makeText(MerchantRegist.this,"关注失败",Toast.LENGTH_LONG).show();
                                 }
                             });
+
+//                            otherInfo.setUser(merchant);
+//                            otherInfo.save(MerchantRegist.this,new SaveListener() {
+//                                @Override
+//                                public void onSuccess() {
+//                                    BmobRelation otherInfos = new BmobRelation();
+//                                    otherInfos.add(otherInfo);
+//                                    merchant.setOtherInfo(otherInfos);
+//                                    merchant.update(MerchantRegist.this,new UpdateListener() {
+//                                        @Override
+//                                        public void onSuccess() {
+//                                            Log.e(TAG,"成功添加otherInfo和baseuser的关联");
+//                                        }
+//
+//                                        @Override
+//                                        public void onFailure(int i, String s) {
+//                                            Log.e(TAG,s+i);
+//                                        }
+//                                    });
+//                                }
+//
+//                                @Override
+//                                public void onFailure(int i, String s) {
+//                                    Log.e(TAG,s+i);
+//                                }
+//                            });
 
 
                             Intent intent = new Intent(MerchantRegist.this, MainActivity.class);

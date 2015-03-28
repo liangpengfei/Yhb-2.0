@@ -350,6 +350,7 @@ public class MyUtils {
 
     }
 
+
     /**
      * 处理footer上的相关操作，包括喜欢/享受过/没有帮助
      * @param footerBoolean

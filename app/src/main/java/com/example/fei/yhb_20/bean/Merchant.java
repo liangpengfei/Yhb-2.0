@@ -1,7 +1,5 @@
 package com.example.fei.yhb_20.bean;
 
-import com.example.fei.yhb_20.ui.MerchantInfoPage;
-
 import java.util.ArrayList;
 
 /**

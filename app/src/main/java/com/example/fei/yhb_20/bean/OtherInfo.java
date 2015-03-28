@@ -12,8 +12,17 @@ import cn.bmob.v3.BmobObject;
 public class OtherInfo extends BmobObject {
 
     private static final long serialVersionUID = 5864852877794549107L;
-    private BaseUser user;
+//    private BaseUser user;
     private ArrayList<String> followerIds;
+    private String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public ArrayList<String> getFollowerIds() {
         return followerIds;
@@ -23,11 +32,13 @@ public class OtherInfo extends BmobObject {
         this.followerIds = followerIds;
     }
 
-    public BaseUser getUser() {
-        return user;
-    }
 
-    public void setUser(BaseUser user) {
-        this.user = user;
-    }
+//
+//    public BaseUser getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(BaseUser user) {
+//        this.user = user;
+//    }
 }

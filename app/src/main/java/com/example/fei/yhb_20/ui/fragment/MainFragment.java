@@ -49,7 +49,6 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
-import cn.bmob.v3.listener.UpdateListener;
 
 
 public class MainFragment extends Fragment {
@@ -156,7 +155,6 @@ public class MainFragment extends Fragment {
                 }else{
                     Toast.makeText(getActivity(),"您没有登录过，没有缓存文件！",Toast.LENGTH_LONG).show();
                 }
-
             }
         });
     }
@@ -166,7 +164,6 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         aCache = ACache.get(getActivity());
     }
-
     private static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         private static final int LIKE = 0;
         private static final int DISLIKE = 1;

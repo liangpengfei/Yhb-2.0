@@ -9,13 +9,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class ClassFragment extends Fragment {

@@ -91,22 +91,27 @@
                         </LinearLayout>
                     </HorizontalScrollView>
 
-                    <LinearLayout
-                        android:gravity="center"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
+                            android:id="@+id/text"
+                            android:paddingLeft="20dp"
+                            android:layout_alignParentLeft="true"
                             style="?android:attr/ratingBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="优惠指数评分"/>
+                            android:text="优惠指数评分:"/>
                         <RatingBar
+                            android:layout_marginLeft="20dp"
+                            style="?android:ratingBarStyleSmall"
+                            android:layout_toRightOf="@+id/text"
                             android:id="@+id/ratingbar"
                             android:isIndicator="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             />
-                    </LinearLayout>
+                    </RelativeLayout>
                     <TextView
                         android:paddingLeft="20dp"
                         android:id="@+id/location"
@@ -211,7 +216,6 @@
 
                 </LinearLayout>
             </ScrollView>
-
 
 
         </LinearLayout>

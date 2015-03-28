@@ -1,9 +1,8 @@
 package com.example.fei.yhb_20.ui;
 
 import android.app.Dialog;
-import android.graphics.Bitmap;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +18,6 @@ import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.MerchantInfo;
 import com.example.fei.yhb_20.utils.MyUtils;
 import com.fenjuly.combinationimageview.CombinationImageView;
-import com.squareup.picasso.Transformation;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -78,7 +76,12 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
         relativeLayout2.setOnClickListener(this);
         relativeLayout3.setOnClickListener(this);
         relativeLayout4.setOnClickListener(this);
-        relativeLayout5.setOnClickListener(this);
+        relativeLayout5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 

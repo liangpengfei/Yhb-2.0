@@ -1,7 +1,6 @@
 package com.example.fei.yhb_20.bean;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import cn.bmob.v3.BmobObject;

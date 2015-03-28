@@ -15,8 +15,6 @@ public class GV {
     public static String content,merchantName;
     public static float rating;
 
-
-
     public static String getMerchantName() {
         return merchantName;
     }
