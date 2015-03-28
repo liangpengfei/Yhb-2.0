@@ -29,6 +29,7 @@ import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.OtherInfo;
+import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.ui.fragment.ClassFragment;
 import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
@@ -43,6 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 
@@ -106,6 +108,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         user= BmobUser.getCurrentUser(this, BaseUser.class);
         avatar.setImageResource(R.drawable.pull_scroll_view_avatar_default);
         name.setText(user.getUsername());
+        motto.setText(user.getMotto());
 
         BmobQuery<OtherInfo> queryOtherInfo = new BmobQuery<>();
         String [] followerIds = {user.getObjectId()};
@@ -123,13 +126,35 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     }
                 }
             }
-
             @Override
             public void onError(int i, String s) {
                 Toast.makeText(MainActivity.this,"查询失败",Toast.LENGTH_LONG).show();
             }
         });
 
+        BmobQuery<Post> myPosts = new BmobQuery<>();
+        myPosts.addWhereRelatedTo("post",new BmobPointer(user));
+        myPosts.findObjects(this,new FindListener<Post>() {
+            @Override
+            public void onSuccess(List<Post> posts) {
+                if (posts!=null){
+                    int photoNumber = 0 ;
+                    for (Post post:posts){
+                        if (post.getPaths()!=null){
+                            String paths [] = post.getPaths().split("\\|");
+                            photoNumber = photoNumber + paths.length;
+                        }
+                    }
+                    postNumber.setText("惠报:"+posts.size());
+                    albums.setText("相册:"+photoNumber);
+                    Log.e(TAG,"成功查询惠报数量");
+                }
+            }
+            @Override
+            public void onError(int i, String s) {
+                Log.e(TAG,"查询惠报数量失败"+s);
+            }
+        });
         String [] data ;
         if (user.getAttribute()==GV.MERCHANT){
             data = new String[]{"商户信息", "待完善的相关惠报", "我享受过的", "我喜欢的", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
@@ -161,7 +186,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         });
     }
-
     @Override
     protected void onRestart() {
         super.onRestart();

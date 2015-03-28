@@ -107,7 +107,7 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                             mFollower.setText("粉丝:"+otherInfos.get(0).getFollowerIds().size());
                         }
                         if (otherInfos.get(0).getFollowingIds()!=null){
-                            mFollowing.setText("关注"+otherInfos.get(0).getFollowingIds().size());
+                            mFollowing.setText("关注:"+otherInfos.get(0).getFollowingIds().size());
                         }
                     }
                 }

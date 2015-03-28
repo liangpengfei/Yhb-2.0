@@ -162,10 +162,14 @@
             android:label="@string/title_activity_image_show" >
         </activity>
         <activity
-            android:parentActivityName=".ui.SettingMerchantActivity"
-            android:screenOrientation="portrait"
             android:name=".ui.CropperImageActivity"
-            android:label="@string/title_activity_cropper_image" >
+            android:label="@string/title_activity_cropper_image"
+            android:parentActivityName=".ui.SettingMerchantActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.PostsShow"
+            android:label="@string/title_activity_posts_show" >
         </activity>
     </application>
 

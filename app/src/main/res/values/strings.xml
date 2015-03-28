@@ -50,5 +50,6 @@
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_image_show">ImageShowActivity</string>
     <string name="title_activity_cropper_image">裁剪照片</string>
+    <string name="title_activity_posts_show">PostsShow</string>
 
 </resources>

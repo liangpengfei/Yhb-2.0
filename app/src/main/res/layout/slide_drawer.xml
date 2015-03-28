@@ -100,7 +100,7 @@
                     <TextView
                         android:textColor="@color/white"
                         android:gravity="center"
-                        android:text="惠报  0"
+                        android:text="惠报:0"
                         android:layout_weight="1"
                         android:id="@+id/user_postNumber"
                         android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
                     <TextView
                         android:textColor="@color/white"
                         android:gravity="center"
-                        android:text="相册  0"
+                        android:text="相册:0"
                         android:layout_weight="1"
                         android:id="@+id/user_albums"
                         android:layout_width="wrap_content"
