@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -498,6 +499,27 @@ public class MyUtils {
         inStream.close();
         return data;
 
+    }
+
+    public static Bitmap getImageFromWeb(String Url){
+        try {
+            URL url = new URL(Url);
+            String responseCode = url.openConnection().getHeaderField(0);
+            if (!responseCode.contains("200"))
+                try {
+                    throw new Exception("图片文件不存在或路径错误，错误代码：" + responseCode);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            return BitmapFactory.decodeStream(url.openStream());
+        } catch (IOException e) {
+            try {
+                throw new Exception(e.getMessage());
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+        return null;
     }
 
 }

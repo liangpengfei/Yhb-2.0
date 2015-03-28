@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.Merchant;
+import com.example.fei.yhb_20.bean.OtherInfo;
 import com.example.fei.yhb_20.ui.fragment.ClassFragment;
 import com.example.fei.yhb_20.ui.fragment.MainFragment;
 import com.example.fei.yhb_20.utils.GV;
@@ -35,10 +36,14 @@ import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
 import com.squareup.picasso.Picasso;
 
+import java.util.Arrays;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 
 /**
@@ -101,12 +106,29 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         user= BmobUser.getCurrentUser(this, BaseUser.class);
         avatar.setImageResource(R.drawable.pull_scroll_view_avatar_default);
         name.setText(user.getUsername());
-        if (user.getFolloingId()!=null){
-            follower.setText("粉丝 "+user.getFollowerId().size());
-        }
-        if (user.getFolloingId()!=null){
-            following.setText("关注 "+user.getFolloingId().size());
-        }
+
+        BmobQuery<OtherInfo> queryOtherInfo = new BmobQuery<>();
+        String [] followerIds = {user.getObjectId()};
+        queryOtherInfo.addWhereContainedIn("userId", Arrays.asList(followerIds));
+        queryOtherInfo.findObjects(this,new FindListener<OtherInfo>() {
+            @Override
+            public void onSuccess(List<OtherInfo> otherInfos) {
+                Toast.makeText(MainActivity.this,"查询成功",Toast.LENGTH_LONG).show();
+                if (otherInfos!=null){
+                    if (otherInfos.get(0).getFollowerIds()!=null){
+                        follower.setText("粉丝:"+otherInfos.get(0).getFollowerIds().size());
+                    }
+                    if (otherInfos.get(0).getFollowingIds()!=null){
+                        following.setText("关注"+otherInfos.get(0).getFollowingIds().size());
+                    }
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Toast.makeText(MainActivity.this,"查询失败",Toast.LENGTH_LONG).show();
+            }
+        });
 
         String [] data ;
         if (user.getAttribute()==GV.MERCHANT){

@@ -13,25 +13,7 @@ public class BaseUser extends BmobUser {
     private String phone,motto,avatarPaht;
     private int attribute;
     private BmobRelation post;
-    private BmobRelation otherInfo;
-    private ArrayList<String> followerId,folloingId;
     private MyInfo myInfo;
-
-    public ArrayList<String> getFolloingId() {
-        return folloingId;
-    }
-
-    public void setFolloingId(ArrayList<String> folloingId) {
-        this.folloingId = folloingId;
-    }
-
-    public ArrayList<String> getFollowerId() {
-        return followerId;
-    }
-
-    public void setFollowerId(ArrayList<String> followerId) {
-        this.followerId = followerId;
-    }
 
     public BmobRelation getPost() {
         return post;
@@ -79,13 +61,5 @@ public class BaseUser extends BmobUser {
 
     public void setMyInfo(MyInfo myInfo) {
         this.myInfo = myInfo;
-    }
-
-    public BmobRelation getOtherInfo() {
-        return otherInfo;
-    }
-
-    public void setOtherInfo(BmobRelation otherInfo) {
-        this.otherInfo = otherInfo;
     }
 }

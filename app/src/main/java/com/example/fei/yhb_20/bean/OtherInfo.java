@@ -14,7 +14,16 @@ public class OtherInfo extends BmobObject {
     private static final long serialVersionUID = 5864852877794549107L;
 //    private BaseUser user;
     private ArrayList<String> followerIds;
+    private ArrayList<String> followingIds;
     private String userId;
+
+    public ArrayList<String> getFollowingIds() {
+        return followingIds;
+    }
+
+    public void setFollowingIds(ArrayList<String> followingIds) {
+        this.followingIds = followingIds;
+    }
 
     public String getUserId() {
         return userId;

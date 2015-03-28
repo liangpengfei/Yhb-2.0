@@ -312,7 +312,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                             final OtherInfo otherInfo = new OtherInfo();
                             otherInfo.setUserId(merchant.getObjectId());
                             ArrayList<String> followerIds = new ArrayList<String>();
+                            ArrayList<String> followingIds = new ArrayList<String>();
                             otherInfo.setFollowerIds(followerIds);
+                            otherInfo.setFollowingIds(followingIds);
                             otherInfo.save(MerchantRegist.this,new SaveListener() {
                                 @Override
                                 public void onSuccess() {

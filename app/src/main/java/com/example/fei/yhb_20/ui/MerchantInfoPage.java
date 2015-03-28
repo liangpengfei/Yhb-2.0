@@ -1,8 +1,12 @@
 package com.example.fei.yhb_20.ui;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +23,11 @@ import com.example.fei.yhb_20.bean.MerchantInfo;
 import com.example.fei.yhb_20.utils.MyUtils;
 import com.fenjuly.combinationimageview.CombinationImageView;
 
+import java.lang.reflect.Array;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobUser;
@@ -26,6 +35,7 @@ import cn.bmob.v3.listener.UpdateListener;
 
 public class MerchantInfoPage extends ActionBarActivity implements View.OnClickListener {
 
+    private static final String TAG = "MerchantInfoPage";
     @InjectView(R.id.tv_info_merchantName)TextView mMerchantName;
     @InjectView(R.id.tv_info_address)TextView mAddress;
     @InjectView(R.id.tv_info_phone)TextView mPhone;
@@ -39,15 +49,20 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
     @InjectView(R.id.rl_info_4)RelativeLayout relativeLayout4;
     @InjectView(R.id.rl_info_5)RelativeLayout relativeLayout5;
 
-    @InjectView(R.id.combinationImage)CombinationImageView combinationImageView;
+    //同步与异步之间的关联有问题
+//    @InjectView(R.id.combinationImage)CombinationImageView combinationImageView;
+
+    private CombinationImageView combinationImageView;
 
     private Merchant merchant;
     private MerchantInfo merchantInfo;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_merchant_info_page);
+        view= LayoutInflater.from(this).inflate(R.layout.activity_merchant_info_page,null);
+        setContentView(view);
         ButterKnife.inject(this);
         merchant = BmobUser.getCurrentUser(this,Merchant.class);
 
@@ -66,8 +81,37 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
                 mOnTime.setText(merchantInfo.getOnTime());
                 mSort.setText(merchantInfo.getSort());
             }
+            if (merchant.getPhotoPaths()!=null){
+                ArrayList<String> photoPaths = merchant.getPhotoPaths();
+                new PicAscyTask().execute(photoPaths.toArray(new String[photoPaths.size()]));
+            }else{
+                combinationImageView = (CombinationImageView) findViewById(R.id.combinationImage);
+                combinationImageView.addImageView(R.drawable.example5);
+            }
         }
-        combinationImageView.addImageView(R.drawable.example5);
+    }
+
+    private class PicAscyTask extends AsyncTask<String[],Integer,Bitmap[]>{
+        private static final String TAG = "PicAscyTask";
+
+        @Override
+        protected Bitmap[] doInBackground(String []... params) {
+            Bitmap [] bitmaps = new Bitmap[params[0].length];
+            for (int i = 0 ;i<params[0].length;i++){
+                bitmaps [i] =MyUtils.getImageFromWeb(params[0][i]);
+            }
+            return bitmaps;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap[] bitmaps) {
+            super.onPostExecute(bitmaps);
+            combinationImageView = (CombinationImageView) view.findViewById(R.id.combinationImage);
+            combinationImageView.removeAllView();
+            for (Bitmap bitmap : bitmaps){
+                combinationImageView.addImageView(bitmap);
+            }
+        }
     }
 
     private void initEvents() {
@@ -113,6 +157,7 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
             case R.id.rl_info_0:
                 break;
             case R.id.rl_info_1:
+                //查看所有的图片
                 break;
             case R.id.rl_info_2:
                 showChangeInfo(mAddress.getText().toString(),2);
@@ -197,7 +242,6 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
                                     break;
                             }
                         }
-
                         @Override
                         public void onFailure(int i, String s) {
                             Toast.makeText(MerchantInfoPage.this,"更新信息失败",Toast.LENGTH_LONG).show();
