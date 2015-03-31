@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="160dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:background="@drawable/layout_color_selector"

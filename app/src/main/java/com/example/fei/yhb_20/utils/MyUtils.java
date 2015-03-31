@@ -27,7 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.CommentItem;
+import com.example.fei.yhb_20.bean.MyInfo;
 import com.example.fei.yhb_20.bean.Post;
 
 import java.io.ByteArrayOutputStream;
@@ -255,9 +257,9 @@ public class MyUtils {
      * 主页的弹出菜单
      * @param context
      */
-    public static void showPopupMenu(Context context){
+    public static void showPopupMenu(final Context context, final String objectId){
         View menuView = View.inflate(context,R.layout.popupwindow,null);
-        Dialog menuDialog = new Dialog(context,R.style.popupDialog);
+        final Dialog menuDialog = new Dialog(context,R.style.popupDialog);
         menuDialog.setContentView(menuView);
 
         LinearLayout collect,unfollow,block,report;
@@ -273,18 +275,40 @@ public class MyUtils {
             @Override
             public void onClick(View v) {
                 //收藏
+                MyInfo myInfo = new MyInfo();
+                ArrayList<String> myCollections;
+                if (myInfo.getMycollections()!=null){
+                    myCollections = myInfo.getMycollections();
+                }else{
+                    myCollections = new ArrayList<String>();
+                }
+                myCollections.add(objectId);
+                myInfo.setMycollections(myCollections);
+                BaseUser baseUser = BmobUser.getCurrentUser(context,BaseUser.class);
+                baseUser.setMyInfo(myInfo);
+                baseUser.update(context,new UpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(context,"收藏成功",Toast.LENGTH_LONG).show();
+                        menuDialog.dismiss();
+                    }
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Log.e(TAG,s+i);
+                    }
+                });
             }
         });
         unfollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //取消关注
+                //取消关注,建议去掉
             }
         });
         block.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //屏蔽
+                //屏蔽，暂不实现
             }
         });
         report.setOnClickListener(new View.OnClickListener() {
@@ -304,7 +328,7 @@ public class MyUtils {
      */
 
     public static void commentSend(final Post post,EditText comment, final Context context){
-        if (comment.getText()==null || comment.getText().toString()==""){
+        if (comment.getText()==null || comment.getText().toString().equals("")){
             Toast.makeText(context,"没有输入内容",Toast.LENGTH_LONG).show();
         }else {
             if (post!=null){

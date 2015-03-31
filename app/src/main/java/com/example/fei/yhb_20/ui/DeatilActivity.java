@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -153,6 +156,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
             listView = (ListView) findViewById(R.id.comment_list);
             listView.setAdapter(new commentAdapter(this,data,header));
             refreshAvatar();
+            send.setEnabled(false);
         }
 
 
@@ -281,11 +285,33 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 startActivity(sendIntent);
                 break;
             case R.id.iv_main_list:
-               MyUtils.showPopupMenu(this);
+               MyUtils.showPopupMenu(this,objectId);
                 break;
             case R.id.ll_main_conment:
                 llFoot.setVisibility(View.VISIBLE);
                 edComment.requestFocus();
+                edComment.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        Log.e(TAG,"before"+s);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        Log.e(TAG,"onTextChanged"+s);
+                        if (TextUtils.isEmpty(s)) {
+                            send.setEnabled(false);
+                        }else{
+                            send.setEnabled(true);
+                        }
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        Log.e(TAG,"after");
+                    }
+                });
 
                 //强制显示键盘
                 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);

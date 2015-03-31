@@ -1,22 +1,28 @@
 package com.example.fei.yhb_20.ui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +34,7 @@ import android.widget.Toast;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.Merchant;
+import com.example.fei.yhb_20.bean.MyInfo;
 import com.example.fei.yhb_20.bean.OtherInfo;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.ui.fragment.ClassFragment;
@@ -37,6 +44,7 @@ import com.example.fei.yhb_20.utils.MapUtil;
 import com.example.fei.yhb_20.utils.NetUtil;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,6 +55,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * 主界面，里面使用了fragment来处理不同的tab，框架已经搭好
@@ -76,6 +85,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @InjectView(R.id.user_following)TextView following;
     @InjectView(R.id.user_albums)TextView albums;
     @InjectView(R.id.user_list)ListView list;
+    @InjectView(R.id.drawer_layout)DrawerLayout drawerLayout;
+    @InjectView(R.id.footer)FrameLayout footer;
 
     private BaseUser user;
 
@@ -102,7 +113,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 MapUtil.getLocation(this,choose_position);
             }else {
                 choose_position.setText(settings.getString("city","选择城市"));
-
             }
         }
         user= BmobUser.getCurrentUser(this, BaseUser.class);
@@ -157,9 +167,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         });
         String [] data ;
         if (user.getAttribute()==GV.MERCHANT){
-            data = new String[]{"商户信息", "待完善的相关惠报", "我享受过的", "我喜欢的", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
+            data = new String[]{"商户信息", "待完善的相关惠报","我的足迹", "我的收藏", "我的消息", "草稿箱"};
         }else{
-            data = new String[]{"我享受过的", "我喜欢的", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
+            data = new String[]{ "我的足迹", "我的收藏", "我的消息", "草稿箱"};
 
         }
         list.setAdapter(new SlideAdapter(data,this) );
@@ -268,6 +278,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         transaction.commit();
     }
+
 
     private void initEvents()
     {
@@ -391,31 +402,57 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.tv_main_choose_position:
-                View popupWindow = LayoutInflater.from(this).inflate(R.layout.popupwindow_pos,null);
-                ListView list = (ListView) popupWindow.findViewById(R.id.listview_pos);
-                TextView currentLocation = (TextView) popupWindow.findViewById(R.id.currentLocation);
+//                View popupWindow = LayoutInflater.from(this).inflate(R.layout.popupwindow_pos,null);
+//                ListView list = (ListView) popupWindow.findViewById(R.id.listview_pos);
+//                TextView currentLocation = (TextView) popupWindow.findViewById(R.id.currentLocation);
+//                final SharedPreferences sharedPreferences = getSharedPreferences("settings",0);
+//
+//                currentLocation.setText("当前城市："+sharedPreferences.getString("city",""));
+////
+////                final String  []pos_data = this.getResources().getStringArray(R.array.hot_city);
+////                final PopupWindow popup_pos = new PopupWindow(popupWindow, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
+//////                list.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_expandable_list_item_1,pos_data));
+////                list.setAdapter(new PosAdatper(this,pos_data));
+////
+//                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        choose_position.setText(pos_data[position]);
+//                        SharedPreferences.Editor editor = sharedPreferences.edit();
+//                        editor.putString("city",pos_data[position]);
+//                        editor.apply();
+//                        popup_pos.dismiss();
+//                    }
+//                });
+//
+//
+//                popup_pos.setTouchable(true);
+//                //为了修复popupwindow的bug，
+//                popup_pos.setBackgroundDrawable(getResources().getDrawable(
+//                        R.drawable.popup_pos_selector));
+//                popup_pos.showAsDropDown(choose_position);
+                View menuView = View.inflate(this,R.layout.pos_popupwindow,null);
+                final Dialog menuDialog = new Dialog(this,R.style.popupDialog);
+                menuDialog.setContentView(menuView);
+
                 final SharedPreferences sharedPreferences = getSharedPreferences("settings",0);
 
-                currentLocation.setText("当前城市："+sharedPreferences.getString("city",""));
-
                 final String  []pos_data = this.getResources().getStringArray(R.array.hot_city);
-                final PopupWindow popup_pos = new PopupWindow(popupWindow, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
-                list.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_expandable_list_item_1,pos_data));
-                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                ListView listView = (ListView) menuView.findViewById(R.id.listview);
+
+                listView.setAdapter(new PosAdatper(this,pos_data));
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         choose_position.setText(pos_data[position]);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("city",pos_data[position]);
                         editor.apply();
-                        popup_pos.dismiss();
+                        menuDialog.dismiss();
                     }
                 });
-                popup_pos.setTouchable(true);
-                //为了修复popupwindow的bug，
-                popup_pos.setBackgroundDrawable(getResources().getDrawable(
-                        R.drawable.popup_pos_selector));
-                popup_pos.showAsDropDown(choose_position);
+                menuDialog.show();
                 break;
             case R.id.setting:
                 if (user.getAttribute()== GV.MERCHANT){
@@ -428,8 +465,44 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    class PosAdatper extends BaseAdapter{
+
+        private Context context;
+        private String[] strings;
+
+        private PosAdatper(Context context ,String [] strings) {
+            this.strings = strings;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return strings.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return strings[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.pos_item,null);
+            TextView textView = (TextView) convertView.findViewById(R.id.textview);
+            textView.setText(strings[position]);
+
+            return convertView;
+        }
+    }
+
     private void resetImgs() {
         mClassImage.setImageResource(R.drawable.classification);
         mMainImage.setImageResource(R.drawable.main);
     }
+
 }

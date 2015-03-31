@@ -11,11 +11,16 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -23,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,15 +62,38 @@ public class MainFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private static Picasso picasso;
-    private static DrawerLayout drawerLayout;
     private static ACache aCache;
     LinearLayoutManager layoutManager;
     private SharedPreferences sharedPreferences ;
     private static LinearLayout llFoot;
     private static Button send;
     private static EditText comment;
-    private static ImageView face;
     private static Post currentPost;
+    private RelativeLayout ll_container;
+
+    public MainFragment(){};
+
+
+    ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            //比较Activity根布局与当前布局的大小
+            Log.e(TAG,"onGlobalLayout");
+            int heightDiff = ll_container.getRootView().getHeight()- ll_container.getHeight();
+            if(heightDiff >200){
+                //大小超过100时，一般为显示虚拟键盘事件
+                getActivity().findViewById(R.id.footer).setVisibility(View.GONE);
+                llFoot.setVisibility(View.VISIBLE);
+                Log.e(TAG,"显示");
+            }else{
+                Log.e(TAG, "隐藏");
+                getActivity().findViewById(R.id.footer).setVisibility(View.VISIBLE);
+                llFoot.setVisibility(View.GONE);
+//                LayoutInflater.from(MainActivity.this).inflate(R.layout.fragment_main,null).findViewById(R.id.team_singlechat_id_foot).setVisibility(View.GONE);
+                //大小小于100时，为不显示虚拟键盘或虚拟键盘隐藏
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,16 +106,44 @@ public class MainFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        ll_container = (RelativeLayout) view.findViewById(R.id.container);
 
         send = (Button) view.findViewById(R.id.team_singlechat_id_send);
         comment = (EditText) view.findViewById(R.id.team_singlechat_id_edit);
-        face = (ImageView) view.findViewById(R.id.team_singlechat_id_expression);
+        send.setEnabled(false);
+        ImageView face = (ImageView) view.findViewById(R.id.team_singlechat_id_expression);
         llFoot = (LinearLayout) view.findViewById(R.id.team_singlechat_id_foot);
+
+        ll_container.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+
+
+        comment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.e(TAG,"before"+s);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e(TAG,"onTextChanged"+s);
+                if (TextUtils.isEmpty(s)) {
+                    send.setEnabled(false);
+                }else{
+                    send.setEnabled(true);
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.e(TAG,"after");
+            }
+        });
 
         face.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyUtils.showFaceDialog(getActivity(),comment);
+                MyUtils.showFaceDialog(getActivity(), comment);
             }
         });
 
@@ -102,7 +159,6 @@ public class MainFragment extends Fragment {
             }
         });
 
-        drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
 
         picasso = Picasso.with(getActivity());
         //TODO 不要在这里联网查询
@@ -110,6 +166,8 @@ public class MainFragment extends Fragment {
         return view;
 
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -133,7 +191,7 @@ public class MainFragment extends Fragment {
                     Log.e(TAG, "write success " + i);
                 }
                 aCache.put("cacheSize",String.valueOf(posts.size()));
-                recyclerView.setAdapter(new MyAdapter(posts,getActivity(),drawerLayout));
+                recyclerView.setAdapter(new MyAdapter(posts,getActivity()));
             }
 
             @Override
@@ -151,7 +209,7 @@ public class MainFragment extends Fragment {
                         }
                         objects.add(post);
                     }
-                    recyclerView.setAdapter(new MyAdapter(objects,getActivity(),drawerLayout));
+                    recyclerView.setAdapter(new MyAdapter(objects,getActivity()));
                 }else{
                     Toast.makeText(getActivity(),"您没有登录过，没有缓存文件！",Toast.LENGTH_LONG).show();
                 }
@@ -172,7 +230,7 @@ public class MainFragment extends Fragment {
         private List<Post> data;
         private Context context;
 
-        public MyAdapter(List<Post> data,Context context,View view) {
+        public MyAdapter(List<Post> data,Context context) {
             this.data = data;
             this.context = context;
         }
@@ -200,7 +258,14 @@ public class MainFragment extends Fragment {
                 viewHolder.content.setText(spannableString);
 
                 viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
-                viewHolder.merchantName.setText(post.getMerchantName());
+
+                String merchantName = "";
+                if (post.getMerchantName().equals("") || post.getMerchantName() == null){
+                    //do nothing
+                }else{
+                    merchantName = "  " + post.getMerchantName() + "  ";
+                }
+                viewHolder.merchantName.setText(merchantName);
 
                 viewHolder.tvLike.setText(String.valueOf(numberFooter.get(LIKE)));
                 viewHolder.tvDislike.setText(String.valueOf(numberFooter.get(DISLIKE)));
@@ -211,7 +276,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onSuccess(Merchant merchant) {
                         if (merchant.getAvatarPaht()!=null){
-                            Picasso.with(context).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(viewHolder.avata);
+                            Picasso.with(context).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(45, 45).into(viewHolder.avata);
                         }else{
                             Toast.makeText(context,"获取头像失败",Toast.LENGTH_LONG).show();
                         }
@@ -234,12 +299,12 @@ public class MainFragment extends Fragment {
                 });
 
                 /**
-                 *定义菜单时间
+                 *定义菜单事件
                  */
                 viewHolder.list.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MyUtils.showPopupMenu(context);
+                        MyUtils.showPopupMenu(context,post.getObjectId());
                     }
                 });
 

@@ -176,7 +176,7 @@
         android:paddingLeft="70dp"
         android:drawableLeft="@drawable/shutdown"
         android:id="@+id/logout"
-        android:text="退出"
+        android:text="退出登录"
         android:gravity="center"
         android:layout_weight="1"
         android:layout_width="0dp"

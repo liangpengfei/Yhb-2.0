@@ -36,7 +36,7 @@
             android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:src="@drawable/post"/>
+            android:src="@drawable/post_post"/>
 
     </LinearLayout>
 
