@@ -14,15 +14,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,16 +62,11 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.ll_main_like)LinearLayout llLike;
     @InjectView(R.id.ll_main_dislike)LinearLayout llDislike;
     @InjectView(R.id.ll_main_conment)LinearLayout llComment;
-    @InjectView(R.id.team_singlechat_id_foot)LinearLayout llFoot;
-    @InjectView(R.id.team_singlechat_id_send)Button send;
-    @InjectView(R.id.team_singlechat_id_edit)EditText edComment;
-    @InjectView(R.id.team_singlechat_id_expression)ImageView face;
     @InjectView(R.id.ratingbar)RatingBar ratingBar;
     @InjectView(R.id.location)TextView location;
     @InjectView(R.id.lastTime)TextView lastTime;
     @InjectView(R.id.iv_main_like)ImageView ivLike;
     @InjectView(R.id.iv_main_dislike)ImageView ivDislike;
-    @InjectView(R.id.iv_main_comment)ImageView ivComment;
     @InjectView(R.id.ll_gallery)LinearLayout gallery;
     @InjectView(R.id.iv_main_logo)ImageView mAvatar;
 
@@ -82,6 +80,12 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     private byte[] footerBoolean;
     private Picasso picasso;
     private ListView listView;
+    private ImageView face;
+    private Button send;
+    private EditText edComment;
+    private RelativeLayout frameLayout;
+    private LinearLayout llFoot;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +99,11 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     }
 
     private void initViews() {
+        face = (ImageView) findViewById(R.id.team_singlechat_id_expression);
+        edComment = (EditText) findViewById(R.id.team_singlechat_id_edit);
+        send = (Button) findViewById(R.id.team_singlechat_id_send);
+        frameLayout = (RelativeLayout) findViewById(R.id.container);
+        llFoot = (LinearLayout) findViewById(R.id.team_singlechat_id_foot);
         Intent intent = getIntent();
         if (intent!=null){
             View header = LayoutInflater.from(this).inflate(R.layout.header,null);
@@ -220,6 +229,36 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 SpannableString spannableString = ExpressionUtil.getExpressionString(context, commentItems.get(position).getComment(), zhengze);
                 comment.setText(spannableString);
                 TextView name = (TextView) convertView.findViewById(R.id.comment_username);
+                ImageView reply = (ImageView) convertView.findViewById(R.id.reply);
+                reply.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        edComment.requestFocus();
+                        edComment.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                Log.e(TAG,"before"+s);
+                            }
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                Log.e(TAG,"onTextChanged"+s);
+                                if (TextUtils.isEmpty(s)) {
+                                    send.setEnabled(false);
+                                }else{
+                                    send.setEnabled(true);
+                                }
+                            }
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                                Log.e(TAG,"after");
+                            }
+                        });
+
+                        //强制显示键盘
+                        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+                });
                 //在这里设置
                 name.setText(commentItems.get(position).getName());
                 return convertView;
@@ -236,6 +275,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         llDislike.setOnClickListener(this);
         face.setOnClickListener(this);
         send.setOnClickListener(this);
+        frameLayout.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -288,14 +328,12 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                MyUtils.showPopupMenu(this,objectId);
                 break;
             case R.id.ll_main_conment:
-                llFoot.setVisibility(View.VISIBLE);
                 edComment.requestFocus();
                 edComment.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                         Log.e(TAG,"before"+s);
                     }
-
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         Log.e(TAG,"onTextChanged"+s);
@@ -304,9 +342,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                         }else{
                             send.setEnabled(true);
                         }
-
                     }
-
                     @Override
                     public void afterTextChanged(Editable s) {
                         Log.e(TAG,"after");
@@ -338,6 +374,25 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         }
     }
 
-
+    ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            //比较Activity根布局与当前布局的大小
+            Log.e(TAG,"onGlobalLayout");
+            int heightDiff = frameLayout.getRootView().getHeight()- frameLayout.getHeight();
+            if(heightDiff >200){
+                //大小超过100时，一般为显示虚拟键盘事件
+//                getActivity().findViewById(R.id.footer).setVisibility(View.GONE);
+                llFoot.setVisibility(View.VISIBLE);
+                Log.e(TAG,"显示");
+            }else{
+                Log.e(TAG, "隐藏");
+//                getActivity().findViewById(R.id.footer).setVisibility(View.VISIBLE);
+                llFoot.setVisibility(View.GONE);
+//                LayoutInflater.from(MainActivity.this).inflate(R.layout.fragment_main,null).findViewById(R.id.team_singlechat_id_foot).setVisibility(View.GONE);
+                //大小小于100时，为不显示虚拟键盘或虚拟键盘隐藏
+            }
+        }
+    };
 
 }

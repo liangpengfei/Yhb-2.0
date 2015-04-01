@@ -2,8 +2,6 @@ package com.example.fei.yhb_20.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
@@ -11,9 +9,6 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.marshalchen.common.uimodule.cropimage.util.Log;
-
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * 地图定位的工具类，以后再仔细完善，现在还是有一些问题

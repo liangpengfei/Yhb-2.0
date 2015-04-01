@@ -211,62 +211,9 @@
                         android:background="@color/color_gray_light"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"/>
-
-
-
                 </LinearLayout>
             </ScrollView>
-
-
         </LinearLayout>
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/team_singlechat_id_foot"
-            android:layout_alignParentBottom="true"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
-                android:background="@drawable/chat_footer_bg_white">
-                <ImageView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:id="@+id/team_singlechat_id_expression"
-                    android:src="@drawable/chat_expression_bg"/>
-                <EditText
-                    android:hint="有何高见"
-                    android:focusable="true"
-                    android:layout_margin="5dip"
-                    android:layout_marginTop="10dip"
-                    android:layout_marginBottom="10dip"
-                    android:id="@+id/team_singlechat_id_edit"
-                    android:singleLine="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/team_singlechat_id_expression"
-                    android:layout_toLeftOf="@+id/team_singlechat_id_send"
-                    android:background="@drawable/chat_text_button_selector"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <Button
-                    android:text="发送"
-                    android:id="@+id/team_singlechat_id_send"
-                    android:background="@drawable/chat_sendbtn"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginRight="5dip"/>
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-
-
     </RelativeLayout>
 
 </LinearLayout>

@@ -1,12 +1,10 @@
 package com.example.fei.yhb_20.ui;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,10 +21,7 @@ import com.example.fei.yhb_20.bean.MerchantInfo;
 import com.example.fei.yhb_20.utils.MyUtils;
 import com.fenjuly.combinationimageview.CombinationImageView;
 
-import java.lang.reflect.Array;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

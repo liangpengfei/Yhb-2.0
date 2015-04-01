@@ -1,7 +1,5 @@
 package com.example.fei.yhb_20.bean;
 
-import java.util.ArrayList;
-
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;
 
