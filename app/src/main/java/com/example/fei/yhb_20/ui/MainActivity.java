@@ -87,6 +87,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private BaseUser user;
     private ActionBarDrawerToggle toggle;
+    private String avatarPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 Log.i(TAG,"closed");
+
 
             }
 
@@ -217,6 +219,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public void onSuccess(Merchant merchant) {
                 if (merchant.getAvatarPaht()!=null){
+                    avatarPath = merchant.getAvatarPaht();
                     Picasso.with(MainActivity.this).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
                 }else{
                     Toast.makeText(MainActivity.this,"test",Toast.LENGTH_LONG).show();
@@ -417,6 +420,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+        BaseUser currentUser =BmobUser.getCurrentUser(this,BaseUser.class);
+        Intent intent;
         switch (v.getId()){
             case R.id.user_cover:
                 //do nothing
@@ -430,15 +435,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 setSelect(GV.MAIN_PRESSED);
                 break;
             case R.id.id_tab_post:
-                Intent intent = new Intent(this,PostActivity.class);
+                intent = new Intent(this,PostActivity.class);
                 startActivity(intent);
                 break;
             case R.id.logout:
                 BmobUser.logOut(this);
-                BmobUser currentUser = BmobUser.getCurrentUser(this);
                 Toast.makeText(this, "您已经成功退出", Toast.LENGTH_LONG).show();
-                Intent intent2 = new Intent(this,FirstActivity.class);
-                startActivity(intent2);
+                intent = new Intent(this,FirstActivity.class);
+                startActivity(intent);
                 finish();
                 break;
             case R.id.tv_main_choose_position:
@@ -496,12 +500,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.setting:
                 if (user.getAttribute()== GV.MERCHANT){
-                    Intent settingIntent = new Intent(MainActivity.this,SettingMerchantActivity.class);
-                    startActivity(settingIntent);
+                    intent = new Intent(MainActivity.this,SettingMerchantActivity.class);
+                    startActivity(intent);
                 }
                 break;
             case R.id.user_photo:
                 //得到大图
+                if (avatarPath ==null || avatarPath.equals("")){
+                    Toast.makeText(MainActivity.this,"您没有设置大头像",Toast.LENGTH_LONG).show();
+                }else{
+                    //这个地方是可以优化一下
+                    String [] paths = {avatarPath};
+                    intent = new Intent(MainActivity.this, GalleryUrlActivity.class);
+                    intent.putExtra("photoUrls",paths);
+                    MainActivity.this.startActivity(intent);
+                }
                 break;
             default:
                 break;
