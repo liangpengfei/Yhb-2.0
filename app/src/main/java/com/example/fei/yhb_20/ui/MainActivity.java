@@ -4,13 +4,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,8 +82,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @InjectView(R.id.user_list)ListView list;
     @InjectView(R.id.drawer_layout)DrawerLayout drawerLayout;
     @InjectView(R.id.footer)FrameLayout footer;
+    @InjectView(R.id.favShimmerReaLayout)LinearLayout rootView;
+    @InjectView(R.id.user_cover)ImageView cover;
 
     private BaseUser user;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +102,41 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void initViews() {
+
+        toggle = new ActionBarDrawerToggle(this,drawerLayout,R.drawable.ic_launcher,R.string.drawer_open,R.string.drawer_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                Log.i(TAG,"closed");
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                Log.i(TAG,"opened");
+                rootView.setFocusable(false);
+            }
+        };
+//        drawerLayout.setOnDragListener(new View.OnDragListener() {
+//            @Override
+//            public boolean onDrag(View v, DragEvent event) {
+//                switch (event.getAction()){
+//                    case DragEvent.ACTION_DRAG_ENTERED:
+//                        Log.i(TAG,"ondrag entered");
+//                        break;
+//                    case DragEvent.ACTION_DRAG_EXITED:
+//                        Log.i(TAG,"ondrag exited");
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+
+        drawerLayout.setDrawerListener(toggle);
+
         SharedPreferences settings = getSharedPreferences("settings",0);
         if(settings.getBoolean("ever", false)){
             choose_position.setText(settings.getString("city","选择城市"));
@@ -338,6 +379,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         });
 
+        cover.setOnClickListener(this);
+        avatar.setOnClickListener(this);
+
+
     }
 
     private void hideFragment(FragmentTransaction transaction)
@@ -373,6 +418,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.user_cover:
+                //do nothing
+                break;
             case R.id.id_tab_class:
                 resetImgs();
                 setSelect(GV.CLASS_PRESSED);
@@ -451,6 +499,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     Intent settingIntent = new Intent(MainActivity.this,SettingMerchantActivity.class);
                     startActivity(settingIntent);
                 }
+                break;
+            case R.id.user_photo:
+                //得到大图
                 break;
             default:
                 break;

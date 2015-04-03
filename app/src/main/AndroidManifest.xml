@@ -171,6 +171,10 @@
             android:name=".ui.PostsShow"
             android:label="@string/title_activity_posts_show" >
         </activity>
+        <activity
+            android:name=".ui.MyCollections"
+            android:label="@string/title_activity_my_collections" >
+        </activity>
     </application>
 
 </manifest>

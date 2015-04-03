@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -67,7 +68,8 @@ public class MainFragment extends Fragment {
     private static Button send;
     private static EditText comment;
     private static Post currentPost;
-    private RelativeLayout ll_container;
+//    private RelativeLayout ll_container;
+    private DrawerLayout ll_container;
 
     public MainFragment(){};
 
@@ -77,7 +79,10 @@ public class MainFragment extends Fragment {
         public void onGlobalLayout() {
             //比较Activity根布局与当前布局的大小
             Log.e(TAG,"onGlobalLayout");
+
             int heightDiff = ll_container.getRootView().getHeight()- ll_container.getHeight();
+            Log.e(TAG, String.valueOf(ll_container.getRootView().getHeight()));
+            Log.e(TAG, String.valueOf(ll_container.getHeight()));
             if(heightDiff >200){
                 //大小超过100时，一般为显示虚拟键盘事件
                 getActivity().findViewById(R.id.footer).setVisibility(View.GONE);
@@ -104,7 +109,8 @@ public class MainFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ll_container = (RelativeLayout) view.findViewById(R.id.container);
+//        ll_container = (RelativeLayout) view.findViewById(R.id.container);
+        ll_container = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 
         send = (Button) view.findViewById(R.id.team_singlechat_id_send);
         comment = (EditText) view.findViewById(R.id.team_singlechat_id_edit);

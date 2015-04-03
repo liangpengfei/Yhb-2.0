@@ -282,21 +282,26 @@ public class MyUtils {
                 }else{
                     myCollections = new ArrayList<String>();
                 }
-                myCollections.add(objectId);
-                myInfo.setMycollections(myCollections);
-                BaseUser baseUser = BmobUser.getCurrentUser(context,BaseUser.class);
-                baseUser.setMyInfo(myInfo);
-                baseUser.update(context,new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(context,"收藏成功",Toast.LENGTH_LONG).show();
-                        menuDialog.dismiss();
-                    }
-                    @Override
-                    public void onFailure(int i, String s) {
-                        Log.e(TAG,s+i);
-                    }
-                });
+                if (!myCollections.contains(objectId)){
+                    myCollections.add(objectId);
+                    myInfo.setMycollections(myCollections);
+                    BaseUser baseUser = BmobUser.getCurrentUser(context,BaseUser.class);
+                    baseUser.setMyInfo(myInfo);
+                    baseUser.update(context,new UpdateListener() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(context,"收藏成功",Toast.LENGTH_LONG).show();
+                            menuDialog.dismiss();
+                        }
+                        @Override
+                        public void onFailure(int i, String s) {
+                            Log.e(TAG,s+i);
+                        }
+                    });
+                }else{
+                    Toast.makeText(context,"已经收藏过了",Toast.LENGTH_LONG).show();
+                }
+
             }
         });
         unfollow.setOnClickListener(new View.OnClickListener() {
@@ -336,6 +341,7 @@ public class MyUtils {
 
                 final ArrayList<CommentItem> commentItems = post.getCommentItems();
                 CommentItem commentItem = new CommentItem();
+
                 commentItem.setComment(comment.getText().toString());
                 commentItem.setObjectId(BmobUser.getCurrentUser(context).getObjectId());
                 commentItem.setName(post.getUser().getUsername());

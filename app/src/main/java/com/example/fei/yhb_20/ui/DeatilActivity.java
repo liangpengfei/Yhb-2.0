@@ -41,11 +41,14 @@ import com.squareup.picasso.Picasso;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 
 public class DeatilActivity extends ActionBarActivity implements View.OnClickListener{
@@ -160,7 +163,12 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 gallery.addView(imageView);
             }
 
+            /**
+             * 处理一下多余的数据
+             */
             ArrayList<CommentItem> data = post.getCommentItems();
+
+
             data.add(0,new CommentItem());
             listView = (ListView) findViewById(R.id.comment_list);
             listView.setAdapter(new commentAdapter(this,data,header));
@@ -198,7 +206,11 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
 
         public commentAdapter(Context context,ArrayList<CommentItem> commentItems,View header){
             this.context = context;
-            this.commentItems = commentItems;
+            ArrayList<CommentItem> realists = new ArrayList<>();
+            for (int i = commentItems.size()-1;i>commentItems.size()/2-1;i--){
+                realists.add(commentItems.get(i));
+            }
+            this.commentItems = realists;
             this.header = header;
         }
 
@@ -223,11 +235,17 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 return header;
             }else{
                 convertView = LayoutInflater.from(context).inflate(R.layout.comment_item,null);
-                ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
+                final ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
                 TextView comment = (TextView) convertView.findViewById(R.id.comment);
-                String zhengze = "f0[0-9]{2}|f10[0-7]";
-                SpannableString spannableString = ExpressionUtil.getExpressionString(context, commentItems.get(position).getComment(), zhengze);
-                comment.setText(spannableString);
+
+                if (commentItems.get(position).getComment() == null || commentItems.get(position).getComment().equals("")){
+                    comment.setText("");
+                }else{
+                    String zhengze = "f0[0-9]{2}|f10[0-7]";
+                    SpannableString spannableString = ExpressionUtil.getExpressionString(context, commentItems.get(position).getComment(), zhengze);
+                    comment.setText(spannableString);
+                }
+
                 TextView name = (TextView) convertView.findViewById(R.id.comment_username);
                 ImageView reply = (ImageView) convertView.findViewById(R.id.reply);
                 reply.setOnClickListener(new View.OnClickListener() {
@@ -261,6 +279,27 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 });
                 //在这里设置
                 name.setText(commentItems.get(position).getName());
+
+                if (commentItems.get(position).getObjectId()!=null){
+                    BmobQuery<Merchant> query = new BmobQuery<Merchant>();
+                    query.addQueryKeys("avatarPaht");
+                    String []ids = {commentItems.get(position).getObjectId()};
+                    query.addWhereContainedIn("objectId", Arrays.asList(ids));
+                    query.findObjects(DeatilActivity.this, new FindListener<Merchant>() {
+                        @Override
+                        public void onSuccess(List<Merchant> merchants) {
+                            if (merchants.get(0).getAvatarPaht()!=null){
+                                Log.e(TAG,merchants.get(0).getAvatarPaht());
+                                picasso.load(merchants.get(0).getAvatarPaht()).placeholder(R.drawable.ic_launcher).resize(45,45).into(avatar);
+                            }
+                        }
+
+                        @Override
+                        public void onError(int i, String s) {
+                            Log.e(TAG,s + i);
+                        }
+                    });
+                }
                 return convertView;
             }
 
