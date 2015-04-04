@@ -27,13 +27,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bmob.BmobProFile;
 import com.bmob.btp.callback.ThumbnailListener;
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.ui.DeatilActivity;
@@ -52,6 +52,8 @@ import java.util.Date;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 
@@ -72,6 +74,7 @@ public class MainFragment extends Fragment {
     private DrawerLayout ll_container;
 
     public MainFragment(){};
+    private BaseUser baseUser;
 
 
     ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -177,9 +180,77 @@ public class MainFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //TODO 在这里联网
+        baseUser = BmobUser.getCurrentUser(getActivity(), BaseUser.class);
         sharedPreferences = getActivity().getSharedPreferences("settings",0);
         BmobQuery<Post> query = new BmobQuery<Post>();
+
         query.include("user");
+        if (baseUser.getMyInfo() != null) {
+            if (baseUser.getMyInfo().getBlockers() != null) {
+                BmobQuery<BaseUser> queryUsers = new BmobQuery<>();
+                queryUsers.addWhereNotContainedIn("objectId", baseUser.getMyInfo().getBlockers());
+                Log.d(TAG, baseUser.getMyInfo().getBlockers().toString());
+                queryUsers.findObjects(getActivity(), new FindListener<BaseUser>() {
+                    @Override
+                    public void onSuccess(List<BaseUser> baseUsers) {
+                        BmobQuery<Post> queryPosts = new BmobQuery<>();
+                        queryPosts.include("user");
+                        queryPosts.order("-createdAt");
+
+                        for (int i = 0; i < baseUsers.size(); i++) {
+
+                            queryPosts.addWhereRelatedTo("post", new BmobPointer(baseUsers.get(i)));
+                            queryPosts.findObjects(getActivity(), new FindListener<Post>() {
+                                @Override
+                                public void onSuccess(List<Post> posts) {
+                                    //在这里写入缓存
+                                    for (int i = 0; i < posts.size(); i++) {
+                                        aCache.put(String.valueOf(i), posts.get(i));
+                                        if (aCache.getAsBinary(posts.get(i).getObjectId() + "footerBoolean") == null) {
+                                            byte[] footerBoolean = {1, 1, 1, 1};
+                                            aCache.put(posts.get(i).getObjectId() + "footerBoolean", footerBoolean);
+                                        }
+                                        //根据ObjectId来
+                                        Log.e(TAG, "write success " + i);
+                                    }
+                                    aCache.put("cacheSize", String.valueOf(posts.size()));
+                                    recyclerView.setAdapter(new MyAdapter(posts, getActivity()));
+                                }
+
+                                @Override
+                                public void onError(int err, String s) {
+                                    Log.i(TAG, s + err);
+                                    Log.e(TAG, s);
+                                    if (sharedPreferences.getBoolean("ever", false)) {
+                                        List<Post> objects = new ArrayList<Post>();
+
+                                        int size = Integer.parseInt(aCache.getAsString("cacheSize"));
+                                        Post post;
+                                        for (int i = 0; i < size; i++) {
+                                            post = (Post) aCache.getAsObject(String.valueOf(i));
+                                            if (post == null) {
+                                                android.util.Log.e(TAG, "post is null");
+                                            }
+                                            objects.add(post);
+                                        }
+                                        recyclerView.setAdapter(new MyAdapter(objects, getActivity()));
+                                    } else {
+                                        Toast.makeText(getActivity(), "您没有登录过，没有缓存文件！", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+
+                    }
+                });
+            }
+        }
+
         query.order("-createdAt");
         query.findObjects(getActivity(),new FindListener<Post>() {
             @Override
@@ -249,10 +320,11 @@ public class MainFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder viewHolder, int i) {
-            //从data中获取数据，填充入视图中
+            //从data中获取数据，填充入视图中,处理获取的数据
             final Post post = data.get(i);
             if (post!=null){
                 final String objectId = post.getObjectId();
+                final String userId = post.getUser().getObjectId();
                 final String cacheBooleanKey = objectId + "footerBoolean";
                 final ArrayList<Integer> numberFooter = post.getNumberFooter();
                 final byte[] footerBoolean = aCache.getAsBinary(cacheBooleanKey);
@@ -308,7 +380,7 @@ public class MainFragment extends Fragment {
                 viewHolder.list.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MyUtils.showPopupMenu(context,post.getObjectId());
+                        MyUtils.showPopupMenu(context, post.getObjectId(), userId);
                     }
                 });
 

@@ -3,6 +3,9 @@ package com.example.fei.yhb_20.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.adapter.ItemAdapter;
 import com.example.fei.yhb_20.bean.BaseUser;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.OtherInfo;
@@ -27,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 import cn.bmob.v3.listener.UpdateListener;
@@ -43,13 +48,21 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
     @InjectView(R.id.user_message)TextView message;
     @InjectView(R.id.background_img)ImageView background_img;
     @InjectView(R.id.scroll_view)PullScrollView mScrollView;
+    @InjectView(R.id.rv_collections)
+    RecyclerView recyclerView;
+
     private  BaseUser user;
+
+    LinearLayoutManager layoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal);
         ButterKnife.inject(this);
+
+        layoutManager = new LinearLayoutManager(this);
 
         initViews();
         initEvent();
@@ -67,21 +80,21 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
             }
             refreshAvatar();
 
-            //查询这个user发布过的所有的惠报
-            BmobQuery<Post> query = new BmobQuery<>();
-            query.order("-updatedAt");
-            query.addWhereEqualTo("user",user);
-            query.findObjects(this,new FindListener<Post>() {
-                @Override
-                public void onSuccess(List<Post> posts) {
-                    Log.e(TAG,posts.toString());
-                }
-
-                @Override
-                public void onError(int i, String s) {
-                    Log.e(TAG,s+i);
-                }
-            });
+//            //查询这个user发布过的所有的惠报
+//            BmobQuery<Post> query = new BmobQuery<>();
+//            query.order("-updatedAt");
+//            query.addWhereEqualTo("user",user);
+//            query.findObjects(this,new FindListener<Post>() {
+//                @Override
+//                public void onSuccess(List<Post> posts) {
+//                    Log.e(TAG,posts.toString());
+//                }
+//
+//                @Override
+//                public void onError(int i, String s) {
+//                    Log.e(TAG,s+i);
+//                }
+//            });
 
             BmobQuery<OtherInfo> queryOtherInfo = new BmobQuery<>();
             String [] followerIds = {user.getObjectId()};
@@ -105,6 +118,30 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
                     Toast.makeText(PersonalActivity.this,"查询粉丝失败",Toast.LENGTH_LONG).show();
                 }
             });
+
+            /**
+             * 这个是查询所发布的惠报的
+             */
+            //在这里查询所有的惠报
+            BmobQuery<Post> queryPosts = new BmobQuery<>();
+            queryPosts.include("user");
+            queryPosts.addQueryKeys("content,updatedAt,paths,avatarPaht,username,user");
+            queryPosts.addWhereRelatedTo("post", new BmobPointer(user));
+            queryPosts.findObjects(this, new FindListener<Post>() {
+                @Override
+                public void onSuccess(List<Post> posts) {
+                    Log.i(TAG, posts.get(0).getUser().getUsername());
+                    recyclerView.setAdapter(new ItemAdapter(posts, PersonalActivity.this));
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    Log.i(TAG, s + i);
+                }
+            });
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         }
 

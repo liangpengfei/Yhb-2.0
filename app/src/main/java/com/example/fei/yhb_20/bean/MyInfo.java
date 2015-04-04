@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- *  在这个类中只是所有的基本信息，不应该有商户和个人之分
+ * 在这个类中只是所有的基本信息，不应该有商户和个人之分
  * Email luckyliangfei@gmail.com
  * Created by fei on 3/20/15.
  */
-public class MyInfo implements Serializable{
+public class MyInfo implements Serializable {
     private static final long serialVersionUID = 7901432275363141385L;
     //收藏   关注
-    private ArrayList<String> mycollections,myTreasure;
+    private ArrayList<String> mycollections, myTreasure, blockers;
     private String gender;
     private String hometown;
     private String wallpaper;
@@ -54,5 +54,13 @@ public class MyInfo implements Serializable{
 
     public void setMyTreasure(ArrayList<String> myTreasure) {
         this.myTreasure = myTreasure;
+    }
+
+    public ArrayList<String> getBlockers() {
+        return blockers;
+    }
+
+    public void setBlockers(ArrayList<String> blockers) {
+        this.blockers = blockers;
     }
 }

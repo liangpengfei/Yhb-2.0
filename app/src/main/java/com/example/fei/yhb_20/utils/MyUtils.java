@@ -257,16 +257,19 @@ public class MyUtils {
      * 主页的弹出菜单
      * @param context
      */
-    public static void showPopupMenu(final Context context, final String objectId){
+    public static void showPopupMenu(final Context context, final String objectId, final String userId) {
         View menuView = View.inflate(context,R.layout.popupwindow,null);
         final Dialog menuDialog = new Dialog(context,R.style.popupDialog);
         menuDialog.setContentView(menuView);
 
-        LinearLayout collect,unfollow,block,report;
+        final LinearLayout collect, unfollow, block, report;
         collect = (LinearLayout) menuView.findViewById(R.id.collect);
         unfollow = (LinearLayout) menuView.findViewById(R.id.unfollow);
         block = (LinearLayout) menuView.findViewById(R.id.block);
         report = (LinearLayout) menuView.findViewById(R.id.report);
+
+        final BaseUser baseUser = BmobUser.getCurrentUser(context, BaseUser.class);
+
 
         /**
          * 为弹出菜单写定义事件
@@ -275,7 +278,12 @@ public class MyUtils {
             @Override
             public void onClick(View v) {
                 //收藏
-                MyInfo myInfo = new MyInfo();
+                MyInfo myInfo;
+                if (baseUser.getMyInfo() != null) {
+                    myInfo = baseUser.getMyInfo();
+                } else {
+                    myInfo = new MyInfo();
+                }
                 ArrayList<String> myCollections;
                 if (myInfo.getMycollections()!=null){
                     myCollections = myInfo.getMycollections();
@@ -285,7 +293,6 @@ public class MyUtils {
                 if (!myCollections.contains(objectId)){
                     myCollections.add(objectId);
                     myInfo.setMycollections(myCollections);
-                    BaseUser baseUser = BmobUser.getCurrentUser(context,BaseUser.class);
                     baseUser.setMyInfo(myInfo);
                     baseUser.update(context,new UpdateListener() {
                         @Override
@@ -300,6 +307,7 @@ public class MyUtils {
                     });
                 }else{
                     Toast.makeText(context,"已经收藏过了",Toast.LENGTH_LONG).show();
+                    menuDialog.dismiss();
                 }
 
             }
@@ -313,7 +321,45 @@ public class MyUtils {
         block.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //屏蔽，暂不实现
+                //屏蔽，去实现
+                MyInfo myInfo;
+                if (baseUser.getMyInfo() != null) {
+                    myInfo = baseUser.getMyInfo();
+                } else {
+                    myInfo = new MyInfo();
+                }
+
+                ArrayList<String> blockers;
+                if (myInfo.getBlockers() != null) {
+                    blockers = myInfo.getBlockers();
+                } else {
+                    blockers = new ArrayList<String>();
+                }
+                if (blockers.contains(userId)) {
+                    Toast.makeText(context, "您已经屏蔽此人", Toast.LENGTH_LONG).show();
+                    menuDialog.dismiss();
+                } else if (userId.equals(baseUser.getObjectId())) {
+                    Toast.makeText(context, "您不能屏蔽您自己", Toast.LENGTH_LONG).show();
+                    menuDialog.dismiss();
+                } else {
+                    blockers.add(userId);
+                    myInfo.setBlockers(blockers);
+                    baseUser.setMyInfo(myInfo);
+                    baseUser.update(context, new UpdateListener() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(context, "成功屏蔽此人", Toast.LENGTH_LONG).show();
+                            menuDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(int i, String s) {
+                            Log.d(TAG, s + i);
+                        }
+                    });
+                }
+
+
             }
         });
         report.setOnClickListener(new View.OnClickListener() {

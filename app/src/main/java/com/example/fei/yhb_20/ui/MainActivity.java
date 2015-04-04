@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -88,12 +86,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private BaseUser user;
     private ActionBarDrawerToggle toggle;
     private String avatarPath;
+    private BaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        currentUser = BmobUser.getCurrentUser(this, BaseUser.class);
+
 
         initViews();
 
@@ -339,17 +341,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                             break;
                         case 3:
                             break;
-                        case 4:
-                            break;
-                        case 5:
-                            break;
-                        case 6:
-                            break;
                         default:
                             break;
                     }
                 }
-                if (user.getAttribute()==GV.MAIN_PRESSED){
+                if (user.getAttribute() == GV.MERCHANT) {
                     Intent intent = null;
                     switch (position){
                         case 0:
@@ -360,17 +356,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         case 2:
                             break;
                         case 3:
+                            //我的收藏
+                            intent = new Intent(MainActivity.this, MyCollections.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("currentUser", currentUser);
+                            intent.putExtra("bundle", bundle);
                             break;
                         case 4:
                             break;
                         case 5:
-                            break;
-                        case 6:
-                            break;
-                        case 7:
-                            break;
-                        case 8:
-                            break;
                         default:
                             break;
                     }
@@ -420,7 +414,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        BaseUser currentUser =BmobUser.getCurrentUser(this,BaseUser.class);
         Intent intent;
         switch (v.getId()){
             case R.id.user_cover:

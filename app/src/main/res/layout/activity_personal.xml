@@ -42,6 +42,7 @@
                     android:layout_height="85dp"
                     android:layout_marginTop="27dp"
                     android:background="@drawable/pull_scroll_view_card_avatar_bar">
+
                     <LinearLayout
                         android:drawablePadding="3dp"
                         android:paddingTop="5dp"
@@ -54,23 +55,25 @@
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
+
                         <TextView
-                        android:id="@+id/attention_user"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/pull_scroll_view_selector_btn"
-                        android:layout_marginTop="6dp"
-                        android:drawableStart="@drawable/pull_scroll_view_add"
-                        android:drawableLeft="@drawable/pull_scroll_view_add"
-                        android:drawablePadding="3dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:gravity="center_vertical"
-                        android:text="关注"
-                        android:textSize="13sp"
-                        android:textColor="#57AF4E" />
+                            android:id="@+id/attention_user"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/pull_scroll_view_selector_btn"
+                            android:layout_marginTop="6dp"
+                            android:drawableStart="@drawable/pull_scroll_view_add"
+                            android:drawableLeft="@drawable/pull_scroll_view_add"
+                            android:drawablePadding="3dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:gravity="center_vertical"
+                            android:text="关注"
+                            android:textSize="13sp"
+                            android:textColor="#57AF4E" />
+
                         <TextView
                             android:id="@+id/user_message"
                             android:layout_width="wrap_content"
@@ -89,7 +92,7 @@
                             android:text="私信"
                             android:textSize="13sp"
                             android:textColor="#57AF4E" />
-                        </LinearLayout>
+                    </LinearLayout>
 
 
                     <TextView
@@ -190,6 +193,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <LinearLayout
                     android:id="@+id/personal_goto_albums"
                     android:orientation="horizontal"
@@ -200,26 +204,36 @@
                         android:layout_weight="0.9"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="他发布的惠报 （0）"/>
+                        android:text="他发布的惠报 （0）" />
 
                     <ImageView
                         android:layout_weight="0.1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/arraw_right"/>
+                        android:src="@drawable/arraw_right" />
 
-                    </LinearLayout>
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/color_gray_light"/>
-                </LinearLayout>
+                    android:background="@color/color_gray_light" />
+            </LinearLayout>
+
             <LinearLayout
                 android:orientation="vertical"
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_collections"
+                    android:scrollbars="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
 
         </LinearLayout>
     </com.marshalchen.common.uimodule.huitanScrollView.PullScrollView>

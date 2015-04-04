@@ -20,7 +20,6 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -79,6 +78,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     private static ACache aCache;
     private Post post;
     private String objectId;
+    private String userId;
     private ArrayList numberFooter;
     private byte[] footerBoolean;
     private Picasso picasso;
@@ -119,6 +119,8 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
 
             footerBoolean= aCache.getAsBinary(post.getObjectId()+"footerBoolean");
             postUserName.setText(post.getUser().getUsername());
+            userId = post.getUser().getObjectId();
+
             //格式化时间
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = null;
@@ -364,7 +366,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 startActivity(sendIntent);
                 break;
             case R.id.iv_main_list:
-               MyUtils.showPopupMenu(this,objectId);
+                MyUtils.showPopupMenu(this, objectId, userId);
                 break;
             case R.id.ll_main_conment:
                 edComment.requestFocus();
