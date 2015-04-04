@@ -58,7 +58,6 @@
     </style>
 
 
-
     <!--以下为其他style-->
     <style name="TextAppearance.YourApp.FloatLabel" parent="android:TextAppearance.Small">
         <item name="android:textColor">@color/blue</item>
@@ -88,6 +87,16 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+
+
+    <!--自定义ratingbar的大小和颜色-->
+    <style name="myratingbar" parent="Base.Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">
+            @drawable/myratingbar
+        </item>
+        <item name="android:minHeight">36dip</item>
+        <item name="android:maxHeight">36dip</item>
     </style>
 
 

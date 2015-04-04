@@ -81,6 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:layout_gravity="center_vertical"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -89,7 +90,7 @@
                     android:id="@+id/ratingbar"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
-                    style="?android:attr/ratingBarStyle"
+                    style="@style/myratingbar"
                     android:numStars="5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

@@ -2,9 +2,11 @@ package com.example.fei.yhb_20.ui;
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bmob.BmobConfiguration;
+import com.bmob.BmobPro;
+import com.bmob.BmobProFile;
+import com.bmob.btp.callback.DownloadListener;
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.MerchantInfo;
@@ -60,7 +66,8 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
         setContentView(view);
         ButterKnife.inject(this);
         merchant = BmobUser.getCurrentUser(this,Merchant.class);
-
+        BmobConfiguration config = new BmobConfiguration.Builder(this).customExternalCacheDir("目录名").build();
+        BmobPro.getInstance(this).initConfig(config);
         initViews();
         initEvents();
     }
@@ -77,9 +84,36 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
                 mSort.setText(merchantInfo.getSort());
             }
             if (merchant.getPhotoPaths()!=null){
+                combinationImageView = (CombinationImageView) view.findViewById(R.id.combinationImage);
                 ArrayList<String> photoPaths = merchant.getPhotoPaths();
-                new PicAscyTask().execute(photoPaths.toArray(new String[photoPaths.size()]));
+//                new PicAscyTask().execute(photoPaths.toArray(new String[photoPaths.size()]));
+                for (int i = 0; i < photoPaths.size(); i++) {
+                    BmobProFile.getInstance(MerchantInfoPage.this).download(photoPaths.get(i), new DownloadListener() {
+
+                        @Override
+                        public void onSuccess(String fullPath) {
+                            Log.d(TAG, "下载成功：" + fullPath);
+                            Bitmap imageBitmap = BitmapFactory.decodeFile(fullPath);
+
+                            combinationImageView.addImageView(imageBitmap);
+                        }
+
+                        @Override
+                        public void onProgress(String localPath, int percent) {
+                            Log.d(TAG, localPath + percent);
+                        }
+
+                        @Override
+                        public void onError(int statuscode, String errormsg) {
+                            Log.d(TAG, "下载出错：" + statuscode + "--" + errormsg);
+                            combinationImageView.addImageView(R.drawable.example5);
+
+                        }
+                    });
+                }
+
             }else{
+                Log.d(TAG, "还没有设置头像");
                 combinationImageView = (CombinationImageView) findViewById(R.id.combinationImage);
                 combinationImageView.addImageView(R.drawable.example5);
             }

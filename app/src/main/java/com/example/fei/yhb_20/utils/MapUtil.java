@@ -20,33 +20,32 @@ public class MapUtil {
     private static final String TAG = "MapUtil";
     static boolean flag = false;
 
-    public static void getLocation(final Context context, final TextView position){
-        Log.e(TAG,"2");
+    public static void getLocation(final Context context, final TextView position) {
+        Log.e(TAG, "2");
 
-        final LocationClient mLocationClient= new LocationClient(context.getApplicationContext());
+        final LocationClient mLocationClient = new LocationClient(context.getApplicationContext());
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);
         option.setCoorType("gcj02");
-        int span=1000;
+        int span = 1000;
         option.setScanSpan(span);
         option.setIsNeedAddress(true);
         mLocationClient.setLocOption(option);
         mLocationClient.registerLocationListener(new BDLocationListener() {
             @Override
             public void onReceiveLocation(BDLocation location) {
-                Log.e(TAG,"1");
                 position.setText(location.getCity());
 
                 //持久化写入地理数据，以后
                 SharedPreferences settings = context.getSharedPreferences("settings", 0);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString("province",location.getProvince());
-                editor.putString("city",location.getCity());
-                editor.putString("district",location.getDistrict());
-                editor.putBoolean("ever",true);
+                editor.putString("province", location.getProvince());
+                editor.putString("city", location.getCity());
+                editor.putString("district", location.getDistrict());
+                editor.putBoolean("ever", true);
                 editor.apply();
 
-                if (flag){
+                if (flag) {
                     mLocationClient.stop();
                 }
             }
@@ -55,7 +54,6 @@ public class MapUtil {
         mLocationClient.start();
         flag = true;
     }
-
 
 
 }

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:id="@+id/linearLayout"
             android:orientation="vertical"
@@ -15,47 +17,54 @@
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
+
                     <LinearLayout
                         android:weightSum="1"
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <ImageView
                             android:layout_weight="0.2"
                             android:src="@drawable/pull_scroll_view_avatar_default"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/iv_main_logo"/>
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:id="@+id/iv_main_logo" />
+
                         <LinearLayout
                             android:layout_weight="0.6"
                             android:paddingLeft="20dp"
                             android:layout_width="wrap_content"
                             android:orientation="vertical"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content">
+
                             <TextView
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/tv_main_postName"
-                                android:text="default name"/>
+                                android:text="default name" />
+
                             <TextView
                                 android:id="@+id/tv_main_time"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="default time"/>
+                                android:text="default time" />
                         </LinearLayout>
+
                         <ImageView
                             android:layout_gravity="center_vertical"
                             android:layout_weight="0.1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/share"
-                            android:id="@+id/iv_main_share"/>
+                            android:id="@+id/iv_main_share" />
 
                         <ImageView
                             android:layout_gravity="center_vertical"
@@ -63,8 +72,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/dropdown_gray"
-                            android:id="@+id/iv_main_list"/>
+                            android:id="@+id/iv_main_list" />
                     </LinearLayout>
+
                     <TextView
                         android:id="@+id/tv_main_content"
                         android:paddingTop="6dp"
@@ -72,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:paddingLeft="6dp"
                         android:paddingRight="6dp"
-                        android:text="this is the content"/>
+                        android:text="this is the content" />
 
                     <HorizontalScrollView
                         android:paddingTop="7dp"
@@ -80,7 +90,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/horizontalScrollView"
                         android:layout_gravity="center_vertical"
-                        android:fillViewport="false" >
+                        android:fillViewport="false">
+
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:id="@+id/ll_gallery"
@@ -94,6 +105,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <TextView
                             android:id="@+id/text"
                             android:paddingLeft="20dp"
@@ -101,7 +113,8 @@
                             android:layout_alignParentStart="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="优惠指数评分:"/>
+                            android:text="优惠指数评分:" />
+
                         <RatingBar
                             android:layout_marginLeft="20dp"
                             style="?android:ratingBarStyleSmall"
@@ -109,36 +122,41 @@
                             android:id="@+id/ratingbar"
                             android:isIndicator="true"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
+                            android:layout_height="wrap_content" />
                     </RelativeLayout>
+
                     <TextView
                         android:paddingLeft="20dp"
                         android:id="@+id/location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="商户地点："/>
+                        android:text="商户地点：" />
+
                     <TextView
                         android:paddingLeft="20dp"
                         android:id="@+id/merchantPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="商户电话："/>
+                        android:text="商户电话：" />
+
                     <TextView
                         android:paddingLeft="20dp"
                         android:id="@+id/lastTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="活动时间："/>
+                        android:text="活动时间：" />
+
                     <View
                         android:background="@color/color_gray_light"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"/>
+                        android:layout_height="1dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:orientation="horizontal"
                         android:weightSum="3"
                         android:layout_height="wrap_content">
+
                         <LinearLayout
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
@@ -150,18 +168,20 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="fill_parent">
+
                             <ImageView
                                 android:id="@+id/iv_main_like"
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/icon_heart"/>
+                                android:src="@drawable/icon_heart" />
+
                             <TextView
                                 android:id="@+id/tv_main_like"
                                 android:layout_marginLeft="8dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"/>
+                                android:text="0" />
 
                         </LinearLayout>
 
@@ -176,19 +196,22 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="fill_parent">
+
                             <ImageView
                                 android:id="@+id/iv_main_dislike"
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/icon_dislike"/>
+                                android:src="@drawable/icon_dislike" />
+
                             <TextView
                                 android:id="@+id/tv_main_dislike"
                                 android:layout_marginLeft="8dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"/>
+                                android:text="0" />
                         </LinearLayout>
+
                         <LinearLayout
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
@@ -199,24 +222,27 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="fill_parent">
+
                             <ImageView
                                 android:id="@+id/iv_main_comment"
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/icon_chat"/>
+                                android:src="@drawable/icon_chat" />
+
                             <TextView
                                 android:id="@+id/tv_main_comment"
                                 android:layout_marginLeft="8dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"/>
+                                android:text="0" />
                         </LinearLayout>
                     </LinearLayout>
+
                     <View
                         android:background="@color/color_gray_light"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"/>
+                        android:layout_height="1dp" />
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

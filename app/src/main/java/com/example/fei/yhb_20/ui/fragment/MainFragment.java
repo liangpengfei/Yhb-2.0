@@ -65,15 +65,18 @@ public class MainFragment extends Fragment {
     private static Picasso picasso;
     private static ACache aCache;
     LinearLayoutManager layoutManager;
-    private SharedPreferences sharedPreferences ;
+    private SharedPreferences sharedPreferences;
     private static LinearLayout llFoot;
     private static Button send;
     private static EditText comment;
     private static Post currentPost;
-//    private RelativeLayout ll_container;
+    //    private RelativeLayout ll_container;
     private DrawerLayout ll_container;
 
-    public MainFragment(){};
+    public MainFragment() {
+    }
+
+    ;
     private BaseUser baseUser;
 
 
@@ -81,17 +84,17 @@ public class MainFragment extends Fragment {
         @Override
         public void onGlobalLayout() {
             //比较Activity根布局与当前布局的大小
-            Log.e(TAG,"onGlobalLayout");
+            Log.e(TAG, "onGlobalLayout");
 
-            int heightDiff = ll_container.getRootView().getHeight()- ll_container.getHeight();
+            int heightDiff = ll_container.getRootView().getHeight() - ll_container.getHeight();
             Log.e(TAG, String.valueOf(ll_container.getRootView().getHeight()));
             Log.e(TAG, String.valueOf(ll_container.getHeight()));
-            if(heightDiff >200){
+            if (heightDiff > 200) {
                 //大小超过100时，一般为显示虚拟键盘事件
                 getActivity().findViewById(R.id.footer).setVisibility(View.GONE);
                 llFoot.setVisibility(View.VISIBLE);
-                Log.e(TAG,"显示");
-            }else{
+                Log.e(TAG, "显示");
+            } else {
                 Log.e(TAG, "隐藏");
                 getActivity().findViewById(R.id.footer).setVisibility(View.VISIBLE);
                 llFoot.setVisibility(View.GONE);
@@ -103,8 +106,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.main_recyclerView);
@@ -127,15 +129,15 @@ public class MainFragment extends Fragment {
         comment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.e(TAG,"before"+s);
+                Log.e(TAG, "before" + s);
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.e(TAG,"onTextChanged"+s);
+                Log.e(TAG, "onTextChanged" + s);
                 if (TextUtils.isEmpty(s)) {
                     send.setEnabled(false);
-                }else{
+                } else {
                     send.setEnabled(true);
                 }
 
@@ -143,7 +145,7 @@ public class MainFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.e(TAG,"after");
+                Log.e(TAG, "after");
             }
         });
 
@@ -157,11 +159,11 @@ public class MainFragment extends Fragment {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm= (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 llFoot.setVisibility(View.INVISIBLE);
-                MyUtils.commentSend(currentPost,comment,getActivity());
+                MyUtils.commentSend(currentPost, comment, getActivity());
                 //强制隐藏
-                imm.hideSoftInputFromWindow(comment.getWindowToken(),0);
+                imm.hideSoftInputFromWindow(comment.getWindowToken(), 0);
                 comment.setText(null);
             }
         });
@@ -175,16 +177,13 @@ public class MainFragment extends Fragment {
     }
 
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //TODO 在这里联网
         baseUser = BmobUser.getCurrentUser(getActivity(), BaseUser.class);
-        sharedPreferences = getActivity().getSharedPreferences("settings",0);
-        BmobQuery<Post> query = new BmobQuery<Post>();
+        sharedPreferences = getActivity().getSharedPreferences("settings", 0);
 
-        query.include("user");
         if (baseUser.getMyInfo() != null) {
             if (baseUser.getMyInfo().getBlockers() != null) {
                 BmobQuery<BaseUser> queryUsers = new BmobQuery<>();
@@ -251,45 +250,6 @@ public class MainFragment extends Fragment {
             }
         }
 
-        query.order("-createdAt");
-        query.findObjects(getActivity(),new FindListener<Post>() {
-            @Override
-            public void onSuccess(List<Post> posts) {
-                //在这里写入缓存
-                for (int i = 0 ;i<posts.size();i++){
-                    aCache.put(String.valueOf(i),posts.get(i));
-                    if (aCache.getAsBinary(posts.get(i).getObjectId()+"footerBoolean")==null){
-                        byte[] footerBoolean = {1,1,1,1};
-                        aCache.put(posts.get(i).getObjectId()+"footerBoolean",footerBoolean);
-                    }
-                    //根据ObjectId来
-                    Log.e(TAG, "write success " + i);
-                }
-                aCache.put("cacheSize",String.valueOf(posts.size()));
-                recyclerView.setAdapter(new MyAdapter(posts,getActivity()));
-            }
-
-            @Override
-            public void onError(int code, String s) {
-                Log.e(TAG,s);
-                if (sharedPreferences.getBoolean("ever",false)){
-                    List<Post> objects = new ArrayList<Post>();
-
-                    int size = Integer.parseInt(aCache.getAsString("cacheSize"));
-                    Post post;
-                    for (int i = 0;i<size;i++){
-                        post= (Post) aCache.getAsObject(String.valueOf(i));
-                        if (post==null){
-                            android.util.Log.e(TAG, "post is null");
-                        }
-                        objects.add(post);
-                    }
-                    recyclerView.setAdapter(new MyAdapter(objects,getActivity()));
-                }else{
-                    Toast.makeText(getActivity(),"您没有登录过，没有缓存文件！",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
     }
 
     @Override
@@ -297,6 +257,7 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         aCache = ACache.get(getActivity());
     }
+
     private static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         private static final int LIKE = 0;
         private static final int DISLIKE = 1;
@@ -305,7 +266,7 @@ public class MainFragment extends Fragment {
         private List<Post> data;
         private Context context;
 
-        public MyAdapter(List<Post> data,Context context) {
+        public MyAdapter(List<Post> data, Context context) {
             this.data = data;
             this.context = context;
         }
@@ -322,7 +283,7 @@ public class MainFragment extends Fragment {
         public void onBindViewHolder(final ViewHolder viewHolder, int i) {
             //从data中获取数据，填充入视图中,处理获取的数据
             final Post post = data.get(i);
-            if (post!=null){
+            if (post != null) {
                 final String objectId = post.getObjectId();
                 final String userId = post.getUser().getObjectId();
                 final String cacheBooleanKey = objectId + "footerBoolean";
@@ -336,9 +297,9 @@ public class MainFragment extends Fragment {
                 viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
 
                 String merchantName = "";
-                if (post.getMerchantName().equals("") || post.getMerchantName() == null){
+                if (post.getMerchantName().equals("") || post.getMerchantName() == null) {
                     //do nothing
-                }else{
+                } else {
                     merchantName = "  " + post.getMerchantName() + "  ";
                 }
                 viewHolder.merchantName.setText(merchantName);
@@ -348,19 +309,19 @@ public class MainFragment extends Fragment {
                 viewHolder.tvConment.setText(String.valueOf(numberFooter.get(COMMENT)));
 
                 BmobQuery<Merchant> query = new BmobQuery<Merchant>();
-                query.getObject(context,post.getUser().getObjectId(),new GetListener<Merchant>() {
+                query.getObject(context, post.getUser().getObjectId(), new GetListener<Merchant>() {
                     @Override
                     public void onSuccess(Merchant merchant) {
-                        if (merchant.getAvatarPaht()!=null){
+                        if (merchant.getAvatarPaht() != null) {
                             Picasso.with(context).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(45, 45).into(viewHolder.avata);
-                        }else{
-                            Toast.makeText(context,"获取头像失败",Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, "获取头像失败", Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
-                        Log.e(TAG,s+i);
+                        Log.e(TAG, s + i);
                     }
                 });
 
@@ -368,7 +329,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, DeatilActivity.class);
-                        intent.putExtra("post",post);
+                        intent.putExtra("post", post);
                         context.startActivity(intent);
 
                     }
@@ -390,7 +351,7 @@ public class MainFragment extends Fragment {
                 viewHolder.like.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MyUtils.footerCommand(footerBoolean,LIKE,viewHolder.ivLike,viewHolder.tvLike,numberFooter,aCache,post,context,objectId);
+                        MyUtils.footerCommand(footerBoolean, LIKE, viewHolder.ivLike, viewHolder.tvLike, numberFooter, aCache, post, context, objectId);
                     }
                 });
 
@@ -400,7 +361,7 @@ public class MainFragment extends Fragment {
                 viewHolder.dislike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MyUtils.footerCommand(footerBoolean,DISLIKE,viewHolder.ivDislike,viewHolder.tvDislike,numberFooter,aCache,post,context,objectId);
+                        MyUtils.footerCommand(footerBoolean, DISLIKE, viewHolder.ivDislike, viewHolder.tvDislike, numberFooter, aCache, post, context, objectId);
                     }
                 });
 
@@ -412,7 +373,7 @@ public class MainFragment extends Fragment {
                     public void onClick(View v) {
                         //得到当前的post
                         currentPost = post;
-                        InputMethodManager imm= (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                         llFoot.setVisibility(View.VISIBLE);
                         comment.requestFocus();
                         //强制显示键盘
@@ -428,7 +389,7 @@ public class MainFragment extends Fragment {
                     public void onClick(View v) {
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, "我有好东西与您分享"+post.getContent());
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "我有好东西与您分享" + post.getContent());
                         sendIntent.setType("text/plain");
                         context.startActivity(sendIntent);
                     }
@@ -439,8 +400,8 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, PersonalActivity.class);
-                        intent.putExtra("post",post);
-                        intent.putExtra("user",post.getUser());
+                        intent.putExtra("post", post);
+                        intent.putExtra("user", post.getUser());
                         context.startActivity(intent);
                     }
                 });
@@ -449,7 +410,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, PersonalActivity.class);
-                        intent.putExtra("user",post.getUser());
+                        intent.putExtra("user", post.getUser());
                         context.startActivity(intent);
                     }
                 });
@@ -457,16 +418,15 @@ public class MainFragment extends Fragment {
                 /**
                  * 设置展示的时候的图标颜色值，要正确的显示
                  */
-            Log.e(TAG, Arrays.toString(footerBoolean));
-                if (footerBoolean!=null){
-                    if (footerBoolean[DISLIKE]==0){
+                Log.e(TAG, Arrays.toString(footerBoolean));
+                if (footerBoolean != null) {
+                    if (footerBoolean[DISLIKE] == 0) {
                         viewHolder.ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
                     }
-                    if (footerBoolean[LIKE]==0){
+                    if (footerBoolean[LIKE] == 0) {
                         viewHolder.ivLike.setImageResource(R.drawable.icon_heart_pressed);
                     }
                 }
-
 
 
                 //格式化时间
@@ -477,41 +437,42 @@ public class MainFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                viewHolder.time.setText(MyUtils.timeLogic(date,context));
+                viewHolder.time.setText(MyUtils.timeLogic(date, context));
 
                 //获取图片，使用Picasso可以缓存
-                final String paths [] = post.getPaths().split("\\|");
+                final String paths[] = post.getPaths().split("\\|");
                 int t = paths.length;
                 Log.e(TAG, String.valueOf(t));
 
 
                 final ArrayList<String> arrayList = post.getThumnailsName();
-                Log.e(TAG,arrayList.toString());
+                Log.e(TAG, arrayList.toString());
 
                 /**
                  * 想获取缩略图，但是没有成功
                  * 问题解决了，是因为没有进行sign认证，所以没有有400错误
                  */
                 //TODO
-                for (int i1 = 0 ;i1 <arrayList.size(); i1++) {
+                for (int i1 = 0; i1 < arrayList.size(); i1++) {
                     final int finalI = i1;
                     BmobProFile.getInstance(context).submitThumnailTask(arrayList.get(i1), 1, new ThumbnailListener() {
                         @Override
                         public void onSuccess(String thumbnailName, String thumbnailUrl) {
-                            ImageView imageView =new ImageView(context);
+                            ImageView imageView = new ImageView(context);
                             picasso.load(BmobProFile.getInstance(context).signURL(thumbnailName, thumbnailUrl, "54f197dc6dce11fc7c078c07420a080e", 0, null)).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
-                            imageView.setPadding(3,3,3,3);
+                            imageView.setPadding(3, 3, 3, 3);
                             viewHolder.gallery.addView(imageView);
                             imageView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(context, GalleryUrlActivity.class);
-                                    intent.putExtra("photoUrls",paths);
+                                    intent.putExtra("photoUrls", paths);
                                     intent.putExtra("currentItem", finalI);
                                     context.startActivity(intent);
                                 }
                             });
                         }
+
                         @Override
                         public void onError(int statuscode, String errormsg) {
                             Log.e(TAG, errormsg);
@@ -521,29 +482,28 @@ public class MainFragment extends Fragment {
                 }
             }
 
-            setAnimation(viewHolder.container,i);
+            setAnimation(viewHolder.container, i);
 
         }
 
-        private void setAnimation(View viewToAnimate, int position)
-        {
+        private void setAnimation(View viewToAnimate, int position) {
             // If the bound view wasn't previously displayed on screen, it's animated
-            if (position > lastPosition)
-            {
+            if (position > lastPosition) {
                 Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
                 viewToAnimate.startAnimation(animation);
                 lastPosition = position;
             }
         }
+
         @Override
         public int getItemCount() {
             return data.size();
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView merchantName,userName,content,time,tvLike,tvDislike,tvConment;
-            ImageView avata,share,list,ivLike,ivDislike,ivComment;
-            LinearLayout like,dislike,comment,gallery;
+            TextView merchantName, userName, content, time, tvLike, tvDislike, tvConment;
+            ImageView avata, share, list, ivLike, ivDislike, ivComment;
+            LinearLayout like, dislike, comment, gallery;
             CardView container;
 
             public ViewHolder(View itemView) {
@@ -571,7 +531,6 @@ public class MainFragment extends Fragment {
             }
         }
     }
-
 
 
 }

@@ -300,7 +300,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                     Toast.makeText(MerchantRegist.this, "成功上传", Toast.LENGTH_LONG).show();
                     ArrayList<String> photoPaths = new ArrayList<String>();
                     for (int i = 0 ;i < fileNames.length;i++){
-                        photoPaths.add(BmobProFile.getInstance(MerchantRegist.this).signURL(fileNames[i], urls[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
+//                        photoPaths.add(BmobProFile.getInstance(MerchantRegist.this).signURL(fileNames[i], urls[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
+                        photoPaths.add(fileNames[i]);
+                        Log.d(TAG, fileNames[i]);
                     }
                     merchant.setPhotoPaths(photoPaths);
                     merchant.signUp(MerchantRegist.this,new SaveListener() {
