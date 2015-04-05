@@ -78,33 +78,46 @@ import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
-public class PostActivity extends ActionBarActivity implements View.OnClickListener ,AdapterView.OnItemSelectedListener {
+public class PostActivity extends ActionBarActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private LocationClient mLocationClient;
     private static final java.lang.String TAG = "PostActivity";
-    @InjectView(R.id.iv_post_back)ImageView back;
-    @InjectView(R.id.iv_post_ok)ImageView ok;
-    @InjectView(R.id.ratingbar)RatingBar ratingBar;
-    @InjectView(R.id.et_post_merchantName)EditText merchantName;
-    @InjectView(R.id.time)Spinner time;
-    @InjectView(R.id.iv_post_dingwei)ImageView dingwei;
-    @InjectView(R.id.position1)Spinner position1;
-    @InjectView(R.id.position2)Spinner position2;
-    @InjectView(R.id.position3)Spinner position3;
-    @InjectView(R.id.noScrollgridview)GridView noScrollgridview;
-    @InjectView(R.id.et_post_content)EditText content;
-    @InjectView(R.id.face_bar)LinearLayout faceBar;
-    @InjectView(R.id.face)ImageView face;
+    @InjectView(R.id.iv_post_back)
+    ImageView back;
+    @InjectView(R.id.iv_post_ok)
+    ImageView ok;
+    @InjectView(R.id.ratingbar)
+    RatingBar ratingBar;
+    @InjectView(R.id.et_post_merchantName)
+    EditText merchantName;
+    @InjectView(R.id.time)
+    Spinner time;
+    @InjectView(R.id.iv_post_dingwei)
+    ImageView dingwei;
+    @InjectView(R.id.position1)
+    Spinner position1;
+    @InjectView(R.id.position2)
+    Spinner position2;
+    @InjectView(R.id.position3)
+    Spinner position3;
+    @InjectView(R.id.noScrollgridview)
+    GridView noScrollgridview;
+    @InjectView(R.id.et_post_content)
+    EditText content;
+    @InjectView(R.id.face_bar)
+    LinearLayout faceBar;
+    @InjectView(R.id.face)
+    ImageView face;
 
 
     private DBManager dbm;
     private SQLiteDatabase db;
-    private String province=null;
-    private String city=null;
-    private String district=null;
-    private String sTime=null;
+    private String province = null;
+    private String city = null;
+    private String district = null;
+    private String sTime = null;
     private String filename;
-    public static Bitmap bimap ;
+    public static Bitmap bimap;
     private View parentView;
     private PopupWindow pop = null;
     private LinearLayout ll_popup;
@@ -133,56 +146,55 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(parentView);
         ButterKnife.inject(this);
 
-        if (GV.getContent()!=null){
+        if (GV.getContent() != null) {
             content.setText(GV.getContent());
         }
-        if (GV.getMerchantName()!=null){
+        if (GV.getMerchantName() != null) {
             merchantName.setText(GV.getMerchantName());
         }
-        if (GV.getRating()!=0){
+        if (GV.getRating() != 0) {
             ratingBar.setRating(GV.getRating());
         }
-
 
 
         position1.setPrompt("省");
         position2.setPrompt("市");
         position3.setPrompt("地区");
         time.setPrompt("选择时间");
-        mLocationClient = ((LocationApplication)getApplication()).mLocationClient;
+        mLocationClient = ((LocationApplication) getApplication()).mLocationClient;
 
         /**
          * 初始化地理位置控件
          */
-        ((LocationApplication)getApplication()).position1 = position1;
-        ((LocationApplication)getApplication()).position2 = position2;
-        ((LocationApplication)getApplication()).position3 = position3;
+        ((LocationApplication) getApplication()).position1 = position1;
+        ((LocationApplication) getApplication()).position2 = position2;
+        ((LocationApplication) getApplication()).position3 = position3;
 
         initEvents();
         initSpinner1();
         initTimeSpinner();
         Init();
     }
-    
-    private void updateIcons(){
-        MyUtils.showProgressDialog(this,"正在发布");
-        final String [] files = getPhotoPath().split("\\|");
-        Log.e(TAG,"test");
+
+    private void updateIcons() {
+        MyUtils.showProgressDialog(this, "正在发布");
+        final String[] files = getPhotoPath().split("\\|");
+        Log.e(TAG, "test");
         BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
             @Override
             public void onSuccess(boolean isFinished, String[] fileNames, String[] urls) {
                 if (isFinished) {
-                    Log.e(TAG,"88");
+                    Log.e(TAG, "88");
                     Toast.makeText(PostActivity.this, "成功上传", Toast.LENGTH_LONG).show();
                     //得到图片路径的字符串
-                    Log.e(TAG,"99");
+                    Log.e(TAG, "99");
                     StringBuilder stringBuilder = new StringBuilder("");
-                    for (int i = 0 ;i<fileNames.length;i++){
-                        Log.e(TAG,fileNames[i]);
+                    for (int i = 0; i < fileNames.length; i++) {
+                        Log.e(TAG, fileNames[i]);
                         stringBuilder.append(BmobProFile.getInstance(PostActivity.this).signURL(fileNames[i], urls[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
                         stringBuilder.append("|");
                     }
-                    Log.e(TAG,stringBuilder.toString());
+                    Log.e(TAG, stringBuilder.toString());
                     //post与user关联
                     final Post post = new Post();
 
@@ -195,16 +207,16 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                     post.setRating(ratingBar.getRating());
                     post.setPaths(stringBuilder.toString());
                     ArrayList<String> arrayList = new ArrayList<String>();
-                    Collections.addAll(arrayList,fileNames);
+                    Collections.addAll(arrayList, fileNames);
                     post.setThumnailsName(arrayList);
 
-                    final BaseUser user = BmobUser.getCurrentUser(PostActivity.this,BaseUser.class);
+                    final BaseUser user = BmobUser.getCurrentUser(PostActivity.this, BaseUser.class);
 
                     ArrayList numberFooter = new ArrayList();
-                    numberFooter.add(0,0);
-                    numberFooter.add(1,0);
-                    numberFooter.add(2,0);
-                    numberFooter.add(3,0);
+                    numberFooter.add(0, 0);
+                    numberFooter.add(1, 0);
+                    numberFooter.add(2, 0);
+                    numberFooter.add(3, 0);
 
 
                     post.setNumberFooter(numberFooter);
@@ -213,23 +225,23 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                     post.setCommentItems(commentItems);
 
                     post.setUser(user);
-                    Log.e(TAG,"8");
-                    post.save(PostActivity.this,new SaveListener() {
+                    post.setOwnerId(user.getObjectId());
+                    post.save(PostActivity.this, new SaveListener() {
                         @Override
                         public void onSuccess() {
                             //到这里只能是说post发送成功了，还没有更新user表中的数据
-                            if (TextUtils.isEmpty(post.getObjectId()) || TextUtils.isEmpty(post.getObjectId())){
-                                Toast.makeText(PostActivity.this,"当前post对象为空",Toast.LENGTH_LONG).show();
+                            if (TextUtils.isEmpty(post.getObjectId()) || TextUtils.isEmpty(post.getObjectId())) {
+                                Toast.makeText(PostActivity.this, "当前post对象为空", Toast.LENGTH_LONG).show();
                                 return;
                             }
                             BmobRelation posts = new BmobRelation();
                             posts.add(post);
                             user.setPost(posts);
-                            user.update(PostActivity.this,new UpdateListener() {
+                            user.update(PostActivity.this, new UpdateListener() {
                                 @Override
                                 public void onSuccess() {
                                     //更新user表中的数据成功，最终成功
-                                    Toast.makeText(PostActivity.this,"成功添加到用户的posts中",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(PostActivity.this, "成功添加到用户的posts中", Toast.LENGTH_LONG).show();
                                     Log.e(TAG, "成功添加到用户的posts中");
                                     PostActivity.this.finish();
                                     PostActivity.this.finish();
@@ -237,18 +249,19 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
                                 @Override
                                 public void onFailure(int i, String s) {
-                                    Log.e(TAG,"没有添加成功"+s);
+                                    Log.e(TAG, "没有添加成功" + s);
                                 }
                             });
                         }
 
                         @Override
                         public void onFailure(int i, String s) {
-                               Log.e(TAG,"发布失败"+s);
+                            Log.e(TAG, "发布失败" + s);
                         }
                     });
                 }
             }
+
             @Override
             public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
                 Log.e(TAG, String.valueOf(curPercent));
@@ -256,8 +269,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
             @Override
             public void onError(int i, String s) {
-                Log.e(TAG,"上传图片失败"+s+i);
-                Toast.makeText(PostActivity.this,s,Toast.LENGTH_LONG).show();
+                Log.e(TAG, "上传图片失败" + s + i);
+                Toast.makeText(PostActivity.this, s, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -354,7 +367,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                  * 如果是没有满到9张，就是添加图标
                  */
                 if (arg2 == Bimp.tempSelectBitmap.size()) {
-                    ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(PostActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(PostActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     content.setFocusable(false);
                     ll_popup.startAnimation(AnimationUtils.loadAnimation(PostActivity.this, R.anim.activity_translate_in));
                     pop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
@@ -372,11 +385,12 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
     /**
      * 得到上传照片的文件路径
+     *
      * @return
      */
-    public String getPhotoPath(){
+    public String getPhotoPath() {
         StringBuilder builder = new StringBuilder("");
-        for (int i =0 ;i<Bimp.tempSelectBitmap.size();i++){
+        for (int i = 0; i < Bimp.tempSelectBitmap.size(); i++) {
             builder.append(Bimp.tempSelectBitmap.get(i).getImagePath());
             builder.append("|");
 
@@ -406,7 +420,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         public int getCount() {
-            if(Bimp.tempSelectBitmap.size() == 9){
+            if (Bimp.tempSelectBitmap.size() == 9) {
                 return 9;
             }
             return (Bimp.tempSelectBitmap.size() + 1);
@@ -441,7 +455,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            if (position ==Bimp.tempSelectBitmap.size()) {
+            if (position == Bimp.tempSelectBitmap.size()) {
                 holder.image.setImageBitmap(BitmapFactory.decodeResource(
                         getResources(), R.drawable.icon_addpic_unfocused));
                 if (position == 9) {
@@ -498,11 +512,11 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         startActivityForResult(openCameraIntent, TAKE_PICTURE);
     }
 
-    private void InitLocation(){
+    private void InitLocation() {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);
         option.setCoorType("gcj02");
-        int span=1000;
+        int span = 1000;
         option.setScanSpan(span);
         option.setIsNeedAddress(true);
         mLocationClient.setLocOption(option);
@@ -515,7 +529,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(PostActivity.this,parent.getItemAtPosition(position).toString(),Toast.LENGTH_LONG).show();
+                Toast.makeText(PostActivity.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -533,7 +547,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         content.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if (!hasFocus) {
                     faceBar.setVisibility(View.INVISIBLE);
                 }
             }
@@ -551,7 +565,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     /**
      * 以下是一连串的动作
      */
-    public void initSpinner1(){
+    public void initSpinner1() {
         dbm = new DBManager(this);
         dbm.openDatabase();
         db = dbm.getDatabase();
@@ -559,22 +573,22 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
         try {
             String sql = "select * from province";
-            Cursor cursor = db.rawQuery(sql,null);
+            Cursor cursor = db.rawQuery(sql, null);
             cursor.moveToFirst();
-            while (!cursor.isLast()){
-                String code=cursor.getString(cursor.getColumnIndex("code"));
-                byte bytes[]=cursor.getBlob(2);
-                String name=new String(bytes,"gbk");
-                MyListItem myListItem=new MyListItem();
+            while (!cursor.isLast()) {
+                String code = cursor.getString(cursor.getColumnIndex("code"));
+                byte bytes[] = cursor.getBlob(2);
+                String name = new String(bytes, "gbk");
+                MyListItem myListItem = new MyListItem();
                 myListItem.setName(name);
                 myListItem.setPcode(code);
                 list.add(myListItem);
                 cursor.moveToNext();
             }
-            String code=cursor.getString(cursor.getColumnIndex("code"));
-            byte bytes[]=cursor.getBlob(2);
-            String name=new String(bytes,"gbk");
-            MyListItem myListItem=new MyListItem();
+            String code = cursor.getString(cursor.getColumnIndex("code"));
+            byte bytes[] = cursor.getBlob(2);
+            String name = new String(bytes, "gbk");
+            MyListItem myListItem = new MyListItem();
             myListItem.setName(name);
             myListItem.setPcode(code);
             list.add(myListItem);
@@ -584,34 +598,35 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         dbm.closeDatabase();
         db.close();
 
-        MyAdapter myAdapter = new MyAdapter(this,list);
+        MyAdapter myAdapter = new MyAdapter(this, list);
         position1.setAdapter(myAdapter);
         position1.setOnItemSelectedListener(new SpinnerOnSelectedListener1());
     }
-    public void initSpinner2(String pcode){
+
+    public void initSpinner2(String pcode) {
         dbm = new DBManager(this);
         dbm.openDatabase();
         db = dbm.getDatabase();
         List<MyListItem> list = new ArrayList<MyListItem>();
 
         try {
-            String sql = "select * from city where pcode='"+pcode+"'";
-            Cursor cursor = db.rawQuery(sql,null);
+            String sql = "select * from city where pcode='" + pcode + "'";
+            Cursor cursor = db.rawQuery(sql, null);
             cursor.moveToFirst();
-            while (!cursor.isLast()){
-                String code=cursor.getString(cursor.getColumnIndex("code"));
-                byte bytes[]=cursor.getBlob(2);
-                String name=new String(bytes,"gbk");
-                MyListItem myListItem=new MyListItem();
+            while (!cursor.isLast()) {
+                String code = cursor.getString(cursor.getColumnIndex("code"));
+                byte bytes[] = cursor.getBlob(2);
+                String name = new String(bytes, "gbk");
+                MyListItem myListItem = new MyListItem();
                 myListItem.setName(name);
                 myListItem.setPcode(code);
                 list.add(myListItem);
                 cursor.moveToNext();
             }
-            String code=cursor.getString(cursor.getColumnIndex("code"));
-            byte bytes[]=cursor.getBlob(2);
-            String name=new String(bytes,"gbk");
-            MyListItem myListItem=new MyListItem();
+            String code = cursor.getString(cursor.getColumnIndex("code"));
+            byte bytes[] = cursor.getBlob(2);
+            String name = new String(bytes, "gbk");
+            MyListItem myListItem = new MyListItem();
             myListItem.setName(name);
             myListItem.setPcode(code);
             list.add(myListItem);
@@ -621,34 +636,35 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         dbm.closeDatabase();
         db.close();
 
-        MyAdapter myAdapter = new MyAdapter(this,list);
+        MyAdapter myAdapter = new MyAdapter(this, list);
         position2.setAdapter(myAdapter);
         position2.setOnItemSelectedListener(new SpinnerOnSelectedListener2());
     }
-    public void initSpinner3(String pcode){
+
+    public void initSpinner3(String pcode) {
         dbm = new DBManager(this);
         dbm.openDatabase();
         db = dbm.getDatabase();
         List<MyListItem> list = new ArrayList<MyListItem>();
 
         try {
-            String sql = "select * from district where pcode='"+pcode+"'";
-            Cursor cursor = db.rawQuery(sql,null);
+            String sql = "select * from district where pcode='" + pcode + "'";
+            Cursor cursor = db.rawQuery(sql, null);
             cursor.moveToFirst();
-            while (!cursor.isLast()){
-                String code=cursor.getString(cursor.getColumnIndex("code"));
-                byte bytes[]=cursor.getBlob(2);
-                String name=new String(bytes,"gbk");
-                MyListItem myListItem=new MyListItem();
+            while (!cursor.isLast()) {
+                String code = cursor.getString(cursor.getColumnIndex("code"));
+                byte bytes[] = cursor.getBlob(2);
+                String name = new String(bytes, "gbk");
+                MyListItem myListItem = new MyListItem();
                 myListItem.setName(name);
                 myListItem.setPcode(code);
                 list.add(myListItem);
                 cursor.moveToNext();
             }
-            String code=cursor.getString(cursor.getColumnIndex("code"));
-            byte bytes[]=cursor.getBlob(2);
-            String name=new String(bytes,"gbk");
-            MyListItem myListItem=new MyListItem();
+            String code = cursor.getString(cursor.getColumnIndex("code"));
+            byte bytes[] = cursor.getBlob(2);
+            String name = new String(bytes, "gbk");
+            MyListItem myListItem = new MyListItem();
             myListItem.setName(name);
             myListItem.setPcode(code);
             list.add(myListItem);
@@ -658,7 +674,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         dbm.closeDatabase();
         db.close();
 
-        MyAdapter myAdapter = new MyAdapter(this,list);
+        MyAdapter myAdapter = new MyAdapter(this, list);
         position3.setAdapter(myAdapter);
         position3.setOnItemSelectedListener(new SpinnerOnSelectedListener3());
     }
@@ -678,8 +694,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
         public void onItemSelected(AdapterView<?> adapterView, View view, int position,
                                    long id) {
-            province=((MyListItem) adapterView.getItemAtPosition(position)).getName();
-            String pcode =((MyListItem) adapterView.getItemAtPosition(position)).getPcode();
+            province = ((MyListItem) adapterView.getItemAtPosition(position)).getName();
+            String pcode = ((MyListItem) adapterView.getItemAtPosition(position)).getPcode();
 
             initSpinner2(pcode);
             initSpinner3(pcode);
@@ -688,12 +704,13 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         public void onNothingSelected(AdapterView<?> adapterView) {
         }
     }
+
     class SpinnerOnSelectedListener2 implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> adapterView, View view, int position,
                                    long id) {
-            city=((MyListItem) adapterView.getItemAtPosition(position)).getName();
-            String pcode =((MyListItem) adapterView.getItemAtPosition(position)).getPcode();
+            city = ((MyListItem) adapterView.getItemAtPosition(position)).getName();
+            String pcode = ((MyListItem) adapterView.getItemAtPosition(position)).getPcode();
 
             initSpinner3(pcode);
         }
@@ -706,7 +723,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
         public void onItemSelected(AdapterView<?> adapterView, View view, int position,
                                    long id) {
-            district=((MyListItem) adapterView.getItemAtPosition(position)).getName();
+            district = ((MyListItem) adapterView.getItemAtPosition(position)).getName();
             Toast.makeText(PostActivity.this, province + " " + city + " " + district, Toast.LENGTH_LONG).show();
         }
 
@@ -738,7 +755,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_post_back:
                 finish();
                 break;
@@ -746,21 +763,21 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                 updateIcons();
                 break;
             case R.id.iv_post_dingwei:
-                if (NetUtil.isNetConnected(this)){
+                if (NetUtil.isNetConnected(this)) {
                     position1.setOnItemSelectedListener(this);
                     position2.setOnItemSelectedListener(this);
                     position3.setOnItemSelectedListener(this);
                     InitLocation();
                     mLocationClient.start();
-                }else{
-                    Toast.makeText(this,"无网络连接，请检测您的网络设置！",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "无网络连接，请检测您的网络设置！", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.face:
                 /**
                  * 显示表情选择
                  */
-                MyUtils.showFaceDialog(PostActivity.this,content);
+                MyUtils.showFaceDialog(PostActivity.this, content);
                 break;
             default:
                 break;
@@ -772,7 +789,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("图片来源");
         builder.setNegativeButton("取消", null);
-        builder.setItems(new String[]{"拍照","相册"}, new DialogInterface.OnClickListener() {
+        builder.setItems(new String[]{"拍照", "相册"}, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -782,7 +799,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                         String imageFileName = "JPEG_" + timeStamp + "_";
                         setFilename(imageFileName);
                         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        Uri imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(),getFilename()));
+                        Uri imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), getFilename()));
                         //指定照片保存路径（SD卡），image.jpg为一个临时文件，每次拍照后这个图片都会被替换
                         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                         startActivityForResult(openCameraIntent, TAKE_PICTURE);
@@ -805,6 +822,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
     /**
      * 选取图片的两种方式得到的图片的显示
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -833,7 +851,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            for(int i=0;i<PublicWay.activityList.size();i++){
+            for (int i = 0; i < PublicWay.activityList.size(); i++) {
                 if (null != PublicWay.activityList.get(i)) {
                     PublicWay.activityList.get(i).finish();
                 }

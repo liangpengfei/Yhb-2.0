@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,7 @@ import com.example.fei.yhb_20.ui.PersonalActivity;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
 import com.example.fei.yhb_20.utils.MyUtils;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -53,7 +55,6 @@ import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 
@@ -70,8 +71,18 @@ public class MainFragment extends Fragment {
     private static Button send;
     private static EditText comment;
     private static Post currentPost;
+    private int previousTotal = 0;
+    private boolean loading = true;
+    private int visibleThreshold = 2;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
     //    private RelativeLayout ll_container;
     private DrawerLayout ll_container;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private static int curPage = 0;
+    private static final int limit = 3;
+    private MyAdapter myAdapter;
+    private List<Post> datas;
+    private static ArrayList<String> everAccessPaths;
 
     public MainFragment() {
     }
@@ -79,16 +90,11 @@ public class MainFragment extends Fragment {
     ;
     private BaseUser baseUser;
 
-
     ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
             //比较Activity根布局与当前布局的大小
-            Log.e(TAG, "onGlobalLayout");
-
             int heightDiff = ll_container.getRootView().getHeight() - ll_container.getHeight();
-            Log.e(TAG, String.valueOf(ll_container.getRootView().getHeight()));
-            Log.e(TAG, String.valueOf(ll_container.getHeight()));
             if (heightDiff > 200) {
                 //大小超过100时，一般为显示虚拟键盘事件
                 getActivity().findViewById(R.id.footer).setVisibility(View.GONE);
@@ -109,11 +115,70 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        everAccessPaths = new ArrayList<>();
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!swipeRefreshLayout.isRefreshing()) {
+                    Log.d(TAG, "ignore manually update!");
+                } else {
+//                    loadPage();成功得到数据之后就停止刷新
+                    refreshView();
+                }
+            }
+        });
+
+
         recyclerView = (RecyclerView) view.findViewById(R.id.main_recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView mrecyclerView, int dx, int dy) {
+                super.onScrolled(mrecyclerView, dx, dy);
+
+                visibleItemCount = recyclerView.getChildCount();        //
+                totalItemCount = layoutManager.getItemCount();
+                firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                Log.d(TAG, String.valueOf(layoutManager.findLastCompletelyVisibleItemPosition()));
+
+                Log.d(TAG, "visibleItemCount:" + visibleItemCount + "totalItemCount:" + totalItemCount + "firstVisibleItem:" + firstVisibleItem + "previousTotal:" + previousTotal);
+
+                if ((totalItemCount - 1) == layoutManager.findLastCompletelyVisibleItemPosition()) {
+                    if (mrecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        Log.d(TAG, "dragging");
+                    } else if (mrecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
+                        Log.d(TAG, "idle");
+                    } else if (mrecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
+                        Log.d(TAG, "settling");
+                    }
+
+                    if (loading) {
+                        if (totalItemCount > previousTotal) {
+                            loading = false;
+                            //每一次都更新previousTotal，记录总共有多少条记录已经绑定到adapter上去了
+                            previousTotal = totalItemCount;
+                        }
+                    }
+                    if (!loading && (totalItemCount - visibleItemCount)
+                            <= (firstVisibleItem + visibleThreshold)) {
+                        // 在这里添加加载更多的代码
+                        Log.d(TAG, "need to load more");
+                        query();
+                        loading = true;
+                    }
+                }
+
+
+            }
+        });
 //        ll_container = (RelativeLayout) view.findViewById(R.id.container);
         ll_container = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 
@@ -183,73 +248,145 @@ public class MainFragment extends Fragment {
         //TODO 在这里联网
         baseUser = BmobUser.getCurrentUser(getActivity(), BaseUser.class);
         sharedPreferences = getActivity().getSharedPreferences("settings", 0);
+        refreshView();
+    }
 
+
+    /**
+     * 联网进行刷新并写入磁盘
+     */
+    public void refreshView() {
+        curPage = 0;
+        everAccessPaths.clear();
+        swipeRefreshLayout.setRefreshing(true);
         if (baseUser.getMyInfo() != null) {
+            BmobQuery<Post> query = new BmobQuery<>();
             if (baseUser.getMyInfo().getBlockers() != null) {
-                BmobQuery<BaseUser> queryUsers = new BmobQuery<>();
-                queryUsers.addWhereNotContainedIn("objectId", baseUser.getMyInfo().getBlockers());
-                Log.d(TAG, baseUser.getMyInfo().getBlockers().toString());
-                queryUsers.findObjects(getActivity(), new FindListener<BaseUser>() {
-                    @Override
-                    public void onSuccess(List<BaseUser> baseUsers) {
-                        BmobQuery<Post> queryPosts = new BmobQuery<>();
-                        queryPosts.include("user");
-                        queryPosts.order("-createdAt");
+                query.addWhereNotContainedIn("ownerId", baseUser.getMyInfo().getBlockers());
+            }
+            query.setLimit(limit);
+            query.order("-createdAt");
+            query.findObjects(getActivity(), new FindListener<Post>() {
+                @Override
+                public void onSuccess(final List<Post> posts) {
+                    //在这里写入缓存
+                    datas = posts;
+                    for (int i = 0; i < posts.size(); i++) {
+                        aCache.put(String.valueOf(i), posts.get(i));
+                        if (aCache.getAsBinary(posts.get(i).getObjectId() + "footerBoolean") == null) {
+                            byte[] footerBoolean = {1, 1, 1, 1};
+                            aCache.put(posts.get(i).getObjectId() + "footerBoolean", footerBoolean);
+                        }
+                        //根据ObjectId来
+                        Log.e(TAG, "write success " + i);
+                    }
+                    aCache.put("cacheSize", String.valueOf(posts.size()));
 
-                        for (int i = 0; i < baseUsers.size(); i++) {
+                    //就是把这个去掉就行
+                    myAdapter = new MyAdapter(datas, getActivity());
+                    recyclerView.setAdapter(myAdapter);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
 
-                            queryPosts.addWhereRelatedTo("post", new BmobPointer(baseUsers.get(i)));
-                            queryPosts.findObjects(getActivity(), new FindListener<Post>() {
-                                @Override
-                                public void onSuccess(List<Post> posts) {
-                                    //在这里写入缓存
-                                    for (int i = 0; i < posts.size(); i++) {
-                                        aCache.put(String.valueOf(i), posts.get(i));
-                                        if (aCache.getAsBinary(posts.get(i).getObjectId() + "footerBoolean") == null) {
-                                            byte[] footerBoolean = {1, 1, 1, 1};
-                                            aCache.put(posts.get(i).getObjectId() + "footerBoolean", footerBoolean);
-                                        }
-                                        //根据ObjectId来
-                                        Log.e(TAG, "write success " + i);
-                                    }
-                                    aCache.put("cacheSize", String.valueOf(posts.size()));
-                                    recyclerView.setAdapter(new MyAdapter(posts, getActivity()));
-                                }
+                @Override
+                public void onError(int err, String s) {
+                    Log.i(TAG, s + err);
+                    Log.e(TAG, s);
+                    if (sharedPreferences.getBoolean("ever", false)) {
+                        List<Post> objects = new ArrayList<Post>();
 
-                                @Override
-                                public void onError(int err, String s) {
-                                    Log.i(TAG, s + err);
-                                    Log.e(TAG, s);
-                                    if (sharedPreferences.getBoolean("ever", false)) {
-                                        List<Post> objects = new ArrayList<Post>();
-
-                                        int size = Integer.parseInt(aCache.getAsString("cacheSize"));
-                                        Post post;
-                                        for (int i = 0; i < size; i++) {
-                                            post = (Post) aCache.getAsObject(String.valueOf(i));
-                                            if (post == null) {
-                                                android.util.Log.e(TAG, "post is null");
-                                            }
-                                            objects.add(post);
-                                        }
-                                        recyclerView.setAdapter(new MyAdapter(objects, getActivity()));
-                                    } else {
-                                        Toast.makeText(getActivity(), "您没有登录过，没有缓存文件！", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
+                        int size = Integer.parseInt(aCache.getAsString("cacheSize"));
+                        Post post;
+                        for (int i = 0; i < size; i++) {
+                            post = (Post) aCache.getAsObject(String.valueOf(i));
+                            if (post == null) {
+                                android.util.Log.e(TAG, "post is null");
+                            }
+                            objects.add(post);
                         }
 
+                        datas = objects;
+                        myAdapter = new MyAdapter(datas, getActivity());
+                        recyclerView.setAdapter(myAdapter);
+                        swipeRefreshLayout.setRefreshing(false);
+                    } else {
+                        Toast.makeText(getActivity(), "您没有登录过，没有缓存文件！", Toast.LENGTH_LONG).show();
                     }
+                }
+            });
 
-                    @Override
-                    public void onError(int i, String s) {
-
-                    }
-                });
-            }
         }
+    }
 
+    /**
+     * 现在先不用管上载加载更多的功能实现，以后再说吧，应该不难;能加载一次，加载一次后就不能成功了，是curpage的问题
+     */
+    public void query() {
+        swipeRefreshLayout.setRefreshing(true);
+        if (baseUser.getMyInfo() != null) {
+            BmobQuery<Post> query = new BmobQuery<>();
+            if (baseUser.getMyInfo().getBlockers() != null) {
+                query.addWhereNotContainedIn("ownerId", baseUser.getMyInfo().getBlockers());
+            }
+            query.setLimit(limit);
+            query.order("-createdAt");
+            Log.d(TAG + "curPage", String.valueOf(curPage));
+            query.setSkip((curPage + 1) * limit);
+            query.findObjects(getActivity(), new FindListener<Post>() {
+                @Override
+                public void onSuccess(final List<Post> posts) {
+                    if (posts != null) {
+                        //在这里写入缓存
+                        datas = posts;
+                        curPage++;
+                        //这个是写入磁盘，不用管理了，已经完善
+                        for (int i = 0; i < posts.size(); i++) {
+                            Log.d(TAG, posts.get(i).toString());
+                            aCache.put(String.valueOf(i), posts.get(i));
+                            if (aCache.getAsBinary(posts.get(i).getObjectId() + "footerBoolean") == null) {
+                                byte[] footerBoolean = {1, 1, 1, 1};
+                                aCache.put(posts.get(i).getObjectId() + "footerBoolean", footerBoolean);
+                            }
+                            Log.e(TAG, "write success " + i);
+                        }
+                        aCache.put("cacheSize", String.valueOf(posts.size()));
+                        Log.d(TAG + "liang", String.valueOf(posts.size()));
+
+                        myAdapter.addOrUpdateQuote(posts);
+                        swipeRefreshLayout.setRefreshing(false);
+                        //只要能执行到这里来就能刷新
+                        loading = false;
+                    }
+
+                }
+
+                @Override
+                public void onError(int err, String s) {
+                    Log.i(TAG, s + err);
+                    Log.e(TAG, s);
+                    if (sharedPreferences.getBoolean("ever", false)) {
+                        List<Post> objects = new ArrayList<Post>();
+
+                        int size = Integer.parseInt(aCache.getAsString("cacheSize"));
+                        Post post;
+                        for (int i = 0; i < size; i++) {
+                            post = (Post) aCache.getAsObject(String.valueOf(i));
+                            if (post == null) {
+                                android.util.Log.e(TAG, "post is null");
+                            }
+                            objects.add(post);
+                        }
+                        datas = objects;
+                        myAdapter.addOrUpdateQuote(datas);
+                        swipeRefreshLayout.setRefreshing(false);
+                        loading = false;
+                    } else {
+                        Toast.makeText(getActivity(), "您没有登录过，没有缓存文件！", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+        }
     }
 
     @Override
@@ -271,6 +408,44 @@ public class MainFragment extends Fragment {
             this.context = context;
         }
 
+        public void refresh(List<Post> posts) {
+            for (int i = 0; i < posts.size(); i++) {
+                data.add(posts.get(i));
+            }
+            notifyDataSetChanged();
+        }
+
+        //        public void addOrUpdateQuote(Post q) {
+//            int pos = data.indexOf(q);
+//            if (pos >= 0) {
+//                updateQuote(q, pos);
+//            } else {
+//                addQuote(q);
+//            }
+//        }
+//
+//        private void updateQuote(Post q, int pos) {
+//            data.remove(pos);
+//            notifyItemRemoved(pos);
+//            addQuote(q);
+//        }
+//
+//        private void addQuote(Post q) {
+//            data.add(q);
+//            notifyItemInserted(data.size()-1);
+//        }
+        public void addOrUpdateQuote(List<Post> q) {
+            addQuote(q);
+        }
+
+        private void addQuote(List<Post> q) {
+            for (Post post : q) {
+                data.add(post);
+            }
+//            notifyItemInserted(data.size()-1,q.size());
+            notifyItemRangeInserted(data.size() - 1, q.size());
+        }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             // 加载Item的布局.布局中用到的真正的CardView.
@@ -280,7 +455,7 @@ public class MainFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder viewHolder, int i) {
+        public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
             //从data中获取数据，填充入视图中,处理获取的数据
             final Post post = data.get(i);
             if (post != null) {
@@ -457,20 +632,37 @@ public class MainFragment extends Fragment {
                     final int finalI = i1;
                     BmobProFile.getInstance(context).submitThumnailTask(arrayList.get(i1), 1, new ThumbnailListener() {
                         @Override
-                        public void onSuccess(String thumbnailName, String thumbnailUrl) {
-                            ImageView imageView = new ImageView(context);
-                            picasso.load(BmobProFile.getInstance(context).signURL(thumbnailName, thumbnailUrl, "54f197dc6dce11fc7c078c07420a080e", 0, null)).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView);
-                            imageView.setPadding(3, 3, 3, 3);
-                            viewHolder.gallery.addView(imageView);
-                            imageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(context, GalleryUrlActivity.class);
-                                    intent.putExtra("photoUrls", paths);
-                                    intent.putExtra("currentItem", finalI);
-                                    context.startActivity(intent);
-                                }
-                            });
+                        public void onSuccess(final String thumbnailName, String thumbnailUrl) {
+                            /**
+                             * 解决了图片的重复加载的问题,没有完全解决，还可以优化
+                             */
+                            if (!everAccessPaths.contains(thumbnailName)) {
+                                Log.d(TAG + "fei", i + ":" + viewHolder.gallery.getChildCount() + ":" + arrayList.size());
+                                ImageView imageView = new ImageView(context);
+                                picasso.load(BmobProFile.getInstance(context).signURL(thumbnailName, thumbnailUrl, "54f197dc6dce11fc7c078c07420a080e", 0, null)).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        everAccessPaths.add(thumbnailName);
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        //do nothing
+                                    }
+                                });
+                                imageView.setPadding(3, 3, 3, 3);
+                                viewHolder.gallery.addView(imageView);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(context, GalleryUrlActivity.class);
+                                        intent.putExtra("photoUrls", paths);
+                                        intent.putExtra("currentItem", finalI);
+                                        context.startActivity(intent);
+                                    }
+                                });
+
+                            }
                         }
 
                         @Override

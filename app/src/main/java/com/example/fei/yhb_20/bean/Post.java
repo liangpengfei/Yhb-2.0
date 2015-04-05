@@ -12,11 +12,19 @@ import cn.bmob.v3.BmobObject;
 public class Post extends BmobObject implements Serializable {
 
     private static final long serialVersionUID = -2594277656564773968L;
-    private String merchantName,content,paths,postName,activityTiem,province,city,district;
+    private String merchantName, content, paths, postName, activityTiem, province, city, district, ownerId;
     private float rating;
     private ArrayList<Integer> numberFooter;
     private ArrayList<String> thumnailsName;
     private ArrayList<CommentItem> commentItems;
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
 
     public ArrayList<CommentItem> getCommentItems() {
         return commentItems;
@@ -25,6 +33,7 @@ public class Post extends BmobObject implements Serializable {
     public void setCommentItems(ArrayList<CommentItem> commentItems) {
         this.commentItems = commentItems;
     }
+
     public ArrayList<String> getThumnailsName() {
         return thumnailsName;
     }
@@ -128,6 +137,23 @@ public class Post extends BmobObject implements Serializable {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return "Post{" +
+                "merchantName='" + merchantName + '\'' +
+                ", content='" + content + '\'' +
+                ", paths='" + paths + '\'' +
+                ", postName='" + postName + '\'' +
+                ", activityTiem='" + activityTiem + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", district='" + district + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", rating=" + rating +
+                ", numberFooter=" + numberFooter +
+                ", thumnailsName=" + thumnailsName +
+                ", commentItems=" + commentItems +
+                ", user=" + user +
+                '}';
+    }
 }

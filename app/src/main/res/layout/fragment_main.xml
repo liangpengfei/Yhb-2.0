@@ -1,14 +1,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/container"
     tools:context="com.example.fei.yhb_20.ui.fragment.MainFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:scrollbars="vertical"
-        android:layout_width="match_parent"
-        android:id="@+id/main_recyclerView"
-        android:layout_height="wrap_content"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:id="@+id/main_recyclerView"
+            android:layout_height="wrap_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:visibility="gone"
@@ -22,12 +29,14 @@
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:background="@drawable/chat_footer_bg_white">
+
             <ImageView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
                 android:id="@+id/team_singlechat_id_expression"
-                android:src="@drawable/chat_expression_bg"/>
+                android:src="@drawable/chat_expression_bg" />
+
             <EditText
                 android:hint="有何高见"
                 android:focusable="true"
@@ -41,7 +50,8 @@
                 android:layout_toLeftOf="@+id/team_singlechat_id_send"
                 android:background="@drawable/chat_text_button_selector"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
+
             <Button
                 android:text="发送"
                 android:id="@+id/team_singlechat_id_send"
@@ -50,7 +60,7 @@
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content"
                 android:layout_width="60dp"
-                android:layout_marginRight="5dip"/>
+                android:layout_marginRight="5dip" />
 
         </RelativeLayout>
 

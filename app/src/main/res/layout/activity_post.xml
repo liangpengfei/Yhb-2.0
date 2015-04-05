@@ -11,13 +11,14 @@
         android:orientation="horizontal"
         android:weightSum="1"
         android:id="@+id/linearLayout">
+
         <ImageView
             android:id="@+id/iv_post_back"
             android:layout_weight="0.1"
             android:layout_gravity="start"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:src="@drawable/back_post"/>
+            android:src="@drawable/back_post" />
 
         <TextView
             android:gravity="center"
@@ -30,13 +31,14 @@
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/iv_post_ok"
             android:layout_weight="0.1"
             android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:src="@drawable/post_post"/>
+            android:src="@drawable/post_post" />
 
     </LinearLayout>
 
@@ -45,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollView">
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -58,6 +61,7 @@
                 android:minLines="4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
             <GridView
                 android:layout_gravity="center"
                 android:id="@+id/noScrollgridview"
@@ -67,25 +71,28 @@
                 android:horizontalSpacing="3dp"
                 android:numColumns="3"
                 android:scrollbars="none"
-                android:verticalSpacing="5dp" >
-            </GridView>
+                android:verticalSpacing="5dp"></GridView>
+
             <View
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
                 android:id="@+id/view"
                 android:background="@color/dividing_line"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"/>
+                android:layout_height="1dp" />
+
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_gravity="center_vertical"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="优惠指数"/>
+                    android:text="优惠指数" />
+
                 <RatingBar
                     android:id="@+id/ratingbar"
                     android:layout_marginStart="20dp"
@@ -94,16 +101,19 @@
                     android:numStars="5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-                </LinearLayout>
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="商家名称"/>
+                    android:text="商家名称" />
+
                 <EditText
                     android:id="@+id/et_post_merchantName"
                     android:layout_marginLeft="20dp"
@@ -111,58 +121,67 @@
                     android:hint="实例：徐胖烤猪蹄"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-                </LinearLayout>
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="商家位置"/>
+                    android:text="商家位置" />
+
                 <LinearLayout
                     android:weightSum="3"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <Spinner
                         android:spinnerMode="dialog"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/position1" />
+
                     <Spinner
                         android:spinnerMode="dialog"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/position2" />
+
                     <Spinner
                         android:spinnerMode="dialog"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/position3" />
+
                     <ImageView
                         android:id="@+id/iv_post_dingwei"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/dingwei"/>
-                    </LinearLayout>
-
-
+                        android:src="@drawable/dingwei" />
                 </LinearLayout>
+
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="活动时间"/>
+                    android:text="活动时间" />
 
                 <Spinner
                     android:spinnerMode="dialog"
@@ -181,13 +200,11 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/face"
             android:src="@drawable/chat_expression_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        </LinearLayout>
-
-
-
+    </LinearLayout>
 </RelativeLayout>
