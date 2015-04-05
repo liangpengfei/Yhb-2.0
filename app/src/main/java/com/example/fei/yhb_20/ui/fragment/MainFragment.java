@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -43,6 +42,7 @@ import com.example.fei.yhb_20.ui.PersonalActivity;
 import com.example.fei.yhb_20.utils.ACache;
 import com.example.fei.yhb_20.utils.ExpressionUtil;
 import com.example.fei.yhb_20.utils.MyUtils;
+import com.marshalchen.common.ui.recyclerviewitemanimator.SlideInOutBottomItemAnimator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -62,7 +62,7 @@ import cn.bmob.v3.listener.GetListener;
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
 
-    private RecyclerView recyclerView;
+    private static RecyclerView recyclerView;
     private static Picasso picasso;
     private static ACache aCache;
     LinearLayoutManager layoutManager;
@@ -74,7 +74,9 @@ public class MainFragment extends Fragment {
     private int previousTotal = 0;
     private boolean loading = true;
     private int visibleThreshold = 2;
-    int firstVisibleItem, visibleItemCount, totalItemCount;
+    int firstVisibleItem;
+    int visibleItemCount;
+    int totalItemCount;
     //    private RelativeLayout ll_container;
     private DrawerLayout ll_container;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -83,6 +85,9 @@ public class MainFragment extends Fragment {
     private MyAdapter myAdapter;
     private List<Post> datas;
     private static ArrayList<String> everAccessPaths;
+    public static ArrayList<Boolean> isCompleteds;
+    private static ArrayList<String> arrayList;
+    private static String[] paths;
 
     public MainFragment() {
     }
@@ -116,6 +121,7 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         everAccessPaths = new ArrayList<>();
+        isCompleteds = new ArrayList<>();
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
@@ -136,7 +142,7 @@ public class MainFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setItemAnimator(new SlideInOutBottomItemAnimator(recyclerView));
 
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -352,7 +358,7 @@ public class MainFragment extends Fragment {
                         aCache.put("cacheSize", String.valueOf(posts.size()));
                         Log.d(TAG + "liang", String.valueOf(posts.size()));
 
-                        myAdapter.addOrUpdateQuote(posts);
+                        myAdapter.addQuote(posts);
                         swipeRefreshLayout.setRefreshing(false);
                         //只要能执行到这里来就能刷新
                         loading = false;
@@ -377,7 +383,7 @@ public class MainFragment extends Fragment {
                             objects.add(post);
                         }
                         datas = objects;
-                        myAdapter.addOrUpdateQuote(datas);
+                        myAdapter.addQuote(datas);
                         swipeRefreshLayout.setRefreshing(false);
                         loading = false;
                     } else {
@@ -395,6 +401,9 @@ public class MainFragment extends Fragment {
         aCache = ACache.get(getActivity());
     }
 
+    /**
+     * 这个adapter太过于庞大了，以后应该尽量与视图分开写，而且adapter中也要实现更多的功能
+     */
     private static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         private static final int LIKE = 0;
         private static final int DISLIKE = 1;
@@ -408,41 +417,15 @@ public class MainFragment extends Fragment {
             this.context = context;
         }
 
-        public void refresh(List<Post> posts) {
-            for (int i = 0; i < posts.size(); i++) {
-                data.add(posts.get(i));
-            }
-            notifyDataSetChanged();
-        }
-
-        //        public void addOrUpdateQuote(Post q) {
-//            int pos = data.indexOf(q);
-//            if (pos >= 0) {
-//                updateQuote(q, pos);
-//            } else {
-//                addQuote(q);
-//            }
-//        }
-//
-//        private void updateQuote(Post q, int pos) {
-//            data.remove(pos);
-//            notifyItemRemoved(pos);
-//            addQuote(q);
-//        }
-//
-//        private void addQuote(Post q) {
-//            data.add(q);
-//            notifyItemInserted(data.size()-1);
-//        }
-        public void addOrUpdateQuote(List<Post> q) {
-            addQuote(q);
-        }
-
+        /**
+         * 在下面append 之前的post
+         *
+         * @param q
+         */
         private void addQuote(List<Post> q) {
             for (Post post : q) {
                 data.add(post);
             }
-//            notifyItemInserted(data.size()-1,q.size());
             notifyItemRangeInserted(data.size() - 1, q.size());
         }
 
@@ -505,6 +488,7 @@ public class MainFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(context, DeatilActivity.class);
                         intent.putExtra("post", post);
+                        intent.putExtra("sourceActivity", "MainFragment");
                         context.startActivity(intent);
 
                     }
@@ -615,28 +599,31 @@ public class MainFragment extends Fragment {
                 viewHolder.time.setText(MyUtils.timeLogic(date, context));
 
                 //获取图片，使用Picasso可以缓存
-                final String paths[] = post.getPaths().split("\\|");
+                paths = post.getPaths().split("\\|");
                 int t = paths.length;
                 Log.e(TAG, String.valueOf(t));
 
 
-                final ArrayList<String> arrayList = post.getThumnailsName();
+                arrayList = post.getThumnailsName();
                 Log.e(TAG, arrayList.toString());
 
                 /**
                  * 想获取缩略图，但是没有成功
                  * 问题解决了，是因为没有进行sign认证，所以没有有400错误
+                 * 循环的添加总是有问题
+                 * 各种方法都没有修复图片的重复的问题
                  */
-                //TODO
+//                getPic(0,viewHolder.gallery);
                 for (int i1 = 0; i1 < arrayList.size(); i1++) {
                     final int finalI = i1;
                     BmobProFile.getInstance(context).submitThumnailTask(arrayList.get(i1), 1, new ThumbnailListener() {
                         @Override
                         public void onSuccess(final String thumbnailName, String thumbnailUrl) {
                             /**
-                             * 解决了图片的重复加载的问题,没有完全解决，还可以优化
+                             * 解决了图片的重复加载的问题,没有完全解决，还可以优化,还是有问题
+                             * !everAccessPaths.contains(thumbnailName) ||
                              */
-                            if (!everAccessPaths.contains(thumbnailName)) {
+                            if (!everAccessPaths.contains(thumbnailName) || viewHolder.gallery.getChildCount() != arrayList.size()) {
                                 Log.d(TAG + "fei", i + ":" + viewHolder.gallery.getChildCount() + ":" + arrayList.size());
                                 ImageView imageView = new ImageView(context);
                                 picasso.load(BmobProFile.getInstance(context).signURL(thumbnailName, thumbnailUrl, "54f197dc6dce11fc7c078c07420a080e", 0, null)).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView, new Callback() {
@@ -647,6 +634,7 @@ public class MainFragment extends Fragment {
 
                                     @Override
                                     public void onError() {
+                                        Toast.makeText(context, "网络连接缓慢", Toast.LENGTH_LONG).show();
                                         //do nothing
                                     }
                                 });
@@ -673,9 +661,59 @@ public class MainFragment extends Fragment {
 
                 }
             }
-
             setAnimation(viewHolder.container, i);
 
+        }
+
+        private void getPic(final int position, final LinearLayout gallery) {
+            BmobProFile.getInstance(context).submitThumnailTask(arrayList.get(position), 1, new ThumbnailListener() {
+                @Override
+                public void onSuccess(final String thumbnailName, String thumbnailUrl) {
+                    /**
+                     * 解决了图片的重复加载的问题,没有完全解决，还可以优化,还是有问题
+                     * !everAccessPaths.contains(thumbnailName) ||
+                     */
+                    if (isCompleteds.isEmpty() || !isCompleteds.get(position)) {
+                        Log.d(TAG + "fei", position + ":" + gallery.getChildCount() + ":" + arrayList.size());
+                        ImageView imageView = new ImageView(context);
+                        picasso.load(BmobProFile.getInstance(context).signURL(thumbnailName, thumbnailUrl, "54f197dc6dce11fc7c078c07420a080e", 0, null)).placeholder(R.drawable.ic_launcher).resize(200, 200).into(imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                everAccessPaths.add(thumbnailName);
+                                int pos = position + 1;
+                                if ((position + 1) < arrayList.size()) {
+                                    getPic(pos, gallery);
+                                } else {
+                                    isCompleteds.add(true);
+                                }
+                            }
+
+                            @Override
+                            public void onError() {
+                                Toast.makeText(context, "网络连接缓慢", Toast.LENGTH_LONG).show();
+                                //do nothing
+                            }
+                        });
+                        imageView.setPadding(3, 3, 3, 3);
+                        gallery.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(context, GalleryUrlActivity.class);
+                                intent.putExtra("photoUrls", paths);
+//                                intent.putExtra("currentItem", finalI);
+                                context.startActivity(intent);
+                            }
+                        });
+
+                    }
+                }
+
+                @Override
+                public void onError(int statuscode, String errormsg) {
+                    Log.e(TAG, errormsg);
+                }
+            });
         }
 
         private void setAnimation(View viewToAnimate, int position) {
@@ -724,5 +762,9 @@ public class MainFragment extends Fragment {
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        everAccessPaths.clear();
+    }
 }

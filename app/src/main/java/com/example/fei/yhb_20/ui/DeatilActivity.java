@@ -89,7 +89,6 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     private RelativeLayout frameLayout;
     private LinearLayout llFoot;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,10 +96,12 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         aCache =  ACache.get(this);
         picasso = Picasso.with(this);
         initViews();
-        initEvents();
 
     }
 
+    /**
+     * 以后可能要接受来自不同界面的post文件，都要在这里进行一些处理
+     */
     private void initViews() {
         face = (ImageView) findViewById(R.id.team_singlechat_id_expression);
         edComment = (EditText) findViewById(R.id.team_singlechat_id_edit);
@@ -109,79 +110,110 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         llFoot = (LinearLayout) findViewById(R.id.team_singlechat_id_foot);
         Intent intent = getIntent();
         if (intent!=null){
-            View header = LayoutInflater.from(this).inflate(R.layout.header,null);
-            ButterKnife.inject(this,header);
-            post = (Post) intent.getSerializableExtra("post");
+            String souceActivity = intent.getStringExtra("sourceActivity");
+            if (souceActivity != null) {
+                if (souceActivity.equals("MyCollections")) {
+                    //去联网查询
+                    String postId = intent.getStringExtra("postId");
+                    BmobQuery<Post> query = new BmobQuery<>();
+                    query.include("user");
+                    query.getObject(DeatilActivity.this, postId, new GetListener<Post>() {
+                        @Override
+                        public void onSuccess(Post mPost) {
+                            post = mPost;
+                            deliverPost(mPost);
+                            initEvents();
+                        }
 
-            final String paths [] = post.getPaths().split("\\|");
-            int t = paths.length;
-            objectId = post.getObjectId();
-
-            footerBoolean= aCache.getAsBinary(post.getObjectId()+"footerBoolean");
-            postUserName.setText(post.getUser().getUsername());
-            userId = post.getUser().getObjectId();
-
-            //格式化时间
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = null;
-            try {
-                date = simpleDateFormat.parse(post.getCreatedAt());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            time.setText(MyUtils.timeLogic(date, this));
-
-            String zhengze = "f0[0-9]{2}|f10[0-7]";
-            SpannableString spannableString = ExpressionUtil.getExpressionString(this, post.getContent(), zhengze);
-            content.setText(spannableString);
-
-            numberFooter= post.getNumberFooter();
-            like.setText(String.valueOf(numberFooter.get(LIKE)));
-            dislike.setText(String.valueOf(numberFooter.get(DISLIKE)));
-            comment.setText(String.valueOf(numberFooter.get(COMMENT)));
-            ratingBar.setRating(post.getRating());
-            lastTime.setText("活动时间:"+post.getActivityTiem());
-            if (footerBoolean!=null){
-                if (footerBoolean[DISLIKE]==0){
-                    ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
-                }
-                if (footerBoolean[LIKE]==0){
-                    ivLike.setImageResource(R.drawable.icon_heart_pressed);
+                        @Override
+                        public void onFailure(int i, String s) {
+                            Log.d(TAG, s + i);
+                        }
+                    });
+                } else if (souceActivity.equals("MainFragment")) {
+                    post = (Post) intent.getSerializableExtra("post");
+                    deliverPost(post);
+                    initEvents();
                 }
             }
-            for (int i1 = 0 ;i1 <paths.length; i1++) {
-                final ImageView imageView;
-                imageView = new ImageView(this);
-                picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).resize(300,300).into(imageView);
-                imageView.setPadding(2, 2, 2, 2);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(DeatilActivity.this, GalleryUrlActivity.class);
-                        intent.putExtra("photoUrls",paths);
-                        DeatilActivity.this.startActivity(intent);
-                    }
-                });
-                gallery.addView(imageView);
-            }
-
-            /**
-             * 处理一下多余的数据
-             */
-            ArrayList<CommentItem> data = post.getCommentItems();
-
-
-            data.add(0,new CommentItem());
-            listView = (ListView) findViewById(R.id.comment_list);
-            listView.setAdapter(new commentAdapter(this,data,header));
-            refreshAvatar();
-            send.setEnabled(false);
         }
-
-
     }
 
-    private void refreshAvatar(){
+    /**
+     * 处理来自不同界面的post
+     *
+     * @param post
+     */
+    private void deliverPost(Post post) {
+        View header = LayoutInflater.from(this).inflate(R.layout.header, null);
+        ButterKnife.inject(this, header);
+
+        final String paths[] = post.getPaths().split("\\|");
+        int t = paths.length;
+        objectId = post.getObjectId();
+
+        footerBoolean = aCache.getAsBinary(post.getObjectId() + "footerBoolean");
+        postUserName.setText(post.getUser().getUsername());
+        userId = post.getUser().getObjectId();
+
+        //格式化时间
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse(post.getCreatedAt());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        time.setText(MyUtils.timeLogic(date, this));
+
+        String zhengze = "f0[0-9]{2}|f10[0-7]";
+        SpannableString spannableString = ExpressionUtil.getExpressionString(this, post.getContent(), zhengze);
+        content.setText(spannableString);
+
+        numberFooter = post.getNumberFooter();
+        like.setText(String.valueOf(numberFooter.get(LIKE)));
+        dislike.setText(String.valueOf(numberFooter.get(DISLIKE)));
+        comment.setText(String.valueOf(numberFooter.get(COMMENT)));
+        ratingBar.setRating(post.getRating());
+        lastTime.setText("活动时间:" + post.getActivityTiem());
+        if (footerBoolean != null) {
+            if (footerBoolean[DISLIKE] == 0) {
+                ivDislike.setImageResource(R.drawable.icon_dislike_pressed);
+            }
+            if (footerBoolean[LIKE] == 0) {
+                ivLike.setImageResource(R.drawable.icon_heart_pressed);
+            }
+        }
+        for (int i1 = 0; i1 < paths.length; i1++) {
+            final ImageView imageView;
+            imageView = new ImageView(this);
+            picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).resize(300, 300).into(imageView);
+            imageView.setPadding(2, 2, 2, 2);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DeatilActivity.this, GalleryUrlActivity.class);
+                    intent.putExtra("photoUrls", paths);
+                    DeatilActivity.this.startActivity(intent);
+                }
+            });
+            gallery.addView(imageView);
+        }
+
+        /**
+         * 处理一下多余的数据
+         */
+        ArrayList<CommentItem> data = post.getCommentItems();
+
+
+        data.add(0, new CommentItem());
+        listView = (ListView) findViewById(R.id.comment_list);
+        listView.setAdapter(new commentAdapter(this, data, header));
+        refreshAvatar(post);
+        send.setEnabled(false);
+    }
+
+    private void refreshAvatar(Post post){
         BmobQuery<Merchant> query = new BmobQuery<Merchant>();
         query.getObject(this,post.getUser().getObjectId(),new GetListener<Merchant>() {
             @Override

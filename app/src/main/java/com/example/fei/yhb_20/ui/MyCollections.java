@@ -27,7 +27,8 @@ import cn.bmob.v3.listener.FindListener;
 public class MyCollections extends ActionBarActivity {
 
     private static final String TAG = "MyCollections";
-    @InjectView(R.id.rv_collections)RecyclerView recyclerView;
+    @InjectView(R.id.rv_collections)
+    RecyclerView recyclerView;
     private Intent intent;
     private BaseUser currentUser;
     LinearLayoutManager layoutManager;
@@ -46,7 +47,7 @@ public class MyCollections extends ActionBarActivity {
                     ArrayList<String> collections = currentUser.getMyInfo().getMycollections();
                     BmobQuery<Post> query = new BmobQuery<Post>();
                     query.include("user");
-                    query.addQueryKeys("content,updatedAt,paths,avatarPaht,username,user");
+                    query.addQueryKeys("content,updatedAt,paths,avatarPaht,username,user,objectId");
                     query.addWhereContainedIn("objectId", collections);
                     query.findObjects(this, new FindListener<Post>() {
                         @Override
