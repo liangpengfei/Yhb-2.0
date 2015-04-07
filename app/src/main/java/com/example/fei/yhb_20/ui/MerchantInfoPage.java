@@ -1,9 +1,9 @@
 package com.example.fei.yhb_20.ui;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -28,6 +28,7 @@ import com.example.fei.yhb_20.utils.MyUtils;
 import com.fenjuly.combinationimageview.CombinationImageView;
 
 import java.util.ArrayList;
+import java.util.Timer;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,12 +53,14 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
 
     //同步与异步之间的关联有问题
 //    @InjectView(R.id.combinationImage)CombinationImageView combinationImageView;
-
     private CombinationImageView combinationImageView;
 
     private Merchant merchant;
     private MerchantInfo merchantInfo;
     private View view;
+
+    ArrayList<String> localpaths;
+    ArrayList<String> photoPaths;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,17 +88,17 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
             }
             if (merchant.getPhotoPaths()!=null){
                 combinationImageView = (CombinationImageView) view.findViewById(R.id.combinationImage);
-                ArrayList<String> photoPaths = merchant.getPhotoPaths();
-//                new PicAscyTask().execute(photoPaths.toArray(new String[photoPaths.size()]));
+                combinationImageView.addImageView(R.drawable.example5);
+
+                photoPaths = merchant.getPhotoPaths();
+                localpaths = new ArrayList<>();
+
                 for (int i = 0; i < photoPaths.size(); i++) {
                     BmobProFile.getInstance(MerchantInfoPage.this).download(photoPaths.get(i), new DownloadListener() {
-
                         @Override
                         public void onSuccess(String fullPath) {
                             Log.d(TAG, "下载成功：" + fullPath);
-                            Bitmap imageBitmap = BitmapFactory.decodeFile(fullPath);
-
-                            combinationImageView.addImageView(imageBitmap);
+                            localpaths.add(fullPath);
                         }
 
                         @Override
@@ -107,10 +110,10 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
                         public void onError(int statuscode, String errormsg) {
                             Log.d(TAG, "下载出错：" + statuscode + "--" + errormsg);
                             combinationImageView.addImageView(R.drawable.example5);
-
                         }
                     });
                 }
+                new TimerTask(1, combinationImageView);
 
             }else{
                 Log.d(TAG, "还没有设置头像");
@@ -120,27 +123,35 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
         }
     }
 
-    private class PicAscyTask extends AsyncTask<String[],Integer,Bitmap[]>{
-        private static final String TAG = "PicAscyTask";
+    //TODO 请教
+    public class TimerTask {
+        int count = 0;
+        Timer timer;
 
-        @Override
-        protected Bitmap[] doInBackground(String []... params) {
-            Bitmap [] bitmaps = new Bitmap[params[0].length];
-            for (int i = 0 ;i<params[0].length;i++){
-                bitmaps [i] =MyUtils.getImageFromWeb(params[0][i]);
-            }
-            return bitmaps;
+        public TimerTask(int seconds, final CombinationImageView combinationImageView) {
+            timer = new Timer();
+            timer.schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    Log.d(TAG, String.valueOf(count));
+                    //do something
+                    Log.d(TAG, localpaths.size() + ":" + photoPaths.size());
+                    if (localpaths.size() == photoPaths.size()) {
+                        combinationImageView.removeAllView();
+                        String test = "/storage/emulated/0/Android/data/com.example.fei.yhb_20/cache/目录名/Download/98c4ae3b68cb434cb0405e54cc52aa98.png";
+                        for (int i = 0; i < localpaths.size(); i++) {
+                            Bitmap imageBitmap = BitmapFactory.decodeFile(localpaths.get(i));
+                            combinationImageView.addImageView(imageBitmap);
+                            combinationImageView.refreshDrawableState();
+                        }
+                        if (combinationImageView.getNumbersOfView() > localpaths.size()) {
+                            combinationImageView.removeView(0);
+                        }
+                    }
+                }
+            }, 1000, seconds * 1000);
         }
 
-        @Override
-        protected void onPostExecute(Bitmap[] bitmaps) {
-            super.onPostExecute(bitmaps);
-            combinationImageView = (CombinationImageView) view.findViewById(R.id.combinationImage);
-            combinationImageView.removeAllView();
-            for (Bitmap bitmap : bitmaps){
-                combinationImageView.addImageView(bitmap);
-            }
-        }
     }
 
     private void initEvents() {
@@ -187,6 +198,12 @@ public class MerchantInfoPage extends ActionBarActivity implements View.OnClickL
                 break;
             case R.id.rl_info_1:
                 //查看所有的图片
+                if (merchant.getPhotoPaths() != null) {
+                    String[] paths = merchant.getPhotoPaths().toArray(new String[merchant.getPhotoPaths().size()]);
+                    Intent intent = new Intent(this, GalleryUrlActivity.class);
+                    intent.putExtra("photoUrls", paths);
+                    startActivity(intent);
+                }
                 break;
             case R.id.rl_info_2:
                 showChangeInfo(mAddress.getText().toString(),2);
