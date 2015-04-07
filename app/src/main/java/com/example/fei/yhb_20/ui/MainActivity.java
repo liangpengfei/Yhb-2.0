@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
-import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.OtherInfo;
 import com.example.fei.yhb_20.bean.Post;
 import com.example.fei.yhb_20.ui.fragment.ClassFragment;
@@ -113,6 +112,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private String avatarPath;
     private BaseUser currentUser;
 
+    private char role;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +121,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         ButterKnife.inject(this);
 
         currentUser = BmobUser.getCurrentUser(this, BaseUser.class);
+        role = getIntent().getCharExtra("role", 'a');
 
 
         initViews();
@@ -189,6 +191,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         });
 
+        /**
+         * 查询当前用户发布的惠报
+         */
         BmobQuery<Post> myPosts = new BmobQuery<>();
         myPosts.addWhereRelatedTo("post", new BmobPointer(user));
         myPosts.findObjects(this, new FindListener<Post>() {
@@ -213,6 +218,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Log.e(TAG, "查询惠报数量失败" + s);
             }
         });
+
         String[] data;
         if (user.getAttribute() == GV.MERCHANT) {
             data = new String[]{"商户信息", "待完善的相关惠报", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
@@ -226,22 +232,25 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
+    /**
+     * 刷新头像
+     */
     private void refreshAvatar() {
-        BmobQuery<Merchant> query = new BmobQuery<Merchant>();
-        query.getObject(this, user.getObjectId(), new GetListener<Merchant>() {
+        BmobQuery<BaseUser> query = new BmobQuery<BaseUser>();
+        query.getObject(this, user.getObjectId(), new GetListener<BaseUser>() {
             @Override
-            public void onSuccess(Merchant merchant) {
-                if (merchant.getAvatarPaht() != null) {
-                    avatarPath = merchant.getAvatarPaht();
-                    Picasso.with(MainActivity.this).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
+            public void onSuccess(BaseUser baseUser) {
+                if (baseUser.getAvatarPaht() != null) {
+                    avatarPath = baseUser.getAvatarPaht();
+                    Picasso.with(MainActivity.this).load(baseUser.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
                 } else {
-                    Toast.makeText(MainActivity.this, "test", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "没有设置头像");
                 }
             }
 
             @Override
             public void onFailure(int i, String s) {
-
+                Log.d(TAG, s + i);
             }
         });
     }
@@ -338,10 +347,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (user.getAttribute() == GV.PERSON) {
+                    Intent intent = null;
                     switch (position) {
                         case 0:
                             break;
                         case 1:
+                            intent = new Intent(MainActivity.this, MyCollections.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("currentUser", currentUser);
+                            intent.putExtra("bundle", bundle);
                             break;
                         case 2:
                             break;
@@ -350,6 +364,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         default:
                             break;
                     }
+                    startActivity(intent);
+
                 }
                 if (user.getAttribute() == GV.MERCHANT) {
                     Intent intent = null;
@@ -471,6 +487,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (user.getAttribute() == GV.MERCHANT) {
                     intent = new Intent(MainActivity.this, SettingMerchantActivity.class);
                     startActivity(intent);
+                } else {
+                    //个人的设置会是怎么样的
+//                    intent = new Intent(MainActivity.this,SettingMerchantActivity.class);
+//                    startActivity(intent);
                 }
                 break;
             case R.id.user_photo:

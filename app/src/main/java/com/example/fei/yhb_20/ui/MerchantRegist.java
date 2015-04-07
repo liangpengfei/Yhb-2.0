@@ -107,6 +107,17 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
         parentView = getLayoutInflater().inflate(R.layout.activity_merchant_regist, null);
         setContentView(parentView);
         ButterKnife.inject(this);
+
+        if (GV.getSerialNumber() != null) {
+            license.setText(GV.getSerialNumber());
+        }
+        if (GV.getRegistMerchantName() != null) {
+            merchantNmae.setText(GV.getRegistMerchantName());
+        }
+        if (GV.getRegistName() != null) {
+            name.setText(GV.getRegistName());
+        }
+
         initEvents();
         stringBuilder = new StringBuilder("");
         merchant = new Merchant();
@@ -183,6 +194,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
          */
         bt2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                GV.setRegistMerchantName(merchantNmae.getText().toString());
+                GV.setRegistName(name.getText().toString());
+                GV.setSerialNumber(license.getText().toString());
                 Intent intent = new Intent(MerchantRegist.this,
                         AlbumActivity.class);
                 startActivity(intent);
@@ -217,6 +231,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                  * 如果是没有满到9张，就是添加图标
                  */
                 if (arg2 == Bimp.tempSelectBitmap.size()) {
+
                     ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(MerchantRegist.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     ll_popup.startAnimation(AnimationUtils.loadAnimation(MerchantRegist.this, R.anim.activity_translate_in));
                     pop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
@@ -357,6 +372,7 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 
 
                             Intent intent = new Intent(MerchantRegist.this, MainActivity.class);
+                            intent.putExtra("role", GV.MERCHANT);
                             startActivity(intent);
                             finish();
                         }

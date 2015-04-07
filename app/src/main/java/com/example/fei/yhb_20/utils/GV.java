@@ -14,6 +14,33 @@ public class GV {
     public static Class myClass;
     public static String content,merchantName;
     public static float rating;
+    public static String registName;
+    public static String serialNumber;
+    public static String registMerchantName;
+
+    public static String getRegistMerchantName() {
+        return registMerchantName;
+    }
+
+    public static void setRegistMerchantName(String registMerchantName) {
+        GV.registMerchantName = registMerchantName;
+    }
+
+    public static String getRegistName() {
+        return registName;
+    }
+
+    public static void setRegistName(String registName) {
+        GV.registName = registName;
+    }
+
+    public static String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public static void setSerialNumber(String serialNumber) {
+        GV.serialNumber = serialNumber;
+    }
 
     public static String getMerchantName() {
         return merchantName;

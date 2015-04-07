@@ -77,7 +77,6 @@ public class MainFragment extends Fragment {
     int firstVisibleItem;
     int visibleItemCount;
     int totalItemCount;
-    //    private RelativeLayout ll_container;
     private DrawerLayout ll_container;
     private SwipeRefreshLayout swipeRefreshLayout;
     private static int curPage = 0;
@@ -119,6 +118,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        Log.d(TAG, "onCreateView is invoked");
 
         everAccessPaths = new ArrayList<>();
         isCompleteds = new ArrayList<>();
@@ -185,7 +185,6 @@ public class MainFragment extends Fragment {
 
             }
         });
-//        ll_container = (RelativeLayout) view.findViewById(R.id.container);
         ll_container = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 
         send = (Button) view.findViewById(R.id.team_singlechat_id_send);
@@ -262,14 +261,18 @@ public class MainFragment extends Fragment {
      * 联网进行刷新并写入磁盘
      */
     public void refreshView() {
+        Log.d(TAG, "mainfragment");
         curPage = 0;
         everAccessPaths.clear();
         swipeRefreshLayout.setRefreshing(true);
+
+        BmobQuery<Post> query = new BmobQuery<>();
         if (baseUser.getMyInfo() != null) {
-            BmobQuery<Post> query = new BmobQuery<>();
             if (baseUser.getMyInfo().getBlockers() != null) {
                 query.addWhereNotContainedIn("ownerId", baseUser.getMyInfo().getBlockers());
             }
+        }
+        query.include("user");
             query.setLimit(limit);
             query.order("-createdAt");
             query.findObjects(getActivity(), new FindListener<Post>() {
@@ -321,7 +324,7 @@ public class MainFragment extends Fragment {
                 }
             });
 
-        }
+
     }
 
     /**
@@ -329,10 +332,12 @@ public class MainFragment extends Fragment {
      */
     public void query() {
         swipeRefreshLayout.setRefreshing(true);
-        if (baseUser.getMyInfo() != null) {
             BmobQuery<Post> query = new BmobQuery<>();
+        query.include("user");
+        if (baseUser.getMyInfo() != null) {
             if (baseUser.getMyInfo().getBlockers() != null) {
                 query.addWhereNotContainedIn("ownerId", baseUser.getMyInfo().getBlockers());
+            }
             }
             query.setLimit(limit);
             query.order("-createdAt");
@@ -392,7 +397,7 @@ public class MainFragment extends Fragment {
                 }
             });
 
-        }
+
     }
 
     @Override
@@ -453,10 +458,12 @@ public class MainFragment extends Fragment {
                 viewHolder.content.setText(spannableString);
 
                 viewHolder.userName.setText(post.getUser().getUsername());// 级联查询查找username
+                Log.d(TAG, post.getUser().getUsername());
 
                 String merchantName = "";
                 if (post.getMerchantName().equals("") || post.getMerchantName() == null) {
                     //do nothing
+                    Log.d(TAG, "merchantName is null");
                 } else {
                     merchantName = "  " + post.getMerchantName() + "  ";
                 }

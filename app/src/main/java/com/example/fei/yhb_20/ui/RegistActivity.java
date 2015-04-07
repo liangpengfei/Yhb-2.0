@@ -13,10 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.MyInfo;
+import com.example.fei.yhb_20.bean.OtherInfo;
 import com.example.fei.yhb_20.bean.Person;
 import com.example.fei.yhb_20.utils.GV;
 import com.example.fei.yhb_20.utils.MD5;
 import com.example.fei.yhb_20.utils.MyUtils;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -114,18 +118,41 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                                 //个人应该是在这里注册成功了
                                 mRegist.setText("注册中，请稍后。。");
                                 mRegist.setEnabled(false);
-                                Person person = new Person();
+                                final Person person = new Person();
                                 person.setEmail(email);
                                 MD5 md5 = new MD5();
                                 person.setPassword(md5.getMD5ofStr(password));
                                 person.setUsername(username);
                                 person.setAttribute(GV.PERSON);
+                                person.setMyInfo(new MyInfo());
                                 person.signUp(RegistActivity.this, new SaveListener() {
                                     @Override
                                     public void onSuccess() {
-                                        Intent intent = new Intent(RegistActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
+
+                                        /**
+                                         * 在这里进行一些初始化的工作
+                                         */
+                                        final OtherInfo otherInfo = new OtherInfo();
+                                        otherInfo.setUserId(person.getObjectId());
+                                        ArrayList<String> followerIds = new ArrayList<String>();
+                                        ArrayList<String> followingIds = new ArrayList<String>();
+                                        otherInfo.setFollowerIds(followerIds);
+                                        otherInfo.setFollowingIds(followingIds);
+                                        otherInfo.save(RegistActivity.this, new SaveListener() {
+                                            @Override
+                                            public void onSuccess() {
+                                                Toast.makeText(RegistActivity.this, "关注成功", Toast.LENGTH_LONG).show();
+                                                Intent intent = new Intent(RegistActivity.this, MainActivity.class);
+                                                intent.putExtra("role", GV.PERSON);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+
+                                            @Override
+                                            public void onFailure(int i, String s) {
+                                                Toast.makeText(RegistActivity.this, "关注失败", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
                                     }
 
                                     @Override
