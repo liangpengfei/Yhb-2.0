@@ -460,28 +460,121 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.tv_main_choose_position:
-                View menuView = View.inflate(this, R.layout.pos_popupwindow, null);
+                //以后可能会用到要更改的地方
+//
+//                View menuView = View.inflate(this, R.layout.pos_popupwindow, null);
+//                final Dialog menuDialog = new Dialog(this, R.style.popupDialog);
+//                menuDialog.setContentView(menuView);
+//
+//                final SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
+//
+//                final String[] pos_data = this.getResources().getStringArray(R.array.hot_city);
+//
+//                ListView listView = (ListView) menuView.findViewById(R.id.listview);
+//
+//                listView.setAdapter(new PosAdatper(this, pos_data));
+//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        choose_position.setText(pos_data[position]);
+//                        SharedPreferences.Editor editor = sharedPreferences.edit();
+//                        editor.putString("city", pos_data[position]);
+//                        editor.apply();
+//                        menuDialog.dismiss();
+//                    }
+//                });
+//                menuDialog.show();
+                View menuView = View.inflate(this, R.layout.popupwindow, null);
                 final Dialog menuDialog = new Dialog(this, R.style.popupDialog);
                 menuDialog.setContentView(menuView);
 
-                final SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
+                final LinearLayout beijing, shanghai, nanjing, guangzhou, chengdu;
+                beijing = (LinearLayout) menuView.findViewById(R.id.beijing);
+                shanghai = (LinearLayout) menuView.findViewById(R.id.shanghai);
+                nanjing = (LinearLayout) menuView.findViewById(R.id.nanjing);
+                guangzhou = (LinearLayout) menuView.findViewById(R.id.guangzhou);
+                chengdu = (LinearLayout) menuView.findViewById(R.id.chengdu);
 
-                final String[] pos_data = this.getResources().getStringArray(R.array.hot_city);
-
-                ListView listView = (ListView) menuView.findViewById(R.id.listview);
-
-                listView.setAdapter(new PosAdatper(this, pos_data));
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                beijing.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        choose_position.setText(pos_data[position]);
+                    public void onClick(View v) {
+                        final SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
+                        choose_position.setText("北京");
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("city", pos_data[position]);
+                        editor.putString("city", "北京");
                         editor.apply();
                         menuDialog.dismiss();
                     }
+
+
+                });
+                shanghai.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
+                        choose_position.setText("上海");
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("city", "上海");
+                        editor.apply();
+                        menuDialog.dismiss();
+                    }
+
+
+                });
+                nanjing.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
+                        choose_position.setText("南京");
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("city", "南京");
+                        editor.apply();
+                        menuDialog.dismiss();
+                    }
+
+
+                });
+                chengdu.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
+                        choose_position.setText("成都");
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("city", "成都");
+                        editor.apply();
+                        menuDialog.dismiss();
+                    }
+
+
+                });
+                guangzhou.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
+                        choose_position.setText("广州");
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("city", "广州");
+                        editor.apply();
+                        menuDialog.dismiss();
+                    }
+
+
+                });
+                beijing.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
+                        choose_position.setText("北京");
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("city", "北京");
+                        editor.apply();
+                        menuDialog.dismiss();
+                    }
+
+
                 });
                 menuDialog.show();
+
                 break;
             case R.id.setting:
                 if (user.getAttribute() == GV.MERCHANT) {
@@ -508,6 +601,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             default:
                 break;
         }
+    }
+
+    private void changePos(String s) {
+
     }
 
     class PosAdatper extends BaseAdapter {

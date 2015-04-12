@@ -61,20 +61,21 @@ public class MyUtils {
     private static SQLiteDatabase db;
     private static int[] imageIds = new int[107];
 
-    public static boolean isEmail(String email){
-        return match("\\w+@(\\w+.)+[a-z]{2,3}",email);
+    public static boolean isEmail(String email) {
+        return match("\\w+@(\\w+.)+[a-z]{2,3}", email);
     }
-    public static boolean passwordNumberLength(String value){
 
-        return match("\\w{6,18}",value);
+    public static boolean passwordNumberLength(String value) {
+
+        return match("\\w{6,18}", value);
     }
+
     /**
      * @param regex 正则表达式字符串
-     * @param str 要匹配的字符串
+     * @param str   要匹配的字符串
      * @return 如果str 符合 regex的正则表达式格式,返回true, 否则返回 false;
      */
-    private static boolean match(String regex, String str)
-    {
+    private static boolean match(String regex, String str) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();
@@ -122,18 +123,18 @@ public class MyUtils {
         return false;
     }
 
-    public static String timeLogic(Date past, final Context context){
+    public static String timeLogic(Date past, final Context context) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.get(Calendar.DAY_OF_MONTH);
         long now = calendar.getTimeInMillis();
         calendar.setTime(past);
         long lDate = calendar.getTimeInMillis();
-        long time = (now - lDate)/1000;
+        long time = (now - lDate) / 1000;
 
         Log.e(TAG, String.valueOf(time) + "b");
-        Log.e(TAG,String.valueOf(now)+"c");
-        Log.e(TAG,String.valueOf(lDate)+"d");
+        Log.e(TAG, String.valueOf(now) + "c");
+        Log.e(TAG, String.valueOf(lDate) + "d");
 
         StringBuilder sb = new StringBuilder();
         if (time > 0 && time < 60) { // 1小时内
@@ -142,23 +143,24 @@ public class MyUtils {
             return sb.append(time / 60).append("分钟前").toString();
         } else if (time >= 3600 && time < 3600 * 24) {
             return sb.append(time / 3600).append("小时前").toString();
-        }else if (time >= 3600 * 24 && time < 3600 * 48) {
+        } else if (time >= 3600 * 24 && time < 3600 * 48) {
             return sb.append("昨天").toString();
-        }else if (time >= 3600 * 48 && time < 3600 * 72) {
+        } else if (time >= 3600 * 48 && time < 3600 * 72) {
             return sb.append("前天").toString();
-        }else if (time >= 3600 * 72) {
+        } else if (time >= 3600 * 72) {
             return sb.append("3天前").toString();
-        }else{
+        } else {
             return sb.append("多天之前").toString();
         }
     }
 
     /**
      * 显示进度条dialog
+     *
      * @param context
      * @param text
      */
-    public static void showProgressDialog(Context context,String text){
+    public static void showProgressDialog(Context context, String text) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog, null);
         TextView tv_text = (TextView) view.findViewById(R.id.tv_custom_dialog);
         tv_text.setText(text);
@@ -170,10 +172,11 @@ public class MyUtils {
 
     /**
      * 显示表情选择dialog
+     *
      * @param context
      * @param editText
      */
-    public static void showFaceDialog(final Context context, final EditText editText){
+    public static void showFaceDialog(final Context context, final EditText editText) {
 
         //显示表情选择
         final Dialog builder = new Dialog(context);
@@ -183,19 +186,19 @@ public class MyUtils {
          * @return
          */
         final GridView view = new GridView(context);
-        List<Map<String,Object>> listItems = new ArrayList<Map<String,Object>>();
+        List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
         //生成107个表情的id，封装
-        for(int i = 0; i < 107; i++){
+        for (int i = 0; i < 107; i++) {
             try {
-                if(i<10){
+                if (i < 10) {
                     Field field = R.drawable.class.getDeclaredField("f00" + i);
                     int resourceId = Integer.parseInt(field.get(null).toString());
                     imageIds[i] = resourceId;
-                }else if(i<100){
+                } else if (i < 100) {
                     Field field = R.drawable.class.getDeclaredField("f0" + i);
                     int resourceId = Integer.parseInt(field.get(null).toString());
                     imageIds[i] = resourceId;
-                }else{
+                } else {
                     Field field = R.drawable.class.getDeclaredField("f" + i);
                     int resourceId = Integer.parseInt(field.get(null).toString());
                     imageIds[i] = resourceId;
@@ -211,7 +214,7 @@ public class MyUtils {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            Map<String,Object> listItem = new HashMap<String,Object>();
+            Map<String, Object> listItem = new HashMap<String, Object>();
             listItem.put("image", imageIds[i]);
             listItems.add(listItem);
         }
@@ -237,12 +240,12 @@ public class MyUtils {
                 bitmap = BitmapFactory.decodeResource(context.getResources(), imageIds[arg2 % imageIds.length]);
                 ImageSpan imageSpan = new ImageSpan(context, bitmap);
                 String str = null;
-                if(arg2<10){
-                    str = "f00"+arg2;
-                }else if(arg2<100){
-                    str = "f0"+arg2;
-                }else{
-                    str = "f"+arg2;
+                if (arg2 < 10) {
+                    str = "f00" + arg2;
+                } else if (arg2 < 100) {
+                    str = "f0" + arg2;
+                } else {
+                    str = "f" + arg2;
                 }
                 SpannableString spannableString = new SpannableString(str);
                 spannableString.setSpan(imageSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -255,11 +258,12 @@ public class MyUtils {
 
     /**
      * 主页的弹出菜单
+     *
      * @param context
      */
     public static void showPopupMenu(final Context context, final String objectId, final String userId) {
-        View menuView = View.inflate(context,R.layout.popupwindow,null);
-        final Dialog menuDialog = new Dialog(context,R.style.popupDialog);
+        View menuView = View.inflate(context, R.layout.popupwindow, null);
+        final Dialog menuDialog = new Dialog(context, R.style.popupDialog);
         menuDialog.setContentView(menuView);
 
         final LinearLayout collect, unfollow, block, report;
@@ -285,28 +289,29 @@ public class MyUtils {
                     myInfo = new MyInfo();
                 }
                 ArrayList<String> myCollections;
-                if (myInfo.getMycollections()!=null){
+                if (myInfo.getMycollections() != null) {
                     myCollections = myInfo.getMycollections();
-                }else{
+                } else {
                     myCollections = new ArrayList<String>();
                 }
-                if (!myCollections.contains(objectId)){
+                if (!myCollections.contains(objectId)) {
                     myCollections.add(objectId);
                     myInfo.setMycollections(myCollections);
                     baseUser.setMyInfo(myInfo);
-                    baseUser.update(context,new UpdateListener() {
+                    baseUser.update(context, new UpdateListener() {
                         @Override
                         public void onSuccess() {
-                            Toast.makeText(context,"收藏成功",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "收藏成功", Toast.LENGTH_LONG).show();
                             menuDialog.dismiss();
                         }
+
                         @Override
                         public void onFailure(int i, String s) {
-                            Log.e(TAG,s+i);
+                            Log.e(TAG, s + i);
                         }
                     });
-                }else{
-                    Toast.makeText(context,"已经收藏过了",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context, "已经收藏过了", Toast.LENGTH_LONG).show();
                     menuDialog.dismiss();
                 }
 
@@ -373,16 +378,17 @@ public class MyUtils {
 
     /**
      * 发送评论,已经更改问题
+     *
      * @param post
      * @param comment
      * @param context
      */
 
-    public static void commentSend(final Post post,EditText comment, final Context context){
-        if (comment.getText()==null || comment.getText().toString().equals("")){
-            Toast.makeText(context,"没有输入内容",Toast.LENGTH_LONG).show();
-        }else {
-            if (post!=null){
+    public static void commentSend(final Post post, EditText comment, final Context context) {
+        if (comment.getText() == null || comment.getText().toString().equals("")) {
+            Toast.makeText(context, "没有输入内容", Toast.LENGTH_LONG).show();
+        } else {
+            if (post != null) {
                 final ArrayList<Integer> numberFooter = post.getNumberFooter();
 
                 final ArrayList<CommentItem> commentItems = post.getCommentItems();
@@ -391,37 +397,39 @@ public class MyUtils {
                 commentItem.setComment(comment.getText().toString());
                 commentItem.setObjectId(BmobUser.getCurrentUser(context).getObjectId());
                 commentItem.setName(post.getUser().getUsername());
+
+//                commentItem.setCreatedAt();
                 commentItems.add(commentItem);
                 post.setCommentItems(commentItems);
 
-                post.update(context,new UpdateListener() {
+                post.update(context, new UpdateListener() {
                     @Override
                     public void onSuccess() {
-                        Log.e(TAG,commentItems.toString());
+                        Log.e(TAG, commentItems.toString());
 
                         numberFooter.set(3, numberFooter.get(3) + 1);
                         post.setNumberFooter(numberFooter);
-                        post.update(context,new UpdateListener() {
+                        post.update(context, new UpdateListener() {
                             @Override
                             public void onSuccess() {
-                                Log.e(TAG,"评论成功，加一");
+                                Log.e(TAG, "评论成功，加一");
                                 Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
                             }
 
                             @Override
                             public void onFailure(int i, String s) {
-                                Log.e(TAG,"评论失败"+s);
+                                Log.e(TAG, "评论失败" + s);
                             }
                         });
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
-                        Log.e(TAG,"失败评论"+s+i);
+                        Log.e(TAG, "失败评论" + s + i);
                     }
-                } );
-            }else {
-                Toast.makeText(context,"没有网络链接，请检查网络",Toast.LENGTH_LONG).show();
+                });
+            } else {
+                Toast.makeText(context, "没有网络链接，请检查网络", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -430,6 +438,7 @@ public class MyUtils {
 
     /**
      * 处理footer上的相关操作，包括喜欢/享受过/没有帮助
+     *
      * @param footerBoolean
      * @param index
      * @param image
@@ -440,15 +449,15 @@ public class MyUtils {
      * @param context
      * @param objectId
      */
-    public static void footerCommand(byte[] footerBoolean, final int index, final ImageView image, final TextView textView, final ArrayList<Integer> numberFooter,ACache aCache,Post post, final Context context,String objectId){
+    public static void footerCommand(byte[] footerBoolean, final int index, final ImageView image, final TextView textView, final ArrayList<Integer> numberFooter, ACache aCache, Post post, final Context context, String objectId) {
         Log.e(TAG, String.valueOf(index));
-        int [] resources = {R.drawable.icon_heart,R.drawable.icon_dislike};
-        int [] resourcesPressed = {R.drawable.icon_heart_pressed,R.drawable.icon_dislike_pressed};
-        if (NetUtil.isNetConnected(context)){
-            if (footerBoolean[index]==0){
+        int[] resources = {R.drawable.icon_heart, R.drawable.icon_dislike};
+        int[] resourcesPressed = {R.drawable.icon_heart_pressed, R.drawable.icon_dislike_pressed};
+        if (NetUtil.isNetConnected(context)) {
+            if (footerBoolean[index] == 0) {
                 image.setImageResource(resources[index]);
 
-                footerBoolean[index]=1;
+                footerBoolean[index] = 1;
                 numberFooter.set(index, numberFooter.get(index) - 1);
                 aCache.put(post.getObjectId() + "footerBoolean", footerBoolean);
                 post.setNumberFooter(numberFooter);
@@ -458,35 +467,35 @@ public class MyUtils {
                         Toast.makeText(context, "成功", Toast.LENGTH_LONG).show();
                         textView.setText(String.valueOf(numberFooter.get(index)));
                     }
+
                     @Override
                     public void onFailure(int code, String msg) {
-                        Log.e(TAG,"失败");
+                        Log.e(TAG, "失败");
                     }
                 });
-            }else{
+            } else {
                 image.setImageResource(resourcesPressed[index]);
 
-                footerBoolean[index]=0;
-                numberFooter.set(index,numberFooter.get(index)+1);
+                footerBoolean[index] = 0;
+                numberFooter.set(index, numberFooter.get(index) + 1);
                 post.setNumberFooter(numberFooter);
-                aCache.put(post.getObjectId()+"footerBoolean",footerBoolean);
+                aCache.put(post.getObjectId() + "footerBoolean", footerBoolean);
                 post.update(context, objectId, new UpdateListener() {
 
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(context,"成功",Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "成功", Toast.LENGTH_LONG).show();
                         textView.setText(String.valueOf(numberFooter.get(index)));
                     }
 
                     @Override
                     public void onFailure(int code, String msg) {
-                        Log.e(TAG,"失败");
+                        Log.e(TAG, "失败");
                     }
                 });
             }
-        }
-        else{
-            Toast.makeText(context,"好像没网咯",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "好像没网咯", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -516,11 +525,12 @@ public class MyUtils {
     /**
      * 将从网上下载到的bean格式化为适合自定义的textView的settext方法
      * 如果bean中的某些属性是空的，则设置这些属性为“”，以防止空指针异常
-     * @param c 是一个类
-     * @param bean  想要格式化的对象
+     *
+     * @param c    是一个类
+     * @param bean 想要格式化的对象
      * @return
      */
-    public static Object formatObjectforTextView(Class c,Object bean){
+    public static Object formatObjectforTextView(Class c, Object bean) {
 
         Object object = null;
         try {
@@ -529,10 +539,10 @@ public class MyUtils {
             Field[] fields = obj.getDeclaredFields();
             for (int i = 0; i < fields.length; i++) {
                 fields[i].setAccessible(true);
-                if (fields[i].get(bean)==null){
-                    fields[i].set(object,"去填写");
-                }else{
-                    fields[i].set(object,fields[i].get(bean));
+                if (fields[i].get(bean) == null) {
+                    fields[i].set(object, "去填写");
+                } else {
+                    fields[i].set(object, fields[i].get(bean));
                 }
             }
             return object;
@@ -544,6 +554,7 @@ public class MyUtils {
 
     /**
      * 从byte对象中获取bitmap
+     *
      * @param bytes
      * @param opts
      * @return
@@ -551,7 +562,7 @@ public class MyUtils {
     public static Bitmap getPicFromBytes(byte[] bytes, BitmapFactory.Options opts) {
         if (bytes != null)
             if (opts != null)
-                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length,opts);
+                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
             else
                 return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         return null;
@@ -559,6 +570,7 @@ public class MyUtils {
 
     /**
      * 从输入流中获取byte
+     *
      * @param inStream
      * @return
      * @throws Exception
@@ -577,7 +589,7 @@ public class MyUtils {
 
     }
 
-    public static Bitmap getImageFromWeb(String Url){
+    public static Bitmap getImageFromWeb(String Url) {
         try {
             URL url = new URL(Url);
             String responseCode = url.openConnection().getHeaderField(0);

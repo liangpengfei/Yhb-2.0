@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:layout_marginTop="5dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -30,6 +31,7 @@
                         android:layout_height="wrap_content">
 
                         <ImageView
+                            android:layout_marginLeft="8dp"
                             android:layout_weight="0.2"
                             android:src="@drawable/pull_scroll_view_avatar_default"
                             android:layout_width="45dp"
@@ -44,18 +46,36 @@
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/tv_main_postName"
                                 android:text="default name" />
 
-                            <TextView
-                                android:id="@+id/tv_main_time"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
+                            <LinearLayout
+                                android:orientation="horizontal"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="default time" />
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/tv_main_time"
+                                    android:textAppearance="?android:attr/textAppearanceSmall"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="default time" />
+
+                                <TextView
+                                    android:textColor="#ffffff"
+                                    android:background="@drawable/lable_background"
+                                    android:id="@+id/tv_main_merchantName"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="商户名" />
+                            </LinearLayout>
+
+
                         </LinearLayout>
 
                         <ImageView
@@ -76,15 +96,18 @@
                     </LinearLayout>
 
                     <TextView
+                        android:layout_marginBottom="5dp"
                         android:id="@+id/tv_main_content"
+                        android:paddingLeft="20dp"
                         android:paddingTop="6dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="6dp"
                         android:paddingRight="6dp"
                         android:text="this is the content" />
 
                     <HorizontalScrollView
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:paddingTop="7dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -93,6 +116,8 @@
                         android:fillViewport="false">
 
                         <LinearLayout
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_width="wrap_content"
                             android:id="@+id/ll_gallery"
                             android:orientation="horizontal"
@@ -103,10 +128,13 @@
                     </HorizontalScrollView>
 
                     <RelativeLayout
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <TextView
+
                             android:id="@+id/text"
                             android:paddingLeft="20dp"
                             android:layout_alignParentLeft="true"
@@ -126,6 +154,7 @@
                     </RelativeLayout>
 
                     <TextView
+                        android:layout_marginBottom="5dp"
                         android:paddingLeft="20dp"
                         android:id="@+id/location"
                         android:layout_width="match_parent"
@@ -133,6 +162,7 @@
                         android:text="商户地点：" />
 
                     <TextView
+                        android:layout_marginBottom="5dp"
                         android:paddingLeft="20dp"
                         android:id="@+id/merchantPhone"
                         android:layout_width="match_parent"
@@ -140,6 +170,7 @@
                         android:text="商户电话：" />
 
                     <TextView
+                        android:layout_marginBottom="5dp"
                         android:paddingLeft="20dp"
                         android:id="@+id/lastTime"
                         android:layout_width="match_parent"
@@ -149,7 +180,7 @@
                     <View
                         android:background="@color/color_gray_light"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp" />
+                        android:layout_height="0.3dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -160,14 +191,13 @@
                         <LinearLayout
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
-                            android:background="@drawable/footer_background"
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:id="@+id/ll_main_like"
                             android:orientation="horizontal"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_height="fill_parent">
+                            android:layout_height="35dp">
 
                             <ImageView
                                 android:id="@+id/iv_main_like"
@@ -185,17 +215,22 @@
 
                         </LinearLayout>
 
+                        <View
+                            android:layout_gravity="center_vertical"
+                            android:background="@color/color_gray_light"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.01"
+                            android:layout_height="20dp" />
+
                         <LinearLayout
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
-                            android:background="@drawable/footer_background"
-
                             android:gravity="center"
                             android:id="@+id/ll_main_dislike"
                             android:orientation="horizontal"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_height="fill_parent">
+                            android:layout_height="35dp">
 
                             <ImageView
                                 android:id="@+id/iv_main_dislike"
@@ -212,16 +247,22 @@
                                 android:text="0" />
                         </LinearLayout>
 
+                        <View
+                            android:layout_gravity="center_vertical"
+                            android:background="@color/color_gray_light"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.01"
+                            android:layout_height="20dp" />
+
                         <LinearLayout
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
-                            android:background="@drawable/footer_background"
                             android:gravity="center"
                             android:id="@+id/ll_main_conment"
                             android:orientation="horizontal"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_height="fill_parent">
+                            android:layout_height="35dp">
 
                             <ImageView
                                 android:id="@+id/iv_main_comment"
@@ -239,10 +280,7 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <View
-                        android:background="@color/color_gray_light"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp" />
+
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

@@ -71,6 +71,9 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     @InjectView(R.id.iv_main_dislike)ImageView ivDislike;
     @InjectView(R.id.ll_gallery)LinearLayout gallery;
     @InjectView(R.id.iv_main_logo)ImageView mAvatar;
+    @InjectView(R.id.tv_main_merchantName)
+    TextView merchantName;
+
 
     private static final int LIKE = 0;
     private static final int DISLIKE = 1;
@@ -154,6 +157,16 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
 
         footerBoolean = aCache.getAsBinary(post.getObjectId() + "footerBoolean");
         postUserName.setText(post.getUser().getUsername());
+
+        String SmerchantName = "";
+        if (post.getMerchantName().equals("") || post.getMerchantName() == null) {
+            //do nothing
+            Log.d(TAG, "merchantName is null");
+        } else {
+            SmerchantName = "  " + post.getMerchantName() + "  ";
+        }
+        merchantName.setText(SmerchantName);
+
         userId = post.getUser().getObjectId();
 
         //格式化时间

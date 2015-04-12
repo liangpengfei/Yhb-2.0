@@ -7,9 +7,18 @@ import java.io.Serializable;
  * Email luckyliangfei@gmail.com
  * Created by fei on 3/18/15.
  */
-public class CommentItem implements Serializable{
+public class CommentItem implements Serializable {
     private static final long serialVersionUID = 2767385268829230696L;
-    private String objectId,comment,name;
+    private String objectId, comment, name;
+    private String createdAt;
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public String getName() {
         return name;
@@ -34,4 +43,6 @@ public class CommentItem implements Serializable{
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+
 }

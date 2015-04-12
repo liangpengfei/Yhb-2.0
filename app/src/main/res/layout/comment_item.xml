@@ -1,37 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:weightSum="1"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <ImageView
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:layout_weight="0.1"
         android:id="@+id/comment_avatar"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:src="@drawable/pull_scroll_view_avatar_default"/>
+        android:src="@drawable/pull_scroll_view_avatar_default" />
+
     <LinearLayout
         android:layout_weight="0.8"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/comment_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="name"/>
+            android:text="name" />
+
+        <TextView
+            android:paddingTop="2dp"
+            android:textSize="9sp"
+            android:text="time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_time" />
+
         <TextView
             android:paddingTop="5dp"
             android:text="comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/comment"/>
-        </LinearLayout>
-   <ImageView
-       android:id="@+id/reply"
-       android:paddingTop="10dp"
-       android:layout_weight="0.1"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:src="@drawable/icon_chat"/>
+            android:id="@+id/comment" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/reply"
+        android:paddingTop="10dp"
+        android:layout_weight="0.1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/comment_small" />
 </LinearLayout>

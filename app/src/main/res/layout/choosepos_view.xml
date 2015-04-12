@@ -1,0 +1,94 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="200dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:layout_width="240dp">
+
+    <RelativeLayout
+        android:layout_width="240dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center"
+                android:id="@+id/beijing"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="北京市" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center"
+                android:id="@+id/shanghai"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="上海市" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center"
+                android:id="@+id/chengdu"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="成都市" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center"
+                android:id="@+id/guangzhou"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="广州市" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:background="@drawable/layout_color_selector"
+                android:gravity="center"
+                android:id="@+id/nanjing"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="南京市" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
