@@ -10,48 +10,73 @@
         android:orientation="vertical"
         android:layout_height="fill_parent">
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/main_theme_yellow"
-            android:orientation="horizontal" >
+            android:layout_height="48dp">
 
-            <TextView
-                android:paddingLeft="10dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:id="@+id/tv_main_choose_position"
-                android:drawableEnd="@drawable/dropdown_black"
-                android:drawableRight="@drawable/dropdown_black"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="地区"/>
+            <RelativeLayout
+                android:id="@+id/main_top"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/main_theme_yellow"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_centerInParent="true"
+                <TextView
+                    android:paddingLeft="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:id="@+id/tv_main_choose_position"
+                    android:drawableEnd="@drawable/dropdown_black"
+                    android:drawableRight="@drawable/dropdown_black"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="地区" />
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:id="@+id/tv_top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="有惠报"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:paddingRight="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/iv_main_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/message" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/class_top"
+                android:visibility="gone"
                 android:gravity="center"
-                android:id="@+id/tv_top"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="有惠报"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-            <ImageView
-                android:paddingRight="10dp"
-                android:paddingEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/iv_main_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/message"/>
+                android:layout_width="match_parent"
+                android:background="@color/main_theme_yellow"
+                android:layout_height="48dp">
 
-        </RelativeLayout>
+                <TextView
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="惠报分类" />
+            </RelativeLayout>
+        </FrameLayout>
+
 
         <FrameLayout
 

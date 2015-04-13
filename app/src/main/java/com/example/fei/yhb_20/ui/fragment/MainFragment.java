@@ -471,7 +471,7 @@ public class MainFragment extends Fragment {
 
                 viewHolder.tvLike.setText(String.valueOf(numberFooter.get(LIKE)));
                 viewHolder.tvDislike.setText(String.valueOf(numberFooter.get(DISLIKE)));
-                viewHolder.tvConment.setText(String.valueOf(numberFooter.get(COMMENT)));
+                viewHolder.tvConment.setText(String.valueOf(post.getCommentItems().size()));
 
                 BmobQuery<Merchant> query = new BmobQuery<Merchant>();
                 query.getObject(context, post.getUser().getObjectId(), new GetListener<Merchant>() {

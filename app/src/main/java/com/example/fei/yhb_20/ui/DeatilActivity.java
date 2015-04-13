@@ -284,6 +284,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 convertView = LayoutInflater.from(context).inflate(R.layout.comment_item,null);
                 final ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
                 TextView comment = (TextView) convertView.findViewById(R.id.comment);
+                TextView time = (TextView) convertView.findViewById(R.id.tv_time);
 
                 if (commentItems.get(position).getComment() == null || commentItems.get(position).getComment().equals("")){
                     comment.setText("");
@@ -326,6 +327,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 });
                 //在这里设置
                 name.setText(commentItems.get(position).getName());
+                time.setText(commentItems.get(position).getCreatedAt());
 
                 if (commentItems.get(position).getObjectId()!=null){
                     BmobQuery<Merchant> query = new BmobQuery<Merchant>();

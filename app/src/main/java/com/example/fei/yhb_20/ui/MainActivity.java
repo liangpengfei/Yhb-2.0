@@ -106,6 +106,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     ImageView cover;
     @InjectView(R.id.drawer)
     RelativeLayout drawer;
+    @InjectView(R.id.main_top)
+    RelativeLayout mainTop;
+    @InjectView(R.id.class_top)
+    RelativeLayout classTop;
+
 
     private BaseUser user;
     private ActionBarDrawerToggle toggle;
@@ -315,6 +320,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 } else {
                     transaction.show(fMain);
                 }
+                mainTop.setVisibility(View.VISIBLE);
+                classTop.setVisibility(View.INVISIBLE);
                 mMainImage.setImageResource(R.drawable.main_pressed);
                 break;
             case GV.CLASS_PRESSED:
@@ -324,6 +331,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 } else {
                     transaction.show(fClass);
                 }
+                mainTop.setVisibility(View.INVISIBLE);
+                classTop.setVisibility(View.VISIBLE);
                 mClassImage.setImageResource(R.drawable.classification_pressed);
                 break;
             default:

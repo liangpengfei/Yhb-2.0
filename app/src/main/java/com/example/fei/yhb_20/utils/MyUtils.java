@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -398,7 +399,13 @@ public class MyUtils {
                 commentItem.setObjectId(BmobUser.getCurrentUser(context).getObjectId());
                 commentItem.setName(post.getUser().getUsername());
 
-//                commentItem.setCreatedAt();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
+
+                //使用calendar是可以直接操纵当前的日期的，很具体，以后可能用到的时候很多的，不过还是不如SimpleDateFormat简单易用
+//                Calendar calendar = Calendar.getInstance();
+//                Log.d(TAG,calendar.get(Calendar.MONTH)+":"+calendar.get(Calendar.DAY_OF_MONTH)+":"+calendar.get(Calendar.HOUR_OF_DAY));
+
+                commentItem.setCreatedAt(simpleDateFormat.format(new Date()));
                 commentItems.add(commentItem);
                 post.setCommentItems(commentItems);
 
