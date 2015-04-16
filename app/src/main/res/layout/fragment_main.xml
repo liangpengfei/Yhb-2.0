@@ -53,6 +53,8 @@
                 android:layout_height="wrap_content" />
 
             <Button
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="发送"
                 android:id="@+id/team_singlechat_id_send"
                 android:background="@drawable/chat_sendbtn"

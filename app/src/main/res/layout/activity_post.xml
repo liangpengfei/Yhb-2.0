@@ -13,12 +13,13 @@
         android:id="@+id/linearLayout">
 
         <ImageView
+
             android:id="@+id/iv_post_back"
             android:layout_weight="0.1"
-            android:layout_gravity="start"
+            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:src="@drawable/back_post" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/post_back" />
 
         <TextView
             android:gravity="center"
@@ -54,9 +55,13 @@
             android:layout_height="wrap_content">
 
             <EditText
+                android:paddingTop="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:textColorHint="#999999"
                 android:id="@+id/et_post_content"
                 android:gravity="start"
-                android:hint="说点什么"
+                android:hint="亲，用几句话“惠报”下活动详情或消费心得吧～"
                 android:background="@null"
                 android:minLines="4"
                 android:layout_width="match_parent"
@@ -74,12 +79,12 @@
                 android:verticalSpacing="5dp" />
 
             <View
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:layout_gravity="center"
                 android:id="@+id/view"
                 android:background="@color/dividing_line"
                 android:layout_width="match_parent"
-                android:layout_height="1dp" />
+                android:layout_height="10dp" />
 
             <LinearLayout
                 android:layout_marginTop="10dp"
@@ -87,8 +92,9 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:paddingLeft="15dp"
                     android:layout_gravity="center_vertical"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="优惠指数:" />
@@ -109,12 +115,14 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:paddingLeft="15dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="商家名称:" />
 
                 <EditText
+                    android:textColorHint="#999999"
                     android:id="@+id/et_post_merchantName"
                     android:layout_marginLeft="20dp"
                     android:background="@null"
@@ -130,7 +138,8 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:paddingLeft="15dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="商家位置:" />
@@ -166,19 +175,22 @@
                         android:id="@+id/iv_post_dingwei"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/dingwei" />
+                        android:src="@drawable/location" />
                 </LinearLayout>
 
 
             </LinearLayout>
 
             <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:paddingLeft="15dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="活动时间:" />
@@ -203,7 +215,7 @@
 
         <ImageView
             android:id="@+id/face"
-            android:src="@drawable/chat_expression_bg"
+            android:src="@drawable/emoij"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

@@ -230,11 +230,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         String[] Stringdata;
         int[] drawables;
         if (user.getAttribute() == GV.MERCHANT) {
-            Stringdata = new String[]{"商户信息", "待完善的相关惠报", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
-            drawables = new int[]{R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
+            Stringdata = new String[]{"商户信息", "待完善惠报", "我的收藏", "我的消息", "草稿箱"};
+            drawables = new int[]{R.drawable.slide_merchant_info, R.drawable.slide_need_to_complete, R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft};
         } else {
-            Stringdata = new String[]{"我的足迹", "我的收藏", "我的消息", "草稿箱"};
-            drawables = new int[]{R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
+            Stringdata = new String[]{"我的收藏", "我的消息", "草稿箱"};
+            drawables = new int[]{R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft};
         }
         list.setAdapter(new SlideAdapter(Stringdata, drawables, this));
 

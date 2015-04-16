@@ -24,7 +24,7 @@
                     android:layout_weight="0.1"
                     android:src="@drawable/pull_scroll_view_avatar_default"
                     android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_height="51dp"
                     android:id="@+id/iv_main_logo"/>
                 <LinearLayout
                     android:layout_marginLeft="5dp"

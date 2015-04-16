@@ -179,100 +179,114 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     private void updateIcons() {
         MyUtils.showProgressDialog(this, "正在发布");
         final String[] files = getPhotoPath().split("\\|");
-        Log.e(TAG, "test");
-        BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
-            @Override
-            public void onSuccess(boolean isFinished, String[] fileNames, String[] urls) {
-                if (isFinished) {
-                    Log.e(TAG, "88");
-                    Toast.makeText(PostActivity.this, "成功上传", Toast.LENGTH_LONG).show();
-                    //得到图片路径的字符串
-                    Log.e(TAG, "99");
-                    StringBuilder stringBuilder = new StringBuilder("");
-                    for (int i = 0; i < fileNames.length; i++) {
-                        Log.e(TAG, fileNames[i]);
-                        stringBuilder.append(BmobProFile.getInstance(PostActivity.this).signURL(fileNames[i], urls[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
-                        stringBuilder.append("|");
-                    }
-                    Log.e(TAG, stringBuilder.toString());
-                    //post与user关联
-                    final Post post = new Post();
+        if (files != null) {
+            Log.e(TAG, "test");
+            BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
+                @Override
+                public void onSuccess(boolean isFinished, String[] fileNames, String[] urls) {
+                    if (isFinished) {
+                        Log.e(TAG, "88");
+                        Toast.makeText(PostActivity.this, "成功上传", Toast.LENGTH_LONG).show();
+                        //得到图片路径的字符串
+                        Log.e(TAG, "99");
+                        StringBuilder stringBuilder = new StringBuilder("");
+                        for (int i = 0; i < fileNames.length; i++) {
+                            Log.e(TAG, fileNames[i]);
+                            stringBuilder.append(BmobProFile.getInstance(PostActivity.this).signURL(fileNames[i], urls[i], "54f197dc6dce11fc7c078c07420a080e", 0, null));
+                            stringBuilder.append("|");
+                        }
+                        Log.e(TAG, stringBuilder.toString());
+                        //post与user关联
+                        final Post post = new Post();
 
-                    post.setContent(content.getText().toString());
-                    post.setMerchantName(merchantName.getText().toString());
-                    post.setActivityTiem(time.getSelectedItem().toString());
-                    post.setProvince(province);
-                    post.setCity(city);
-                    post.setDistrict(district);
-                    post.setRating(ratingBar.getRating());
-                    post.setPaths(stringBuilder.toString());
-                    ArrayList<String> arrayList = new ArrayList<String>();
-                    Collections.addAll(arrayList, fileNames);
-                    post.setThumnailsName(arrayList);
+                        post.setContent(content.getText().toString());
+                        post.setMerchantName(merchantName.getText().toString());
+                        post.setActivityTiem(time.getSelectedItem().toString());
+                        post.setProvince(province);
+                        post.setCity(city);
+                        post.setDistrict(district);
+                        post.setRating(ratingBar.getRating());
+                        post.setPaths(stringBuilder.toString());
+                        ArrayList<String> arrayList = new ArrayList<String>();
+                        Collections.addAll(arrayList, fileNames);
+                        post.setThumnailsName(arrayList);
 
-                    final BaseUser user = BmobUser.getCurrentUser(PostActivity.this, BaseUser.class);
+                        final BaseUser user = BmobUser.getCurrentUser(PostActivity.this, BaseUser.class);
 
-                    ArrayList numberFooter = new ArrayList();
-                    numberFooter.add(0, 0);
-                    numberFooter.add(1, 0);
-                    numberFooter.add(2, 0);
-                    numberFooter.add(3, 0);
+                        ArrayList numberFooter = new ArrayList();
+                        numberFooter.add(0, 0);
+                        numberFooter.add(1, 0);
+                        numberFooter.add(2, 0);
+                        numberFooter.add(3, 0);
 
 
-                    post.setNumberFooter(numberFooter);
+                        post.setNumberFooter(numberFooter);
 
-                    ArrayList<CommentItem> commentItems = new ArrayList<CommentItem>();
-                    post.setCommentItems(commentItems);
+                        ArrayList<CommentItem> commentItems = new ArrayList<CommentItem>();
+                        post.setCommentItems(commentItems);
 
-                    post.setUser(user);
-                    post.setOwnerId(user.getObjectId());
-                    post.save(PostActivity.this, new SaveListener() {
-                        @Override
-                        public void onSuccess() {
-                            //到这里只能是说post发送成功了，还没有更新user表中的数据
-                            if (TextUtils.isEmpty(post.getObjectId()) || TextUtils.isEmpty(post.getObjectId())) {
-                                Toast.makeText(PostActivity.this, "当前post对象为空", Toast.LENGTH_LONG).show();
-                                return;
+                        post.setUser(user);
+                        post.setOwnerId(user.getObjectId());
+                        post.save(PostActivity.this, new SaveListener() {
+                            @Override
+                            public void onSuccess() {
+                                //到这里只能是说post发送成功了，还没有更新user表中的数据
+                                if (TextUtils.isEmpty(post.getObjectId()) || TextUtils.isEmpty(post.getObjectId())) {
+                                    Toast.makeText(PostActivity.this, "当前post对象为空", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                                BmobRelation posts = new BmobRelation();
+                                posts.add(post);
+                                user.setPost(posts);
+                                user.update(PostActivity.this, new UpdateListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        //更新user表中的数据成功，最终成功
+                                        Toast.makeText(PostActivity.this, "成功添加到用户的posts中", Toast.LENGTH_LONG).show();
+                                        Log.e(TAG, "成功添加到用户的posts中");
+                                        PostActivity.this.finish();
+                                        PostActivity.this.finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(int i, String s) {
+                                        Log.e(TAG, "没有添加成功" + s);
+                                    }
+                                });
                             }
-                            BmobRelation posts = new BmobRelation();
-                            posts.add(post);
-                            user.setPost(posts);
-                            user.update(PostActivity.this, new UpdateListener() {
-                                @Override
-                                public void onSuccess() {
-                                    //更新user表中的数据成功，最终成功
-                                    Toast.makeText(PostActivity.this, "成功添加到用户的posts中", Toast.LENGTH_LONG).show();
-                                    Log.e(TAG, "成功添加到用户的posts中");
-                                    PostActivity.this.finish();
-                                    PostActivity.this.finish();
-                                }
 
-                                @Override
-                                public void onFailure(int i, String s) {
-                                    Log.e(TAG, "没有添加成功" + s);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s) {
-                            Log.e(TAG, "发布失败" + s);
-                        }
-                    });
+                            @Override
+                            public void onFailure(int i, String s) {
+                                Log.e(TAG, "发布失败" + s);
+                            }
+                        });
+                    }
                 }
-            }
 
-            @Override
-            public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
-                Log.e(TAG, String.valueOf(curPercent));
-            }
+                @Override
+                public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
+                    Log.e(TAG, String.valueOf(curPercent));
+                }
 
-            @Override
-            public void onError(int i, String s) {
-                Log.e(TAG, "上传图片失败" + s + i);
-                Toast.makeText(PostActivity.this, s, Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onError(int i, String s) {
+                    Log.e(TAG, "上传图片失败" + s + i);
+                    Toast.makeText(PostActivity.this, s, Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            showPostView();
+        }
+
+    }
+
+    private void showPostView() {
+        View view = LayoutInflater.from(this).inflate(R.layout.toast_view, null);
+        Toast toast = new Toast(this);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setView(view);
+        toast.show();
     }
 
     /**
@@ -456,8 +470,13 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
             }
 
             if (position == Bimp.tempSelectBitmap.size()) {
-                holder.image.setImageBitmap(BitmapFactory.decodeResource(
-                        getResources(), R.drawable.icon_addpic_unfocused));
+                if (Bimp.tempSelectBitmap.size() == 0) {
+                    holder.image.setImageBitmap(BitmapFactory.decodeResource(
+                            getResources(), R.drawable.add));
+                } else {
+                    holder.image.setImageBitmap(BitmapFactory.decodeResource(
+                            getResources(), R.drawable.icon_addpic_unfocused));
+                }
                 if (position == 9) {
                     holder.image.setVisibility(View.GONE);
                 }
