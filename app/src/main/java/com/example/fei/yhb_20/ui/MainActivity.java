@@ -181,12 +181,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             public void onSuccess(List<OtherInfo> otherInfos) {
                 Toast.makeText(MainActivity.this, "查询成功", Toast.LENGTH_LONG).show();
                 if (otherInfos != null) {
-                    if (otherInfos.get(0).getFollowerIds() != null) {
-                        follower.setText("粉丝:" + otherInfos.get(0).getFollowerIds().size());
+                    if (otherInfos.get(0) != null) {
+                        if (otherInfos.get(0).getFollowerIds() != null) {
+                            follower.setText("粉丝:" + otherInfos.get(0).getFollowerIds().size());
+                        }
+                        if (otherInfos.get(0).getFollowingIds() != null) {
+                            following.setText("关注" + otherInfos.get(0).getFollowingIds().size());
+                        }
                     }
-                    if (otherInfos.get(0).getFollowingIds() != null) {
-                        following.setText("关注" + otherInfos.get(0).getFollowingIds().size());
-                    }
+
                 }
             }
 
@@ -224,14 +227,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         });
 
-        String[] data;
+        String[] Stringdata;
+        int[] drawables;
         if (user.getAttribute() == GV.MERCHANT) {
-            data = new String[]{"商户信息", "待完善的相关惠报", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
+            Stringdata = new String[]{"商户信息", "待完善的相关惠报", "我的足迹", "我的收藏", "我的消息", "草稿箱"};
+            drawables = new int[]{R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
         } else {
-            data = new String[]{"我的足迹", "我的收藏", "我的消息", "草稿箱"};
-
+            Stringdata = new String[]{"我的足迹", "我的收藏", "我的消息", "草稿箱"};
+            drawables = new int[]{R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
         }
-        list.setAdapter(new SlideAdapter(data, this));
+        list.setAdapter(new SlideAdapter(Stringdata, drawables, this));
 
         refreshAvatar();
 
@@ -270,10 +275,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         private Context context;
         String[] data;
+        int[] drawables;
 
-        public SlideAdapter(String[] data, Context context) {
+        public SlideAdapter(String[] data, int[] drawables, Context context) {
             this.data = data;
             this.context = context;
+            this.drawables = drawables;
         }
 
         @Override
@@ -299,7 +306,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Log.e(TAG, "convertView is null");
             } else {
                 TextView slide_content = (TextView) convertView.findViewById(R.id.slide_item_text);
+                ImageView slide_imageview = (ImageView) convertView.findViewById(R.id.slide_item_icon);
                 slide_content.setText(data[position]);
+                slide_imageview.setImageResource(drawables[position]);
+
             }
             return convertView;
         }

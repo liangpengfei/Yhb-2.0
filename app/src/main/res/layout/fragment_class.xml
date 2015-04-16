@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.fei.yhb_20.ui.fragment.ClassFragment">
 
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -36,6 +35,9 @@
             android:layout_height="wrap_content">
 
             <GridView
+                android:horizontalSpacing="2dp"
+                android:verticalSpacing="2dp"
+                android:background="@color/color_gray_light"
                 android:id="@+id/gv_class_0"
                 android:numColumns="3"
                 android:layout_width="match_parent"
@@ -70,6 +72,9 @@
             android:layout_height="wrap_content">
 
             <GridView
+                android:background="@color/color_gray_light"
+                android:horizontalSpacing="2dp"
+                android:verticalSpacing="2dp"
                 android:id="@+id/gv_class_1"
                 android:numColumns="3"
                 android:layout_width="match_parent"
@@ -104,6 +109,9 @@
             android:layout_height="wrap_content">
 
             <GridView
+                android:background="@color/color_gray_light"
+                android:horizontalSpacing="2dp"
+                android:verticalSpacing="2dp"
                 android:id="@+id/gv_class_2"
                 android:numColumns="3"
                 android:layout_width="match_parent"
@@ -138,6 +146,9 @@
             android:layout_height="wrap_content">
 
             <GridView
+                android:background="@color/color_gray_light"
+                android:horizontalSpacing="2dp"
+                android:verticalSpacing="2dp"
                 android:id="@+id/gv_class_3"
                 android:numColumns="3"
                 android:layout_width="match_parent"
@@ -146,4 +157,6 @@
             </GridView>
         </android.support.v7.widget.CardView>
     </LinearLayout>
+
+
 </FrameLayout>

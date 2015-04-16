@@ -71,7 +71,7 @@
                 android:horizontalSpacing="3dp"
                 android:numColumns="3"
                 android:scrollbars="none"
-                android:verticalSpacing="5dp"></GridView>
+                android:verticalSpacing="5dp" />
 
             <View
                 android:layout_marginTop="10dp"
@@ -91,7 +91,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="优惠指数" />
+                    android:text="优惠指数:" />
 
                 <RatingBar
                     android:id="@+id/ratingbar"
@@ -112,7 +112,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="商家名称" />
+                    android:text="商家名称:" />
 
                 <EditText
                     android:id="@+id/et_post_merchantName"
@@ -133,7 +133,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="商家位置" />
+                    android:text="商家位置:" />
 
                 <LinearLayout
                     android:weightSum="3"
@@ -181,7 +181,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="活动时间" />
+                    android:text="活动时间:" />
 
                 <Spinner
                     android:spinnerMode="dialog"

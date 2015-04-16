@@ -2,13 +2,14 @@ package com.example.fei.yhb_20.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
@@ -16,10 +17,7 @@ import com.example.fei.yhb_20.R;
 
 public class ClassFragment extends Fragment {
     private static final String TAG = "ClassFragment";
-    private ListView postItem;
-
     private GridView class0,class1,class2,class3;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -30,10 +28,10 @@ public class ClassFragment extends Fragment {
         class2 = (GridView) view.findViewById(R.id.gv_class_2);
         class3 = (GridView) view.findViewById(R.id.gv_class_3);
 
-        String [] strings0 = {"IFS","王府井","火锅","万达影城","肯德基","日本料理","足疗按摩","等等"};
-        String [] strings1 = {"全部","火锅","小吃快餐","川菜","自助","面餐","面包甜点"};
-        String [] strings2 = {"全部","电影院","KTV","美容","摄影写真","酒吧","健身"};
-        String [] strings3 = {"专卖店","商场","家电","家居","超市","生鲜","书店"};
+        String[] strings0 = {"IFS", "王府井", "火锅", "万达影城", "肯德基", "日本料理"};
+        String[] strings1 = {"全部", "火锅", "小吃快餐", "川菜", "自助", "面餐"};
+        String[] strings2 = {"全部", "电影院", "KTV", "美容", "摄影写真", "酒吧"};
+        String[] strings3 = {"专卖店", "商场", "家电", "家居", "超市", "生鲜"};
 
         class0.setAdapter(new GridViewAdapter(strings0,getActivity()));
         class1.setAdapter(new GridViewAdapter(strings1, getActivity()));
@@ -42,6 +40,37 @@ public class ClassFragment extends Fragment {
         return view;
 
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        class0.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+        class1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+        class2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+        class3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
+    }
+
 
     class GridViewAdapter extends BaseAdapter{
 
