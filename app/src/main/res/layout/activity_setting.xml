@@ -131,7 +131,7 @@
                     android:layout_marginTop="15dp"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:text="这个人很懒，什么都没有留下。。。"
+                    android:text=""
                     android:textSize="12sp"
                     android:textColor="#B1B1B1" />
 

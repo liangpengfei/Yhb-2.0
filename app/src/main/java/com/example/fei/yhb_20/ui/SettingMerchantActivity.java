@@ -143,6 +143,8 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                 }
                 if (merchant.getMotto() != null) {
                     mMotto.setText(merchant.getMotto());
+                } else {
+                    mMotto.setText("这个人很懒，什么都没有留下。。。");
                 }
                 if (merchant.getMerchantInfo().isAuthenticated()) {
                     mCertification.setText("已认证");

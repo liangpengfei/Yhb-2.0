@@ -253,6 +253,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             public void onSuccess(BaseUser baseUser) {
                 if (baseUser.getMotto() != null) {
                     motto.setText(baseUser.getMotto());
+                } else {
+                    motto.setText("这个人很懒，什么都没有留下。。。");
                 }
                 if (baseUser.getAvatarPaht() != null) {
                     avatarPath = baseUser.getAvatarPaht();

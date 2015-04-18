@@ -5,6 +5,7 @@
     android:layout_height="100dp">
 
     <ImageView
+        android:layout_marginLeft="16dp"
         android:minHeight="50dp"
         android:id="@+id/slide_item_icon"
         android:layout_gravity="center_vertical"
