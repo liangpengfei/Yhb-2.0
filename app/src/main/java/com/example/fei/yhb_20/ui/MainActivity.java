@@ -76,8 +76,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     TextView choose_position;
     @InjectView(R.id.logout)
     TextView logout;
-    @InjectView(R.id.setting)
-    TextView setting;
+    @InjectView(R.id.system_setting)
+    TextView system_setting;
     @InjectView(R.id.user_photo)
     ImageView avatar;
     @InjectView(R.id.user_name)
@@ -110,6 +110,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     RelativeLayout mainTop;
     @InjectView(R.id.class_top)
     RelativeLayout classTop;
+    @InjectView(R.id.person_setting)
+    ImageView person_setting;
 
 
     private BaseUser user;
@@ -179,7 +181,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         queryOtherInfo.findObjects(this, new FindListener<OtherInfo>() {
             @Override
             public void onSuccess(List<OtherInfo> otherInfos) {
-                Toast.makeText(MainActivity.this, "查询成功", Toast.LENGTH_LONG).show();
                 if (otherInfos != null) {
                     if (otherInfos.get(0) != null) {
                         if (otherInfos.get(0).getFollowerIds() != null) {
@@ -230,11 +231,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         String[] Stringdata;
         int[] drawables;
         if (user.getAttribute() == GV.MERCHANT) {
-            Stringdata = new String[]{"商户信息", "待完善惠报", "我的收藏", "我的消息", "草稿箱"};
-            drawables = new int[]{R.drawable.slide_merchant_info, R.drawable.slide_need_to_complete, R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft};
+            Stringdata = new String[]{"商户信息", "待完善惠报", "我的收藏", "我的消息", "草稿箱", "反馈意见"};
+            drawables = new int[]{R.drawable.slide_merchant_info, R.drawable.slide_need_to_complete, R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft, R.drawable.ic_launcher};
         } else {
-            Stringdata = new String[]{"我的收藏", "我的消息", "草稿箱"};
-            drawables = new int[]{R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft};
+            Stringdata = new String[]{"我的收藏", "我的消息", "草稿箱", "反馈意见"};
+            drawables = new int[]{R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft, R.drawable.ic_launcher};
         }
         list.setAdapter(new SlideAdapter(Stringdata, drawables, this));
 
@@ -250,6 +251,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         query.getObject(this, user.getObjectId(), new GetListener<BaseUser>() {
             @Override
             public void onSuccess(BaseUser baseUser) {
+                if (baseUser.getMotto() != null) {
+                    motto.setText(baseUser.getMotto());
+                }
                 if (baseUser.getAvatarPaht() != null) {
                     avatarPath = baseUser.getAvatarPaht();
                     Picasso.with(MainActivity.this).load(baseUser.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
@@ -359,7 +363,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mTabPost.setOnClickListener(this);
 
         logout.setOnClickListener(this);
-        setting.setOnClickListener(this);
+        system_setting.setOnClickListener(this);
+        person_setting.setOnClickListener(this);
         choose_position.setOnClickListener(this);
         message.setOnClickListener(this);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -369,12 +374,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     Intent intent = null;
                     switch (position) {
                         case 0:
-                            break;
-                        case 1:
+                            //收藏界面
                             intent = new Intent(MainActivity.this, MyCollections.class);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("currentUser", currentUser);
                             intent.putExtra("bundle", bundle);
+                            break;
+                        case 1:
+
                             break;
                         case 2:
                             break;
@@ -390,18 +397,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     Intent intent = null;
                     switch (position) {
                         case 0:
+                            //商户信息界面
                             intent = new Intent(MainActivity.this, MerchantInfoPage.class);
                             break;
                         case 1:
                             break;
                         case 2:
-                            break;
-                        case 3:
                             //我的收藏
                             intent = new Intent(MainActivity.this, MyCollections.class);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("currentUser", currentUser);
                             intent.putExtra("bundle", bundle);
+                            break;
+                        case 3:
+
                             break;
                         case 4:
                             break;
@@ -478,6 +487,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.person_setting:
+                //这里是个人信息的设置界面
+                if (user.getAttribute() == GV.MERCHANT) {
+                    intent = new Intent(MainActivity.this, SettingMerchantActivity.class);
+                    startActivity(intent);
+                } else {
+                    //个人的设置会是怎么样的
+//                    intent = new Intent(MainActivity.this,SettingMerchantActivity.class);
+//                    startActivity(intent);
+                }
+                break;
             case R.id.tv_main_choose_position:
                 //以后可能会用到要更改的地方
 //
@@ -503,7 +523,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 //                    }
 //                });
 //                menuDialog.show();
-                View menuView = View.inflate(this, R.layout.popupwindow, null);
+                Log.d(TAG, "choose_postition");
+                View menuView = View.inflate(this, R.layout.choosepos_view, null);
                 final Dialog menuDialog = new Dialog(this, R.style.popupDialog);
                 menuDialog.setContentView(menuView);
 
@@ -595,15 +616,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 menuDialog.show();
 
                 break;
-            case R.id.setting:
-                if (user.getAttribute() == GV.MERCHANT) {
-                    intent = new Intent(MainActivity.this, SettingMerchantActivity.class);
-                    startActivity(intent);
-                } else {
-                    //个人的设置会是怎么样的
-//                    intent = new Intent(MainActivity.this,SettingMerchantActivity.class);
-//                    startActivity(intent);
-                }
+            case R.id.system_setting:
+                //在这里应该是系统的设置界面，而不是个人信息的设置界面
                 break;
             case R.id.user_photo:
                 //得到大图
@@ -620,10 +634,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             default:
                 break;
         }
-    }
-
-    private void changePos(String s) {
-
     }
 
     class PosAdatper extends BaseAdapter {

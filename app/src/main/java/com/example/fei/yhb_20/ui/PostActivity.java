@@ -179,7 +179,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     private void updateIcons() {
         MyUtils.showProgressDialog(this, "正在发布");
         final String[] files = getPhotoPath().split("\\|");
-        if (files != null) {
+        if (files.length != 0) {
             Log.e(TAG, "test");
             BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
                 @Override

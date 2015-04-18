@@ -10,12 +10,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -73,6 +75,7 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
     private byte[] mContent;
     Bitmap myBitmap;
     private Picasso picasso;
+    private String avatarPath;
 
 
     @Override
@@ -117,19 +120,7 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                     Toast.makeText(SettingMerchantActivity.this,"查询失败",Toast.LENGTH_LONG).show();
                 }
             });
-            if (merchant.getMotto()!=null){
-                mMotto.setText(merchant.getMotto());
-            }
-            if (merchant.getMerchantInfo().isAuthenticated()){
-                mCertification.setText("已认证");
-            }else{
-                mCertification.setText("未认证");
-            }
-            if (merchant.getMyInfo().getHometown()!=null){
-                mHometown.setText(merchant.getMyInfo().getHometown());
-            }else{
-                mHometown.setText("未填写");
-            }
+
             refreshAvatar();
         }
     }
@@ -142,10 +133,27 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
         query.getObject(this,merchant.getObjectId(),new GetListener<Merchant>() {
             @Override
             public void onSuccess(Merchant merchant) {
+                //得到当前的merchant最新的信息，这样用才能得到最新的
+
+                avatarPath = merchant.getAvatarPaht();
                 if (merchant.getAvatarPaht()!=null){
                     Picasso.with(SettingMerchantActivity.this).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
                 }else{
-                    Toast.makeText(SettingMerchantActivity.this,"test",Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "没有设置头像");
+                }
+                if (merchant.getMotto() != null) {
+                    mMotto.setText(merchant.getMotto());
+                }
+                if (merchant.getMerchantInfo().isAuthenticated()) {
+                    mCertification.setText("已认证");
+                } else {
+                    mCertification.setText("未认证");
+                }
+                if (merchant.getMyInfo().getHometown() != null) {
+                    Log.d(TAG, "hometown");
+                    mHometown.setText(merchant.getMyInfo().getHometown());
+                } else {
+                    mHometown.setText("未填写");
                 }
             }
 
@@ -242,6 +250,7 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                 RelativeLayout parent = (RelativeLayout) view.findViewById(R.id.parent);
                 ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
 
+                //更换头像
                 change.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -252,13 +261,15 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                         Button take = (Button) subView.findViewById(R.id.choose_picture_take);
                         Button gallery = (Button) subView.findViewById(R.id.choose_picture_gallery);
                         Button cancel = (Button) subView.findViewById(R.id.choose_picture_cancel);
+                        //取消
                         cancel.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                pop.dismiss();
+                                subPop.dismiss();
                                 ll_popup.clearAnimation();
                             }
                         });
+                        //从图库进行选取
                         gallery.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -269,6 +280,7 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                                 subPop.dismiss();
                             }
                         });
+                        //拍照进行选取
                         take.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -290,10 +302,22 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
 
                     }
                 });
+
+                //显示大头像
                 show.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //点击后放大
+                        if (avatarPath == null || avatarPath.equals("")) {
+                            Toast.makeText(SettingMerchantActivity.this, "您没有设置大头像", Toast.LENGTH_LONG).show();
+                        } else {
+                            //这个地方是可以优化一下
+                            String[] paths = {avatarPath};
+                            Intent intent;
+                            intent = new Intent(SettingMerchantActivity.this, GalleryUrlActivity.class);
+                            intent.putExtra("photoUrls", paths);
+                            SettingMerchantActivity.this.startActivity(intent);
+                        }
                     }
                 });
                 cancel.setOnClickListener(new View.OnClickListener() {
@@ -324,6 +348,7 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                 pop.setFocusable(true);
                 pop.setOutsideTouchable(true);
                 pop.setContentView(view);
+                ll_popup.startAnimation(AnimationUtils.loadAnimation(SettingMerchantActivity.this, R.anim.activity_translate_in));
                 pop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
 
                 break;
