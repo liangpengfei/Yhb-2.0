@@ -335,12 +335,12 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
                             otherInfo.save(MerchantRegist.this,new SaveListener() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(MerchantRegist.this,"关注成功",Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "关注成功");
                                 }
 
                                 @Override
                                 public void onFailure(int i, String s) {
-                                    Toast.makeText(MerchantRegist.this,"关注失败",Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "关注失败");
                                 }
                             });
 
@@ -369,10 +369,9 @@ public class MerchantRegist extends ActionBarActivity implements View.OnClickLis
 //                                    Log.e(TAG,s+i);
 //                                }
 //                            });
-
-
                             Intent intent = new Intent(MerchantRegist.this, MainActivity.class);
                             intent.putExtra("role", GV.MERCHANT);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             finish();
                         }

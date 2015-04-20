@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewStub;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
@@ -29,6 +31,8 @@ public class MyCollections extends ActionBarActivity {
     private static final String TAG = "MyCollections";
     @InjectView(R.id.rv_collections)
     RecyclerView recyclerView;
+    @InjectView(R.id.viewstub)
+    ViewStub viewStub;
     private Intent intent;
     private BaseUser currentUser;
     LinearLayoutManager layoutManager;
@@ -39,6 +43,7 @@ public class MyCollections extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_collections);
         ButterKnife.inject(this);
+
         intent = getIntent();
         if (intent != null) {
             currentUser = (BaseUser) intent.getBundleExtra("bundle").getSerializable("currentUser");
@@ -52,7 +57,12 @@ public class MyCollections extends ActionBarActivity {
                     query.findObjects(this, new FindListener<Post>() {
                         @Override
                         public void onSuccess(List<Post> posts) {
-                            recyclerView.setAdapter(new ItemAdapter(posts, MyCollections.this));
+                            if (posts != null) {
+                                recyclerView.setAdapter(new ItemAdapter(posts, MyCollections.this));
+                            } else {
+                                //应该是能够显示没有任何惠报的通知
+                                viewStub.inflate();
+                            }
                         }
 
                         @Override
@@ -61,6 +71,8 @@ public class MyCollections extends ActionBarActivity {
                         }
                     });
                 } else {
+                    recyclerView.setVisibility(View.GONE);
+                    viewStub.inflate();
                     Toast.makeText(this, "您还没有收藏任何惠报", Toast.LENGTH_LONG).show();
                 }
             }

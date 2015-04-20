@@ -1,8 +1,6 @@
 package com.example.fei.yhb_20.ui;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,9 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -27,9 +23,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,11 +62,8 @@ import com.example.fei.yhb_20.utils.NetUtil;
 import com.example.fei.yhb_20.utils.PublicWay;
 import com.example.fei.yhb_20.utils.Res;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -108,6 +103,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     LinearLayout faceBar;
     @InjectView(R.id.face)
     ImageView face;
+    @InjectView(R.id.container)
+    RelativeLayout frameLayout;
 
 
     private DBManager dbm;
@@ -176,20 +173,37 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         Init();
     }
 
+
+    ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            //比较Activity根布局与当前布局的大小
+            Log.e(TAG, "onGlobalLayout");
+            int heightDiff = frameLayout.getRootView().getHeight() - frameLayout.getHeight();
+            if (heightDiff > 200) {
+                if (merchantName.isFocused()) {
+                    faceBar.setVisibility(View.INVISIBLE);
+                } else {
+                    faceBar.setVisibility(View.VISIBLE);
+                    Log.e(TAG, "显示");
+                }
+            } else {
+                Log.e(TAG, "隐藏");
+                faceBar.setVisibility(View.GONE);
+            }
+        }
+    };
+
     private void updateIcons() {
         final String[] files = getPhotoPath().split("\\|");
-        Log.d(TAG, String.valueOf(files.length));
-        if (files.length != 0) {
-            Log.e(TAG, "test");
+        if (getPhotoPath().contains("|")) {
             MyUtils.showProgressDialog(this, "正在发布");
             BmobProFile.getInstance(PostActivity.this).uploadBatch(files, new UploadBatchListener() {
                 @Override
                 public void onSuccess(boolean isFinished, String[] fileNames, String[] urls) {
                     if (isFinished) {
-                        Log.e(TAG, "88");
-                        Toast.makeText(PostActivity.this, "成功上传", Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "上传图片成功");
                         //得到图片路径的字符串
-                        Log.e(TAG, "99");
                         StringBuilder stringBuilder = new StringBuilder("");
                         for (int i = 0; i < fileNames.length; i++) {
                             Log.e(TAG, fileNames[i]);
@@ -233,7 +247,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                             public void onSuccess() {
                                 //到这里只能是说post发送成功了，还没有更新user表中的数据
                                 if (TextUtils.isEmpty(post.getObjectId()) || TextUtils.isEmpty(post.getObjectId())) {
-                                    Toast.makeText(PostActivity.this, "当前post对象为空", Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "还没有发布内容");
                                     return;
                                 }
                                 BmobRelation posts = new BmobRelation();
@@ -243,10 +257,14 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                                     @Override
                                     public void onSuccess() {
                                         //更新user表中的数据成功，最终成功
-                                        Toast.makeText(PostActivity.this, "成功添加到用户的posts中", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(PostActivity.this, "发布成功！", Toast.LENGTH_LONG).show();
                                         Log.e(TAG, "成功添加到用户的posts中");
+                                        adapter.clearAll();
+                                        content.setText("");
                                         PostActivity.this.finish();
-                                        PostActivity.this.finish();
+                                        Intent intent = new Intent(PostActivity.this, MainActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        PostActivity.this.startActivity(intent);
                                     }
 
                                     @Override
@@ -271,8 +289,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
                 @Override
                 public void onError(int i, String s) {
-                    Log.e(TAG, "上传图片失败" + s + i);
-                    Toast.makeText(PostActivity.this, s, Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "上传图片失败，请检查网络连接" + s + i);
+                    Toast.makeText(PostActivity.this, "上传图片失败，请检查网络连接", Toast.LENGTH_LONG).show();
                 }
             });
         } else {
@@ -283,8 +301,10 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
     private void showPostView() {
         View view = LayoutInflater.from(this).inflate(R.layout.toast_view, null);
+        TextView message = (TextView) view.findViewById(R.id.message);
+        message.setText("亲，添加一张照片会使您的惠报增分不少哦～");
         Toast toast = new Toast(this);
-        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setDuration(Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.setView(view);
         toast.show();
@@ -417,6 +437,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         private LayoutInflater inflater;
         private int selectedPosition = -1;
         private boolean shape;
+        ViewHolder holder = null;
+
 
         public boolean isShape() {
             return shape;
@@ -428,6 +450,12 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
         public GridAdapter(Context context) {
             inflater = LayoutInflater.from(context);
+        }
+
+
+        public void clearAll() {
+            holder = null;
+            Bimp.tempSelectBitmap.clear();
         }
 
         public void update() {
@@ -458,7 +486,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.item_published_grida,
                         parent, false);
@@ -546,10 +573,12 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
      * 初始化时间控件
      */
     private void initTimeSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.time_array));
+        time.setAdapter(adapter);
         time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(PostActivity.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "parent.getItemAtPosition(position).toString()");
             }
 
             @Override
@@ -563,6 +592,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         back.setOnClickListener(this);
         ok.setOnClickListener(this);
         dingwei.setOnClickListener(this);
+
+        frameLayout.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
 
         content.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -744,7 +775,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
         public void onItemSelected(AdapterView<?> adapterView, View view, int position,
                                    long id) {
             district = ((MyListItem) adapterView.getItemAtPosition(position)).getName();
-            Toast.makeText(PostActivity.this, province + " " + city + " " + district, Toast.LENGTH_LONG).show();
+            Log.d(TAG, province + " " + city + " " + district);
         }
 
         public void onNothingSelected(AdapterView<?> adapterView) {
@@ -783,6 +814,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                 updateIcons();
                 break;
             case R.id.iv_post_dingwei:
+                Log.d(TAG, "dingwei");
                 if (NetUtil.isNetConnected(this)) {
                     position1.setOnItemSelectedListener(this);
                     position2.setOnItemSelectedListener(this);
@@ -804,41 +836,6 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
 
         }
     }
-
-    private void showPicturePicker(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("图片来源");
-        builder.setNegativeButton("取消", null);
-        builder.setItems(new String[]{"拍照", "相册"}, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case TAKE_PICTURE:
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                        String imageFileName = "JPEG_" + timeStamp + "_";
-                        setFilename(imageFileName);
-                        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        Uri imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), getFilename()));
-                        //指定照片保存路径（SD卡），image.jpg为一个临时文件，每次拍照后这个图片都会被替换
-                        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                        startActivityForResult(openCameraIntent, TAKE_PICTURE);
-                        break;
-
-                    case CHOOSE_PICTURE:
-                        Intent openAlbumIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                        openAlbumIntent.setType("image/*");
-                        startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        });
-        builder.create().show();
-    }
-
 
     /**
      * 选取图片的两种方式得到的图片的显示

@@ -1,20 +1,41 @@
 package com.example.fei.yhb_20.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.utils.GV;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class MerchantSucc extends ActionBarActivity {
+
+    @InjectView(R.id.merchant_succ)
+    LinearLayout merchantSucc;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_merchant_succ);
+        ButterKnife.inject(this);
+        merchantSucc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MerchantSucc.this, MainActivity.class);
+                intent.putExtra("role", GV.PERSON);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -15,14 +15,14 @@ import com.example.fei.yhb_20.utils.GV;
 /**
  * 用户首次使用app的时候，进入的注册页面
  */
-public class FirstActivity extends ActionBarActivity implements View.OnClickListener{
+public class FirstActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private Button person_regist,merchant_regist;
+    private Button person_regist, merchant_regist;
     private TextView login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.push_left_out, R.anim.push_left_in);
+//        overridePendingTransition(R.anim.push_left_out, R.anim.push_left_in);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
         initViews();
@@ -66,23 +66,23 @@ public class FirstActivity extends ActionBarActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bt_first_merchant:
-                Intent merchantintent = new Intent(this,RegistActivity.class);
-                merchantintent.putExtra("role",GV.MERCHANT);
+                Intent merchantintent = new Intent(this, RegistActivity.class);
+                merchantintent.putExtra("role", GV.MERCHANT);
                 startActivity(merchantintent);
                 finish();
 //                overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
                 break;
             case R.id.bt_first_person:
-                Intent person = new Intent(this,RegistActivity.class);
+                Intent person = new Intent(this, RegistActivity.class);
                 person.putExtra("role", GV.PERSON);
                 startActivity(person);
                 finish();
 //                overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
                 break;
             case R.id.tv_first_login:
-                Intent intent = new Intent(this,LoginActivity.class);
+                Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
                 break;

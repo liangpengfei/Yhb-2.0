@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/container"
     tools:context="com.example.fei.yhb_10.ui.PostActivity">
 
     <LinearLayout
@@ -124,8 +125,10 @@
                 <EditText
                     android:textColorHint="#999999"
                     android:id="@+id/et_post_merchantName"
-                    android:layout_marginLeft="20dp"
                     android:background="@null"
+
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
                     android:hint="实例：徐胖烤猪蹄"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -145,6 +148,7 @@
                     android:text="商家位置:" />
 
                 <LinearLayout
+                    android:paddingLeft="18dp"
                     android:weightSum="3"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -196,8 +200,9 @@
                     android:text="活动时间:" />
 
                 <Spinner
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginStart="16dp"
                     android:spinnerMode="dialog"
-                    android:entries="@array/time_array"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/time" />

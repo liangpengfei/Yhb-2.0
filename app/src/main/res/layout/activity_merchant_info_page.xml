@@ -65,7 +65,7 @@
         <com.fenjuly.combinationimageview.CombinationImageView
             android:id="@+id/combinationImage"
             android:paddingRight="10dp"
-            app:first_image_src="@drawable/ic_launcher"
+            app:first_image_src="@drawable/logo"
             android:layout_toLeftOf="@+id/arraw1"
             android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"

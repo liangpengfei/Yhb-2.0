@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Yhb-2.0</string>
+    <string name="app_name">有惠报</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
@@ -54,5 +54,7 @@
     <string name="title_activity_my_collections">我的收藏</string>
     <string name="drawer_open">我的</string>
     <string name="drawer_close">close</string>
+    <string name="title_activity_message_page">您的信息</string>
+    <string name="title_activity_merchant_search_page">商场</string>
 
 </resources>

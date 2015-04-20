@@ -1,6 +1,7 @@
 package com.example.fei.yhb_20.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -59,16 +60,18 @@ public class MyAdapter extends BaseAdapter {
             params.setMargins(1, 1, 1, 1);
 
             TextView name = new TextView(context);
+            name.setTextSize(15);
             name.setText(myListItem.getName());
+            name.setTextColor(Color.parseColor("#808080"));
             addView(name, params);
 
-            LayoutParams params2 = new LayoutParams(200, LayoutParams.WRAP_CONTENT);
-            params2.setMargins(1, 1, 1, 1);
-
-            TextView pcode = new TextView(context);
-            pcode.setText(myListItem.getPcode());
-            addView(pcode, params2);
-            pcode.setVisibility(GONE);
+//            LayoutParams params2 = new LayoutParams(200, LayoutParams.WRAP_CONTENT);
+//            params2.setMargins(1, 1, 1, 1);
+//
+//            TextView pcode = new TextView(context);
+//            pcode.setText(myListItem.getPcode());
+//            addView(pcode, params2);
+//            pcode.setVisibility(GONE);
         }
 
     }

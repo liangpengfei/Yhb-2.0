@@ -36,22 +36,31 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 import cn.bmob.v3.listener.UpdateListener;
 
-public class PersonalActivity extends ActionBarActivity implements View.OnClickListener,PullScrollView.OnTurnListener{
+public class PersonalActivity extends ActionBarActivity implements View.OnClickListener, PullScrollView.OnTurnListener {
 
     private static final String TAG = "PersonalActivity";
-    @InjectView(R.id.user_name)TextView name;
-    @InjectView(R.id.user_follow)TextView followerNumber;  //粉丝
-    @InjectView(R.id.user_following)TextView followingNumber;  //关注
-    @InjectView(R.id.user_avatar)ImageView avatar;
-    @InjectView(R.id.user_des)TextView des;
-    @InjectView(R.id.attention_user)TextView follow;
-    @InjectView(R.id.user_message)TextView message;
-    @InjectView(R.id.background_img)ImageView background_img;
-    @InjectView(R.id.scroll_view)PullScrollView mScrollView;
+    @InjectView(R.id.user_name)
+    TextView name;
+    @InjectView(R.id.user_follow)
+    TextView followerNumber;  //粉丝
+    @InjectView(R.id.user_following)
+    TextView followingNumber;  //关注
+    @InjectView(R.id.user_avatar)
+    ImageView avatar;
+    @InjectView(R.id.user_des)
+    TextView des;
+    @InjectView(R.id.attention_user)
+    TextView follow;
+    @InjectView(R.id.user_message)
+    TextView message;
+    @InjectView(R.id.background_img)
+    ImageView background_img;
+    @InjectView(R.id.scroll_view)
+    PullScrollView mScrollView;
     @InjectView(R.id.rv_collections)
     RecyclerView recyclerView;
 
-    private  BaseUser user;
+    private BaseUser user;
 
     LinearLayoutManager layoutManager;
 
@@ -80,42 +89,26 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
             }
             refreshAvatar();
 
-//            //查询这个user发布过的所有的惠报
-//            BmobQuery<Post> query = new BmobQuery<>();
-//            query.order("-updatedAt");
-//            query.addWhereEqualTo("user",user);
-//            query.findObjects(this,new FindListener<Post>() {
-//                @Override
-//                public void onSuccess(List<Post> posts) {
-//                    Log.e(TAG,posts.toString());
-//                }
-//
-//                @Override
-//                public void onError(int i, String s) {
-//                    Log.e(TAG,s+i);
-//                }
-//            });
-
             BmobQuery<OtherInfo> queryOtherInfo = new BmobQuery<>();
-            String [] followerIds = {user.getObjectId()};
+            String[] followerIds = {user.getObjectId()};
             queryOtherInfo.addWhereContainedIn("userId", Arrays.asList(followerIds));
-            queryOtherInfo.findObjects(this,new FindListener<OtherInfo>() {
+            queryOtherInfo.findObjects(this, new FindListener<OtherInfo>() {
                 @Override
                 public void onSuccess(List<OtherInfo> otherInfos) {
-                    Toast.makeText(PersonalActivity.this,"查询粉丝成功",Toast.LENGTH_LONG).show();
-                    if (otherInfos!=null){
-                        if (otherInfos.get(0).getFollowerIds()!=null){
-                            followerNumber.setText("粉丝:"+otherInfos.get(0).getFollowerIds().size());
+                    Toast.makeText(PersonalActivity.this, "查询粉丝成功", Toast.LENGTH_LONG).show();
+                    if (otherInfos != null) {
+                        if (otherInfos.get(0).getFollowerIds() != null) {
+                            followerNumber.setText("粉丝:" + otherInfos.get(0).getFollowerIds().size());
                         }
-                        if (otherInfos.get(0).getFollowingIds()!=null){
-                            followingNumber.setText("关注:"+otherInfos.get(0).getFollowingIds().size());
+                        if (otherInfos.get(0).getFollowingIds() != null) {
+                            followingNumber.setText("关注:" + otherInfos.get(0).getFollowingIds().size());
                         }
                     }
                 }
 
                 @Override
                 public void onError(int i, String s) {
-                    Toast.makeText(PersonalActivity.this,"查询粉丝失败",Toast.LENGTH_LONG).show();
+                    Toast.makeText(PersonalActivity.this, "查询粉丝失败", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -148,14 +141,14 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
 
     }
 
-    private void refreshAvatar(){
+    private void refreshAvatar() {
         BmobQuery<Merchant> query = new BmobQuery<Merchant>();
-        query.getObject(this,user.getObjectId(),new GetListener<Merchant>() {
+        query.getObject(this, user.getObjectId(), new GetListener<Merchant>() {
             @Override
             public void onSuccess(Merchant merchant) {
-                if (merchant.getAvatarPaht()!=null){
+                if (merchant.getAvatarPaht() != null) {
                     Picasso.with(PersonalActivity.this).load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(avatar);
-                }else{
+                } else {
                 }
             }
 
@@ -198,12 +191,12 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.user_avatar:
                 //点击图像会放大
                 break;
             case R.id.attention_user:
-                BaseUser baseUser = BmobUser.getCurrentUser(PersonalActivity.this,BaseUser.class);
+                BaseUser baseUser = BmobUser.getCurrentUser(PersonalActivity.this, BaseUser.class);
 
                 /**
                  * 分别获得id
@@ -211,48 +204,48 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
                 final String currentObjectId = baseUser.getObjectId();
                 final String otherId = user.getObjectId();
 
-                if (otherId.equals(currentObjectId)){
-                    Toast.makeText(PersonalActivity.this,"您不能关注自己哦",Toast.LENGTH_LONG).show();
-                }else
-                {
+                if (otherId.equals(currentObjectId)) {
+                    Toast.makeText(PersonalActivity.this, "您不能关注自己哦", Toast.LENGTH_LONG).show();
+                } else {
                     /**
                      * 向对方的otherInfo中加入关注信息
                      */
                     BmobQuery<OtherInfo> query = new BmobQuery<>();
-                    query.addWhereContainedIn("userId",Arrays.asList(otherId));
-                    query.findObjects(PersonalActivity.this,new FindListener<OtherInfo>() {
+                    query.addWhereContainedIn("userId", Arrays.asList(otherId));
+                    query.findObjects(PersonalActivity.this, new FindListener<OtherInfo>() {
                         @Override
                         public void onSuccess(List<OtherInfo> otherInfos) {
                             OtherInfo otherInfo = otherInfos.get(0);
                             ArrayList<String> followerIds;
-                            if (otherInfo.getFollowerIds()!=null){
+                            if (otherInfo.getFollowerIds() != null) {
                                 followerIds = otherInfo.getFollowerIds();
-                            }else{
+                            } else {
                                 followerIds = new ArrayList<String>();
                             }
-                            if (otherInfos.get(0).getFollowerIds().contains(currentObjectId)){
-                                Toast.makeText(PersonalActivity.this,"已关注",Toast.LENGTH_LONG).show();
+                            if (otherInfos.get(0).getFollowerIds().contains(currentObjectId)) {
+                                Toast.makeText(PersonalActivity.this, "已关注", Toast.LENGTH_LONG).show();
                                 return;
                             }
                             followerIds.add(currentObjectId);
                             final int currentFollower = followerIds.size();
                             otherInfo.setFollowerIds(followerIds);
-                            otherInfo.update(PersonalActivity.this,new UpdateListener() {
+                            otherInfo.update(PersonalActivity.this, new UpdateListener() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(PersonalActivity.this,"关注成功",Toast.LENGTH_LONG).show();
-                                    followerNumber.setText("粉丝:"+currentFollower);
+                                    Toast.makeText(PersonalActivity.this, "关注成功", Toast.LENGTH_LONG).show();
+                                    followerNumber.setText("粉丝:" + currentFollower);
                                 }
 
                                 @Override
                                 public void onFailure(int i, String s) {
-                                    Toast.makeText(PersonalActivity.this,"关注成功失败",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(PersonalActivity.this, "关注成功失败", Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
+
                         @Override
                         public void onError(int i, String s) {
-                            Log.e(TAG,"粉丝显示失败");
+                            Log.e(TAG, "粉丝显示失败");
                         }
                     });
 
@@ -260,40 +253,41 @@ public class PersonalActivity extends ActionBarActivity implements View.OnClickL
                      * 向我的otherInfo中加入我关注的人
                      */
                     BmobQuery<OtherInfo> queryMyInfo = new BmobQuery<>();
-                    queryMyInfo.addWhereContainedIn("userId",Arrays.asList(currentObjectId));
-                    queryMyInfo.findObjects(PersonalActivity.this,new FindListener<OtherInfo>() {
+                    queryMyInfo.addWhereContainedIn("userId", Arrays.asList(currentObjectId));
+                    queryMyInfo.findObjects(PersonalActivity.this, new FindListener<OtherInfo>() {
                         @Override
                         public void onSuccess(List<OtherInfo> otherInfos) {
                             //这个otherInfo是当期用户的
                             OtherInfo otherInfo = otherInfos.get(0);
                             ArrayList<String> followingIds;
-                            if (otherInfo.getFollowingIds()!=null){
+                            if (otherInfo.getFollowingIds() != null) {
                                 followingIds = otherInfo.getFollowingIds();
-                            }else{
+                            } else {
                                 followingIds = new ArrayList<String>();
                             }
-                            if (otherInfos.get(0).getFollowingIds().contains(otherId)){
-                                Toast.makeText(PersonalActivity.this,"已关注此人",Toast.LENGTH_LONG).show();
+                            if (otherInfos.get(0).getFollowingIds().contains(otherId)) {
+                                Toast.makeText(PersonalActivity.this, "已关注此人", Toast.LENGTH_LONG).show();
                                 return;
                             }
                             followingIds.add(otherId);
                             final int currentFollowing = followingIds.size();
                             otherInfo.setFollowingIds(followingIds);
-                            otherInfo.update(PersonalActivity.this,new UpdateListener() {
+                            otherInfo.update(PersonalActivity.this, new UpdateListener() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(PersonalActivity.this,"关注成功",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(PersonalActivity.this, "关注成功", Toast.LENGTH_LONG).show();
                                 }
 
                                 @Override
                                 public void onFailure(int i, String s) {
-                                    Toast.makeText(PersonalActivity.this,"关注成功失败",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(PersonalActivity.this, "关注成功失败", Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
+
                         @Override
                         public void onError(int i, String s) {
-                            Log.e(TAG,"粉丝显示失败");
+                            Log.e(TAG, "粉丝显示失败");
                         }
                     });
                 }

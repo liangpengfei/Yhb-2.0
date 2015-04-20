@@ -154,6 +154,7 @@
                     </RelativeLayout>
 
                     <TextView
+                        android:visibility="gone"
                         android:layout_marginBottom="5dp"
                         android:paddingLeft="20dp"
                         android:id="@+id/location"
@@ -162,6 +163,7 @@
                         android:text="商户地点：" />
 
                     <TextView
+                        android:visibility="gone"
                         android:layout_marginBottom="5dp"
                         android:paddingLeft="20dp"
                         android:id="@+id/merchantPhone"

@@ -232,10 +232,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         int[] drawables;
         if (user.getAttribute() == GV.MERCHANT) {
             Stringdata = new String[]{"商户信息", "待完善惠报", "我的收藏", "我的消息", "草稿箱", "反馈意见"};
-            drawables = new int[]{R.drawable.slide_merchant_info, R.drawable.slide_need_to_complete, R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft, R.drawable.ic_launcher};
+            drawables = new int[]{R.drawable.slide_merchant_info, R.drawable.slide_need_to_complete, R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft, R.drawable.feedback};
         } else {
             Stringdata = new String[]{"我的收藏", "我的消息", "草稿箱", "反馈意见"};
-            drawables = new int[]{R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft, R.drawable.ic_launcher};
+            drawables = new int[]{R.drawable.slide_collection, R.drawable.slide_message, R.drawable.slide_draft, R.drawable.feedback};
         }
         list.setAdapter(new SlideAdapter(Stringdata, drawables, this));
 
@@ -620,6 +620,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.system_setting:
                 //在这里应该是系统的设置界面，而不是个人信息的设置界面
+                break;
+            case R.id.iv_main_message:
+                Intent infoIntent = new Intent(MainActivity.this, MessagePage.class);
+                startActivity(infoIntent);
                 break;
             case R.id.user_photo:
                 //得到大图

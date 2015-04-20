@@ -3,15 +3,14 @@ package com.example.fei.yhb_20.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
-import com.marshalchen.common.uimodule.cropimage.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,32 +23,31 @@ import ru.truba.touchgallery.GalleryWidget.UrlPagerAdapter;
 public class GalleryUrlActivity extends ActionBarActivity {
     private static final String TAG = "GalleryUrlActivity";
     private GalleryViewPager mViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_url);
         Intent intent = getIntent();
-        if (intent!=null){
+        if (intent != null) {
             List<String> items = new ArrayList<String>();
-            Collections.addAll(items,intent.getStringArrayExtra("photoUrls"));
-            UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(this, items,intent.getIntExtra("currentItem",0));
+            Collections.addAll(items, intent.getStringArrayExtra("photoUrls"));
+            UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(this, items, intent.getIntExtra("currentItem", 0));
 
-            pagerAdapter.setOnItemChangeListener(new BasePagerAdapter.OnItemChangeListener()
-            {
+            pagerAdapter.setOnItemChangeListener(new BasePagerAdapter.OnItemChangeListener() {
                 @Override
-                public void onItemChange(int currentPosition)
-                {
-                    Toast.makeText(GalleryUrlActivity.this, "Current item is " + currentPosition, Toast.LENGTH_SHORT).show();
+                public void onItemChange(int currentPosition) {
+                    Log.d(TAG, "Current item is " + currentPosition);
                 }
             });
 
-            mViewPager = (GalleryViewPager)findViewById(R.id.viewer);
+            mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
             mViewPager.setOffscreenPageLimit(3);
             mViewPager.setAdapter(pagerAdapter);
             mViewPager.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e(TAG,"mViewPager is clicked");
+                    Log.e(TAG, "mViewPager is clicked");
                     GalleryUrlActivity.this.finish();
                 }
             });
@@ -57,7 +55,7 @@ public class GalleryUrlActivity extends ActionBarActivity {
             viewer_ll.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    Log.e(TAG,"viewerContainer is touched");
+                    Log.e(TAG, "viewerContainer is touched");
                     GalleryUrlActivity.this.finish();
                     return true;
                 }
@@ -65,7 +63,7 @@ public class GalleryUrlActivity extends ActionBarActivity {
             viewer_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e(TAG,"viewerContainer is clicked");
+                    Log.e(TAG, "viewerContainer is clicked");
                     GalleryUrlActivity.this.finish();
                 }
             });

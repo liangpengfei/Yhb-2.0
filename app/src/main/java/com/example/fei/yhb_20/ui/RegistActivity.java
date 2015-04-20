@@ -142,7 +142,7 @@ public class RegistActivity extends ActionBarActivity implements View.OnClickLis
                                             @Override
                                             public void onSuccess() {
                                                 Toast.makeText(RegistActivity.this, "关注成功", Toast.LENGTH_LONG).show();
-                                                Intent intent = new Intent(RegistActivity.this, MainActivity.class);
+                                                Intent intent = new Intent(RegistActivity.this, MerchantSucc.class);
                                                 intent.putExtra("role", GV.PERSON);
                                                 startActivity(intent);
                                                 finish();

@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.bean.Comment;
 import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.Merchant;
 import com.example.fei.yhb_20.bean.Post;
@@ -40,13 +41,13 @@ import com.squareup.picasso.Picasso;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 
@@ -91,6 +92,9 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     private EditText edComment;
     private RelativeLayout frameLayout;
     private LinearLayout llFoot;
+    private commentAdapter adapter;
+
+    private View header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +152,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
      * @param post
      */
     private void deliverPost(Post post) {
-        View header = LayoutInflater.from(this).inflate(R.layout.header, null);
+        header = LayoutInflater.from(this).inflate(R.layout.header, null);
         ButterKnife.inject(this, header);
 
         final String paths[] = post.getPaths().split("\\|");
@@ -186,7 +190,6 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         numberFooter = post.getNumberFooter();
         like.setText(String.valueOf(numberFooter.get(LIKE)));
         dislike.setText(String.valueOf(numberFooter.get(DISLIKE)));
-        comment.setText(String.valueOf(numberFooter.get(COMMENT)));
         ratingBar.setRating(post.getRating());
         lastTime.setText("活动时间:" + post.getActivityTiem());
         if (footerBoolean != null) {
@@ -200,7 +203,7 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         for (int i1 = 0; i1 < paths.length; i1++) {
             final ImageView imageView;
             imageView = new ImageView(this);
-            picasso.load(paths[i1]).placeholder(R.drawable.ic_launcher).resize(300, 300).into(imageView);
+            picasso.load(paths[i1]).placeholder(R.drawable.logo).resize(300, 300).into(imageView);
             imageView.setPadding(2, 2, 2, 2);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -216,17 +219,40 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         /**
          * 处理一下多余的数据
          */
-        ArrayList<CommentItem> data = post.getCommentItems();
+        final ArrayList<CommentItem> data = post.getCommentItems();
 
 
         data.add(0, new CommentItem());
         listView = (ListView) findViewById(R.id.comment_list);
-        listView.setAdapter(new commentAdapter(this, data, header));
+
+        //查询post的所有的评论
+        reGetComment();
+
         refreshAvatar(post);
         send.setEnabled(false);
     }
 
-    private void refreshAvatar(Post post){
+    private void reGetComment() {
+        BmobQuery<Comment> commentsQuery = new BmobQuery<>();
+        commentsQuery.addWhereRelatedTo("comment", new BmobPointer(post));
+        commentsQuery.findObjects(this, new FindListener<Comment>() {
+            @Override
+            public void onSuccess(List<Comment> comments) {
+                //得到了所有的comments的列表
+
+                comment.setText(String.valueOf(comments.size()));
+                adapter = new commentAdapter(DeatilActivity.this, comments, header);
+                listView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.d(TAG, s + i);
+            }
+        });
+    }
+
+    public void refreshAvatar(Post post) {
         BmobQuery<Merchant> query = new BmobQuery<Merchant>();
         query.getObject(this,post.getUser().getObjectId(),new GetListener<Merchant>() {
             @Override
@@ -248,17 +274,19 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
     class commentAdapter extends BaseAdapter{
 
         private Context context;
-        private ArrayList<CommentItem> commentItems;
+        private List<Comment> commentItems;
         private View header;
 
-        public commentAdapter(Context context,ArrayList<CommentItem> commentItems,View header){
+        public commentAdapter(Context context, List<Comment> commentItems, View header) {
             this.context = context;
-            ArrayList<CommentItem> realists = new ArrayList<>();
-            for (int i = commentItems.size()-1;i>commentItems.size()/2-1;i--){
-                realists.add(commentItems.get(i));
-            }
-            this.commentItems = realists;
+            commentItems.add(0, new Comment());
+            this.commentItems = commentItems;
             this.header = header;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return super.getViewTypeCount();
         }
 
         @Override
@@ -282,19 +310,21 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                 return header;
             }else{
                 convertView = LayoutInflater.from(context).inflate(R.layout.comment_item,null);
+
                 final ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
                 TextView comment = (TextView) convertView.findViewById(R.id.comment);
                 TextView time = (TextView) convertView.findViewById(R.id.tv_time);
 
-                if (commentItems.get(position).getComment() == null || commentItems.get(position).getComment().equals("")){
-                    comment.setText("");
-                }else{
-                    String zhengze = "f0[0-9]{2}|f10[0-7]";
-                    SpannableString spannableString = ExpressionUtil.getExpressionString(context, commentItems.get(position).getComment(), zhengze);
-                    comment.setText(spannableString);
-                }
+                String zhengze = "f0[0-9]{2}|f10[0-7]";
+                SpannableString spannableString = ExpressionUtil.getExpressionString(context, commentItems.get(position).getContent(), zhengze);
+                comment.setText(spannableString);
 
                 TextView name = (TextView) convertView.findViewById(R.id.comment_username);
+                name.setText(commentItems.get(position).getUserName());
+
+
+                time.setText(commentItems.get(position).getCreatedAt().substring(5));
+
                 ImageView reply = (ImageView) convertView.findViewById(R.id.reply);
                 reply.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -325,35 +355,152 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
                         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
                     }
                 });
-                //在这里设置
-                name.setText(commentItems.get(position).getName());
-                time.setText(commentItems.get(position).getCreatedAt());
 
-                if (commentItems.get(position).getObjectId()!=null){
-                    BmobQuery<Merchant> query = new BmobQuery<Merchant>();
-                    query.addQueryKeys("avatarPaht");
-                    String []ids = {commentItems.get(position).getObjectId()};
-                    query.addWhereContainedIn("objectId", Arrays.asList(ids));
-                    query.findObjects(DeatilActivity.this, new FindListener<Merchant>() {
-                        @Override
-                        public void onSuccess(List<Merchant> merchants) {
-                            if (merchants.get(0).getAvatarPaht()!=null){
-                                Log.e(TAG,merchants.get(0).getAvatarPaht());
-                                picasso.load(merchants.get(0).getAvatarPaht()).placeholder(R.drawable.ic_launcher).resize(45,45).into(avatar);
-                            }
-                        }
+                BmobQuery<Merchant> query = new BmobQuery<Merchant>();
 
-                        @Override
-                        public void onError(int i, String s) {
-                            Log.e(TAG,s + i);
-                        }
-                    });
-                }
+                query.getObject(DeatilActivity.this, commentItems.get(position).getUserId(), new GetListener<Merchant>() {
+                    @Override
+                    public void onSuccess(Merchant merchant) {
+                        picasso.load(merchant.getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).resize(45, 45).into(avatar);
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+                        Log.e(TAG, s + i);
+
+                    }
+                });
+
+//                query.addWhereContainedIn("objectId", Arrays.asList(ids));
+//                query.findObjects(DeatilActivity.this, new FindListener<Merchant>() {
+//                    @Override
+//                    public void onSuccess(List<Merchant> merchants) {
+//                        if (merchants.get(0).getAvatarPaht()!=null){
+//                            Log.e(TAG,merchants.get(0).getAvatarPaht());
+//                            picasso.load(merchants.get(0).getAvatarPaht()).placeholder(R.drawable.ic_launcher).resize(45,45).into(avatar);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(int i, String s) {
+//                    }
+//                });
+
                 return convertView;
             }
 
         }
     }
+
+//    class commentAdapter extends BaseAdapter{
+//
+//        private Context context;
+//        private ArrayList<CommentItem> commentItems;
+//        private View header;
+//
+//        public commentAdapter(Context context,ArrayList<CommentItem> commentItems,View header){
+//            this.context = context;
+//            ArrayList<CommentItem> realists = new ArrayList<>();
+//            for (int i = commentItems.size()-1;i>commentItems.size()/2-1;i--){
+//                realists.add(commentItems.get(i));
+//            }
+//            this.commentItems = realists;
+//            this.header = header;
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return commentItems.size();
+//        }
+//
+//        @Override
+//        public Object getItem(int position) {
+//            return commentItems.get(position);
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return position;
+//        }
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//            if (position==0){
+//                return header;
+//            }else{
+//                convertView = LayoutInflater.from(context).inflate(R.layout.comment_item,null);
+//                final ImageView avatar = (ImageView) convertView.findViewById(R.id.comment_avatar);
+//                TextView comment = (TextView) convertView.findViewById(R.id.comment);
+//                TextView time = (TextView) convertView.findViewById(R.id.tv_time);
+//
+//                if (commentItems.get(position).getComment() == null || commentItems.get(position).getComment().equals("")){
+//                    comment.setText("");
+//                }else{
+//                    String zhengze = "f0[0-9]{2}|f10[0-7]";
+//                    SpannableString spannableString = ExpressionUtil.getExpressionString(context, commentItems.get(position).getComment(), zhengze);
+//                    comment.setText(spannableString);
+//                }
+//
+//                TextView name = (TextView) convertView.findViewById(R.id.comment_username);
+//                ImageView reply = (ImageView) convertView.findViewById(R.id.reply);
+//                reply.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        edComment.requestFocus();
+//                        edComment.addTextChangedListener(new TextWatcher() {
+//                            @Override
+//                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                                Log.e(TAG,"before"+s);
+//                            }
+//                            @Override
+//                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                                Log.e(TAG,"onTextChanged"+s);
+//                                if (TextUtils.isEmpty(s)) {
+//                                    send.setEnabled(false);
+//                                }else{
+//                                    send.setEnabled(true);
+//                                }
+//                            }
+//                            @Override
+//                            public void afterTextChanged(Editable s) {
+//                                Log.e(TAG,"after");
+//                            }
+//                        });
+//
+//                        //强制显示键盘
+//                        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+//                    }
+//                });
+//                //在这里设置
+//                name.setText(commentItems.get(position).getName());
+//                time.setText(commentItems.get(position).getCreatedAt());
+//
+//                if (commentItems.get(position).getObjectId()!=null){
+//                    BmobQuery<Merchant> query = new BmobQuery<Merchant>();
+//                    query.addQueryKeys("avatarPaht");
+//                    String []ids = {commentItems.get(position).getObjectId()};
+//                    query.addWhereContainedIn("objectId", Arrays.asList(ids));
+//                    query.findObjects(DeatilActivity.this, new FindListener<Merchant>() {
+//                        @Override
+//                        public void onSuccess(List<Merchant> merchants) {
+//                            if (merchants.get(0).getAvatarPaht()!=null){
+//                                Log.e(TAG,merchants.get(0).getAvatarPaht());
+//                                picasso.load(merchants.get(0).getAvatarPaht()).placeholder(R.drawable.ic_launcher).resize(45,45).into(avatar);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onError(int i, String s) {
+//                            Log.e(TAG,s + i);
+//                        }
+//                    });
+//                }
+//                return convertView;
+//            }
+//
+//        }
+//    }
 
     private void initEvents() {
         share.setOnClickListener(this);
@@ -443,9 +590,9 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
             case R.id.team_singlechat_id_send:
                 llFoot.setVisibility(View.INVISIBLE);
                 MyUtils.commentSend(post,edComment,this);
+                imm.hideSoftInputFromWindow(edComment.getWindowToken(), 0);
 
                 //强制隐藏
-                imm.hideSoftInputFromWindow(edComment.getWindowToken(),0);
                 edComment.setText(null);
                 break;
             case R.id.team_singlechat_id_expression:

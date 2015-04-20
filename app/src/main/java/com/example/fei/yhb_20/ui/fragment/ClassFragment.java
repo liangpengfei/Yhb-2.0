@@ -1,6 +1,7 @@
 package com.example.fei.yhb_20.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,15 +14,16 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.ui.MerchantSearchPage;
 
 
 public class ClassFragment extends Fragment {
     private static final String TAG = "ClassFragment";
-    private GridView class0,class1,class2,class3;
+    private GridView class0, class1, class2, class3;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_class, container, false);
         class0 = (GridView) view.findViewById(R.id.gv_class_0);
         class1 = (GridView) view.findViewById(R.id.gv_class_1);
@@ -33,7 +35,7 @@ public class ClassFragment extends Fragment {
         String[] strings2 = {"全部", "电影院", "KTV", "美容", "摄影写真", "酒吧"};
         String[] strings3 = {"专卖店", "商场", "家电", "家居", "超市", "生鲜"};
 
-        class0.setAdapter(new GridViewAdapter(strings0,getActivity()));
+        class0.setAdapter(new GridViewAdapter(strings0, getActivity()));
         class1.setAdapter(new GridViewAdapter(strings1, getActivity()));
         class2.setAdapter(new GridViewAdapter(strings2, getActivity()));
         class3.setAdapter(new GridViewAdapter(strings3, getActivity()));
@@ -47,39 +49,43 @@ public class ClassFragment extends Fragment {
         class0.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
+                startActivity(intent);
             }
         });
         class1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
+                startActivity(intent);
             }
         });
         class2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
+                startActivity(intent);
             }
         });
         class3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
+                startActivity(intent);
             }
         });
 
     }
 
 
-    class GridViewAdapter extends BaseAdapter{
+    class GridViewAdapter extends BaseAdapter {
 
-        private String [] stringItems;
+        private String[] stringItems;
         private Context context;
 
-        public GridViewAdapter (String [] stringItems,Context context){
+        public GridViewAdapter(String[] stringItems, Context context) {
             this.stringItems = stringItems;
-            this.context= context;
+            this.context = context;
         }
 
         @Override
@@ -99,7 +105,7 @@ public class ClassFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.grid_class_item,null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.grid_class_item, null);
             TextView textView = (TextView) convertView.findViewById(R.id.text);
             textView.setText(stringItems[position]);
             return convertView;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobRelation;
 
 /**
  * Email luckyliangfei@gmail.com
@@ -17,6 +18,7 @@ public class Post extends BmobObject implements Serializable {
     private ArrayList<Integer> numberFooter;
     private ArrayList<String> thumnailsName;
     private ArrayList<CommentItem> commentItems;
+    private BmobRelation comment;
 
     public String getOwnerId() {
         return ownerId;
@@ -32,6 +34,14 @@ public class Post extends BmobObject implements Serializable {
 
     public void setCommentItems(ArrayList<CommentItem> commentItems) {
         this.commentItems = commentItems;
+    }
+
+    public BmobRelation getComment() {
+        return comment;
+    }
+
+    public void setComment(BmobRelation comment) {
+        this.comment = comment;
     }
 
     public ArrayList<String> getThumnailsName() {

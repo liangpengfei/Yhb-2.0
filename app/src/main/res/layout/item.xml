@@ -3,62 +3,53 @@
     android:orientation="horizontal"
     android:id="@+id/item_container"
     android:layout_width="match_parent"
-    android:weightSum="1"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_weight="0.2"
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:paddingLeft="15dp"
+
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_toRightOf="@+id/iv_post_photo"
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户名" />
+
         <ImageView
-            android:id="@+id/iv_avatar"
+
+            android:id="@+id/iv_post_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_launcher" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="0.8"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/tv_username"
+            android:layout_toRightOf="@+id/iv_post_photo"
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="这是内容" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginRight="10dp"
+            android:id="@+id/tv_time"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间" />
 
-            <TextView
-                android:id="@+id/tv_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="用户名" />
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="时间" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/iv_post_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher" />
-
-            <TextView
-                android:id="@+id/tv_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="这是内容" />
-        </LinearLayout>
-    </LinearLayout>
-
+    </RelativeLayout>
 </LinearLayout>

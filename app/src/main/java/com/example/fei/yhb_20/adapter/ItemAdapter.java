@@ -58,8 +58,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 holder.content.setText(spannableString);
                 holder.time.setText(post.getUpdatedAt().substring(5, 10));
                 final String paths[] = post.getPaths().split("\\|");
-                Picasso.with(context).load(post.getUser().getAvatarPaht()).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(45, 45).into(holder.avatar);
-                Picasso.with(context).load(paths[0]).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(68, 68).into(holder.postPhoto);
+                Picasso.with(context).load(paths[0]).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(80, 80).into(holder.postPhoto);
                 holder.container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -80,7 +79,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView content, username, time;
-        ImageView avatar, postPhoto;
+        ImageView postPhoto;
         LinearLayout container;
 
         public ViewHolder(View itemView) {
@@ -89,7 +88,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             content = (TextView) itemView.findViewById(R.id.tv_content);
             username = (TextView) itemView.findViewById(R.id.tv_username);
             time = (TextView) itemView.findViewById(R.id.tv_time);
-            avatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
             postPhoto = (ImageView) itemView.findViewById(R.id.iv_post_photo);
             container = (LinearLayout) itemView.findViewById(R.id.item_container);
         }

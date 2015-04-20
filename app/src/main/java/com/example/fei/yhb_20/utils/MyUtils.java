@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import com.example.fei.yhb_20.R;
 import com.example.fei.yhb_20.bean.BaseUser;
+import com.example.fei.yhb_20.bean.Comment;
 import com.example.fei.yhb_20.bean.CommentItem;
 import com.example.fei.yhb_20.bean.MyInfo;
 import com.example.fei.yhb_20.bean.Post;
@@ -38,7 +40,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,6 +50,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobRelation;
+import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
@@ -252,7 +255,11 @@ public class MyUtils {
                 spannableString.setSpan(imageSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 //添加成一个字符串
                 editText.append(spannableString);
+
+                Log.d(TAG, "mamamammamammammammamma");
                 builder.dismiss();
+                editText.requestFocus();
+
             }
         });
     }
@@ -377,6 +384,7 @@ public class MyUtils {
         menuDialog.show();
     }
 
+
     /**
      * 发送评论,已经更改问题
      *
@@ -394,47 +402,79 @@ public class MyUtils {
 
                 final ArrayList<CommentItem> commentItems = post.getCommentItems();
                 CommentItem commentItem = new CommentItem();
+                final Comment mComment = new Comment();
 
-                commentItem.setComment(comment.getText().toString());
-                commentItem.setObjectId(BmobUser.getCurrentUser(context).getObjectId());
-                commentItem.setName(post.getUser().getUsername());
+                mComment.setContent(comment.getText().toString());
+                mComment.setUserId(BmobUser.getCurrentUser(context).getObjectId());
+                mComment.setUserName(BmobUser.getCurrentUser(context).getUsername());
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
-
-                //使用calendar是可以直接操纵当前的日期的，很具体，以后可能用到的时候很多的，不过还是不如SimpleDateFormat简单易用
-//                Calendar calendar = Calendar.getInstance();
-//                Log.d(TAG,calendar.get(Calendar.MONTH)+":"+calendar.get(Calendar.DAY_OF_MONTH)+":"+calendar.get(Calendar.HOUR_OF_DAY));
-
-                commentItem.setCreatedAt(simpleDateFormat.format(new Date()));
-                commentItems.add(commentItem);
-                post.setCommentItems(commentItems);
-
-                post.update(context, new UpdateListener() {
+                mComment.save(context, new SaveListener() {
                     @Override
                     public void onSuccess() {
-                        Log.e(TAG, commentItems.toString());
-
-                        numberFooter.set(3, numberFooter.get(3) + 1);
-                        post.setNumberFooter(numberFooter);
+                        //这里先把comment保存了
+                        BmobRelation comments = new BmobRelation();
+                        comments.add(mComment);
+                        post.setComment(comments);
                         post.update(context, new UpdateListener() {
                             @Override
                             public void onSuccess() {
-                                Log.e(TAG, "评论成功，加一");
-                                Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "评论成功！", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "评论成功");
                             }
 
                             @Override
                             public void onFailure(int i, String s) {
-                                Log.e(TAG, "评论失败" + s);
+                                Log.d(TAG, "评论失败");
                             }
                         });
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
-                        Log.e(TAG, "失败评论" + s + i);
+                        Log.d(TAG, s + i);
                     }
                 });
+
+//                commentItem.setComment(comment.getText().toString());
+//                commentItem.setObjectId(BmobUser.getCurrentUser(context).getObjectId());
+//                commentItem.setName(post.getUser().getUsername());
+//
+//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
+//
+//                //使用calendar是可以直接操纵当前的日期的，很具体，以后可能用到的时候很多的，不过还是不如SimpleDateFormat简单易用
+////                Calendar calendar = Calendar.getInstance();
+////                Log.d(TAG,calendar.get(Calendar.MONTH)+":"+calendar.get(Calendar.DAY_OF_MONTH)+":"+calendar.get(Calendar.HOUR_OF_DAY));
+//
+//                commentItem.setCreatedAt(simpleDateFormat.format(new Date()));
+//                commentItems.add(commentItem);
+//                post.setCommentItems(commentItems);
+//
+//                post.update(context, new UpdateListener() {
+//                    @Override
+//                    public void onSuccess() {
+//                        Log.e(TAG, commentItems.toString());
+//
+//                        numberFooter.set(3, numberFooter.get(3) + 1);
+//                        post.setNumberFooter(numberFooter);
+//                        post.update(context, new UpdateListener() {
+//                            @Override
+//                            public void onSuccess() {
+//                                Log.e(TAG, "评论成功，加一");
+//                                Toast.makeText(context, "评论成功", Toast.LENGTH_LONG).show();
+//                            }
+//
+//                            @Override
+//                            public void onFailure(int i, String s) {
+//                                Log.e(TAG, "评论失败" + s);
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int i, String s) {
+//                        Log.e(TAG, "失败评论" + s + i);
+//                    }
+//                });
             } else {
                 Toast.makeText(context, "没有网络链接，请检查网络", Toast.LENGTH_LONG).show();
             }
@@ -557,6 +597,11 @@ public class MyUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static void showSoftKeyPad(Context context) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     /**

@@ -6,12 +6,13 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:layout_gravity="center_vertical"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:layout_weight="0.1"
         android:id="@+id/comment_avatar"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/pull_scroll_view_avatar_default" />
 
     <LinearLayout
@@ -21,22 +22,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/comment_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="name" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/comment_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="name" />
+
+            <TextView
+                android:layout_marginLeft="20dp"
+                android:paddingTop="2dp"
+                android:textSize="9sp"
+                android:text="time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_time" />
+        </LinearLayout>
+
 
         <TextView
             android:paddingTop="2dp"
-            android:textSize="9sp"
-            android:text="time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_time" />
-
-        <TextView
-            android:paddingTop="5dp"
             android:text="comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

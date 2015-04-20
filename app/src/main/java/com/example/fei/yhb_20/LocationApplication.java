@@ -80,21 +80,21 @@ public class LocationApplication extends Application {
         // 在这里得到城市的信息,然后进行查询
         String[] array1 = new String[1];
         array1[0] = province;
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array1);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, R.layout.my_spinner_style, array1);
         position1.setAdapter(adapter1);
-        position1.setSelection(0);
+//        position1.setSelection(0);
 
         String[] array2 = new String[1];
         array2[0] = city;
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array2);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, R.layout.my_spinner_style, array2);
         position2.setAdapter(adapter2);
-        position2.setSelection(0);
+//        position2.setSelection(0);
 
         String[] array3 = new String[1];
         array3[0] = district;
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, array3);
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this, R.layout.my_spinner_style, array3);
         position3.setAdapter(adapter3);
-        position3.setSelection(0);
+//        position3.setSelection(0);
     }
 
 
