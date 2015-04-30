@@ -60,7 +60,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:id="@+id/user_motto"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="签名" />
 
@@ -79,7 +79,7 @@
             android:layout_alignParentRight="true"
             android:layout_above="@+id/gradient"
             android:id="@+id/person_setting"
-            android:paddingLeft="140dp"
+            android:paddingLeft="170dp"
             android:layout_alignBottom="@+id/user_photo"
             android:layout_width="200dp"
             android:layout_height="45dp"

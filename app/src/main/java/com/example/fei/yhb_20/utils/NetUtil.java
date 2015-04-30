@@ -72,8 +72,8 @@ public class NetUtil {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context,"更新失败",Toast.LENGTH_LONG).show();
             }
+
         });
         mQueue.add(jsonObjectRequest);
     }

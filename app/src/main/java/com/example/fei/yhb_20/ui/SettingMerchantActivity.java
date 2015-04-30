@@ -146,11 +146,14 @@ public class SettingMerchantActivity extends FragmentActivity implements View.On
                 } else {
                     mMotto.setText("这个人很懒，什么都没有留下。。。");
                 }
-                if (merchant.getMerchantInfo().isAuthenticated()) {
-                    mCertification.setText("已认证");
-                } else {
-                    mCertification.setText("未认证");
+                if (merchant.getMerchantInfo() != null) {
+                    if (merchant.getMerchantInfo().isAuthenticated()) {
+                        mCertification.setText("已认证");
+                    } else {
+                        mCertification.setText("未认证");
+                    }
                 }
+
                 if (merchant.getMyInfo().getHometown() != null) {
                     Log.d(TAG, "hometown");
                     mHometown.setText(merchant.getMyInfo().getHometown());

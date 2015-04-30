@@ -496,8 +496,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     startActivity(intent);
                 } else {
                     //个人的设置会是怎么样的
-//                    intent = new Intent(MainActivity.this,SettingMerchantActivity.class);
-//                    startActivity(intent);
+                    intent = new Intent(MainActivity.this, SettingMerchantActivity.class);
+                    startActivity(intent);
                 }
                 break;
             case R.id.tv_main_choose_position:
@@ -617,9 +617,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 });
                 menuDialog.show();
 
-                break;
-            case R.id.system_setting:
-                //在这里应该是系统的设置界面，而不是个人信息的设置界面
                 break;
             case R.id.iv_main_message:
                 Intent infoIntent = new Intent(MainActivity.this, MessagePage.class);
