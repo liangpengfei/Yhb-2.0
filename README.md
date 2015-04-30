@@ -3,9 +3,9 @@
 
 
 # 软件运行截图
-- 进入页![](http://i1.tietuku.com/e8169e150c28f56f.png)
-- 首页![](http://i1.tietuku.com/bb21545f059535ad.png)
-- 侧滑栏![](http://i1.tietuku.com/0bb676cb3fc43976.png)
+- 进入页![](http://img.m-team.cc/images/2015/05/01/6f5128ff989fa01d2dd69a7d09070515.png)
+- 首页![](http://img.m-team.cc/images/2015/05/01/c6102775aff2827ea7d8f0de3711ce1f.png)
+- 侧滑栏![](http://img.m-team.cc/images/2015/05/01/ccfef0948deefa3bc2b24b885d53038c.png)
 
 #开发及运行平台
 - Android4.0+
