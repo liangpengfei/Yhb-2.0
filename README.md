@@ -5,7 +5,7 @@
 # 软件运行截图
 - 进入页![](http://i1.tietuku.com/e8169e150c28f56f.png)
 - 首页![](http://i1.tietuku.com/bb21545f059535ad.png)
-- 侧滑栏[](http://i1.tietuku.com/0bb676cb3fc43976.png)
+- 侧滑栏![](http://i1.tietuku.com/0bb676cb3fc43976.png)
 
 #开发及运行平台
 - Android4.0+
