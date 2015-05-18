@@ -58,7 +58,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 holder.content.setText(spannableString);
                 holder.time.setText(post.getUpdatedAt().substring(5, 10));
                 final String paths[] = post.getPaths().split("\\|");
-                Picasso.with(context).load(paths[0]).placeholder(R.drawable.pull_scroll_view_avatar_default).error(R.drawable.pull_scroll_view_avatar_default).resize(80, 80).into(holder.postPhoto);
+                Picasso.with(context).load(paths[0]).placeholder(R.drawable.avatar).error(R.drawable.avatar).resize(48, 48).into(holder.postPhoto);
                 holder.container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

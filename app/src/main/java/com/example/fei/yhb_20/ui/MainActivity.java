@@ -171,7 +171,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         }
         user = BmobUser.getCurrentUser(this, BaseUser.class);
-        avatar.setImageResource(R.drawable.pull_scroll_view_avatar_default);
+        avatar.setImageResource(R.drawable.avatar);
         name.setText(user.getUsername());
         motto.setText(user.getMotto());
 

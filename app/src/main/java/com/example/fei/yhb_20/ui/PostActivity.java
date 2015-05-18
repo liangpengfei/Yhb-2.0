@@ -89,6 +89,8 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
     Spinner time;
     @InjectView(R.id.iv_post_dingwei)
     ImageView dingwei;
+    @InjectView(R.id.detailPos)
+    EditText detailPos;
     @InjectView(R.id.position1)
     Spinner position1;
     @InjectView(R.id.position2)
@@ -222,6 +224,7 @@ public class PostActivity extends ActionBarActivity implements View.OnClickListe
                         post.setDistrict(district);
                         post.setRating(ratingBar.getRating());
                         post.setPaths(stringBuilder.toString());
+                        post.setDetailPos(detailPos.getText().toString());
                         ArrayList<String> arrayList = new ArrayList<String>();
                         Collections.addAll(arrayList, fileNames);
                         post.setThumnailsName(arrayList);

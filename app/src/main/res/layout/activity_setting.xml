@@ -79,7 +79,7 @@
                     android:background="@android:color/white"
                     android:layout_marginLeft="21dp"
                     android:contentDescription="@null"
-                    android:src="@drawable/pull_scroll_view_avatar_default" />
+                    android:src="@drawable/avatar" />
 
                 <TextView
                     android:id="@+id/user_name"

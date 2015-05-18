@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:layout_weight="0.1"
-                    android:src="@drawable/pull_scroll_view_avatar_default"
+                    android:src="@drawable/avatar"
                     android:layout_width="45dp"
                     android:layout_height="51dp"
                     android:id="@+id/iv_main_logo"/>

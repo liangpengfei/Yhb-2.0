@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.fei.yhb_20.R;
+import com.example.fei.yhb_20.ui.ImageFile;
 import com.example.fei.yhb_20.ui.MerchantSearchPage;
 
 
@@ -30,10 +32,10 @@ public class ClassFragment extends Fragment {
         class2 = (GridView) view.findViewById(R.id.gv_class_2);
         class3 = (GridView) view.findViewById(R.id.gv_class_3);
 
-        String[] strings0 = {"IFS", "王府井", "火锅", "万达影城", "肯德基", "日本料理"};
-        String[] strings1 = {"全部", "火锅", "小吃快餐", "川菜", "自助", "面餐"};
-        String[] strings2 = {"全部", "电影院", "KTV", "美容", "摄影写真", "酒吧"};
-        String[] strings3 = {"专卖店", "商场", "家电", "家居", "超市", "生鲜"};
+        String[] strings0 = {"IFS", "王府井", "火锅", "万达影城", "肯德基", "更多"};
+        String[] strings1 = {"全部", "火锅", "小吃快餐", "川菜", "自助", "更多"};
+        String[] strings2 = {"全部", "电影院", "KTV", "美容", "摄影写真", "更多"};
+        String[] strings3 = {"专卖店", "商场", "家电", "家居", "超市", "更多"};
 
         class0.setAdapter(new GridViewAdapter(strings0, getActivity()));
         class1.setAdapter(new GridViewAdapter(strings1, getActivity()));
@@ -49,29 +51,31 @@ public class ClassFragment extends Fragment {
         class0.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
+//                startActivity(intent);
             }
         });
         class1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
+//                startActivity(intent);
             }
         });
         class2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
+//                startActivity(intent);
             }
         });
         class3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
-                startActivity(intent);
+                if(position == 1){
+                    Intent intent = new Intent(getActivity(), MerchantSearchPage.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -107,6 +111,10 @@ public class ClassFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             convertView = LayoutInflater.from(context).inflate(R.layout.grid_class_item, null);
             TextView textView = (TextView) convertView.findViewById(R.id.text);
+            ImageView down_arrow = (ImageView) convertView.findViewById(R.id.class_down_arrow);
+            if (position == 5){
+                down_arrow.setVisibility(View.VISIBLE);
+            }
             textView.setText(stringItems[position]);
             return convertView;
         }

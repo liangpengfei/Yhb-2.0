@@ -78,14 +78,15 @@
                 android:text="添加执照照片"/>
 
             <GridView
+                android:paddingTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/tv_1"
                 android:id="@+id/noScrollgridview"
                 android:layout_width="290dp"
-                android:layout_height="220dp"
+                android:layout_height="160dp"
                 android:horizontalSpacing="3dp"
-                android:numColumns="3"
                 android:scrollbars="none"
+                android:numColumns="3"
                 android:verticalSpacing="5dp" >
             </GridView>
 
@@ -93,7 +94,6 @@
             <TextView
                 android:id="@+id/textview"
                 android:layout_below="@+id/noScrollgridview"
-                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="注册即表示您同意并遵守"/>
@@ -104,13 +104,13 @@
                 android:layout_toRightOf="@+id/textview"
                 android:layout_toEndOf="@+id/textview"
                 android:layout_below="@+id/noScrollgridview"
-                android:paddingTop="20dp"
                 android:id="@+id/tv_mr_protocol"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="用户协议"/>
 
             <com.marshalchen.common.ui.MaterialRippleLayout
+                android:paddingTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/mybutton_border"
@@ -119,8 +119,7 @@
                 app:rippleAlpha="0.2"
                 app:rippleDelayClick="false"
                 app:rippleHover="true"
-                android:layout_marginTop="70dp"
-                android:layout_below="@+id/noScrollgridview">
+                android:layout_below="@+id/tv_mr_protocol">
                 <Button
                     android:layout_gravity="center"
                     android:background="@drawable/material_ripple_selector"

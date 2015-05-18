@@ -27,8 +27,8 @@
         <ImageView
 
             android:id="@+id/iv_post_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_launcher" />
 
         <TextView

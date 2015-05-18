@@ -19,6 +19,7 @@ public class Post extends BmobObject implements Serializable {
     private ArrayList<String> thumnailsName;
     private ArrayList<CommentItem> commentItems;
     private BmobRelation comment;
+    private String detailPos;
 
     public String getOwnerId() {
         return ownerId;
@@ -146,6 +147,13 @@ public class Post extends BmobObject implements Serializable {
         this.district = district;
     }
 
+    public String getDetailPos() {
+        return detailPos;
+    }
+
+    public void setDetailPos(String detailPos) {
+        this.detailPos = detailPos;
+    }
 
     @Override
     public String toString() {

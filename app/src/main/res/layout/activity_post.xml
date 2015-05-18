@@ -126,7 +126,6 @@
                     android:textColorHint="#999999"
                     android:id="@+id/et_post_merchantName"
                     android:background="@null"
-
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:hint="实例：徐胖烤猪蹄"
@@ -175,20 +174,39 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/position3" />
 
-                    <ImageView
-                        android:id="@+id/iv_post_dingwei"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/location" />
+
                 </LinearLayout>
 
 
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:background="@drawable/edittext_border2"
+                    android:layout_marginLeft="120dp"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detailPos"/>
+                <ImageView
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:id="@+id/iv_post_dingwei"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/location" />
+            </LinearLayout>
+
+
+
             <LinearLayout
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -206,6 +224,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/time" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <CheckBox
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
+                    android:id="@+id/checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="\@商家来完善"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
