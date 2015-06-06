@@ -191,11 +191,11 @@ public class DeatilActivity extends ActionBarActivity implements View.OnClickLis
         like.setText(String.valueOf(numberFooter.get(LIKE)));
         dislike.setText(String.valueOf(numberFooter.get(DISLIKE)));
         ratingBar.setRating(post.getRating());
-        lastTime.setText("活动时间:" + post.getActivityTiem());
+        lastTime.setText("活动时间：" + post.getActivityTiem());
         if (post.getDetailPos()!=null){
-            location.setText("商户地点:"+post.getCity()+post.getDistrict()+post.getDetailPos());
+            location.setText("商户地点："+post.getCity()+post.getDistrict()+post.getDetailPos());
         }else{
-            location.setText("商户地点:"+post.getCity()+post.getDistrict());
+            location.setText("商户地点："+post.getCity()+post.getDistrict());
         }
         if (footerBoolean != null) {
             if (footerBoolean[DISLIKE] == 0) {

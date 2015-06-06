@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/fei/Documents/android/workspace/mywork/MyApplication/Gallery/build/intermediates/bundles/debug/res/values/values.xml -->
+    <eat-comment/>
+    <string name="app_name">ACTIVITY_ENTRY_NAME</string>
+</resources>
