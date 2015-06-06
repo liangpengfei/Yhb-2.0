@@ -53,6 +53,7 @@ public class DataApp extends Application {
         return email;
     }
 
+
     public void setEmail(String email) {
         this.email = email;
     }
