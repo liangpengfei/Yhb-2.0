@@ -17,3 +17,5 @@ gen/
 /*/build/
 proguard/
 *.log
+.idea/
+volley/
